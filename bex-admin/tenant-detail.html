@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tenant Detail - FleetCore</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#eaedff",
+                    "inverse-primary": "#b4c5ff",
+                    "on-secondary-fixed": "#002114",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#b6c4ff",
+                    "on-tertiary-container": "#eff0ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#131b2e",
+                    "surface-container-high": "#e2e7ff",
+                    "on-surface-variant": "#434655",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "warning-amber": "#D97706",
+                    "secondary": "#006c4a",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#00714e",
+                    "on-primary-container": "#eeefff",
+                    "on-tertiary-fixed": "#00164e",
+                    "on-error-container": "#93000a",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#dae2fd",
+                    "danger-red": "#DC2626",
+                    "primary": "#004ac6",
+                    "secondary-fixed-dim": "#68dba9",
+                    "primary-fixed": "#dbe1ff",
+                    "surface-bright": "#faf8ff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "outline": "#737686",
+                    "surface-container-low": "#f2f3ff",
+                    "surface-dim": "#d2d9f4",
+                    "secondary-fixed": "#85f8c4",
+                    "background-subtle": "#F8FAFC",
+                    "tertiary": "#3750a0",
+                    "outline-variant": "#c3c6d7",
+                    "text-muted": "#64748B",
+                    "border-light": "#E2E8F0",
+                    "background": "#faf8ff",
+                    "surface-variant": "#dae2fd",
+                    "secondary-container": "#82f5c1",
+                    "inverse-on-surface": "#eef0ff",
+                    "tertiary-container": "#5069bb",
+                    "on-secondary-fixed-variant": "#005137",
+                    "on-error": "#ffffff",
+                    "surface": "#faf8ff",
+                    "primary-container": "#2563eb",
+                    "on-primary-fixed": "#00174b",
+                    "surface-tint": "#0053db",
+                    "on-background": "#131b2e",
+                    "tertiary-fixed": "#dce1ff",
+                    "on-tertiary-fixed-variant": "#264191",
+                    "inverse-surface": "#283044"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "gutter": "16px",
+                    "container-margin": "24px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "headline-lg": [
+                            "Manrope"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "display": [
+                            "Manrope"
+                    ],
+                    "headline-md": [
+                            "Manrope"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "mono-data": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "label-md": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "14px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "display": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "mono-data": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .flat-card {
+            background-color: theme('colors.surface-container-lowest');
+            border: 1px solid theme('colors.border-light');
+            border-radius: theme('borderRadius.DEFAULT');
+        }
+    </style>
+</head>
+<body class="bg-background-subtle text-on-surface font-body-sm antialiased h-screen flex overflow-hidden" data-fc-guard="bex-admin"><aside class="bg-surface-container-lowest text-primary font-body-md docked left-0 h-screen w-64 border-r border-border-light flat no-shadows flex flex-col h-full p-md gap-sm z-40 overflow-y-auto hidden md:flex transition-all duration-200 ease-in-out shrink-0" data-fc-sidebar="">
+<div class="mb-lg px-sm">
+<div class="flex items-center gap-sm mb-xs">
+<img alt="Organization Logo" class="w-8 h-8 rounded-md object-cover" src="../assets/images/logo.png"/>
+<span class="font-display text-headline-sm font-black text-primary">FleetCore</span>
+</div>
+<div class="font-label-sm text-label-sm text-text-muted" id="fc-org-name">Your Company</div>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="dashboard.html"><span class="material-symbols-outlined">dashboard</span><span class="font-label-md text-label-md">Dashboard</span></a>
+<a class="flex items-center gap-sm px-md py-sm bg-primary-container text-on-primary-container rounded-lg font-semibold transition-all duration-200 ease-in-out" data-fc-nav="" href="companies.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">domain</span><span class="font-label-md text-label-md">Tenants</span></a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="audit-logs.html"><span class="material-symbols-outlined">shield</span><span class="font-label-md text-label-md">Security</span></a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="platform-analytics.html"><span class="material-symbols-outlined">monitoring</span><span class="font-label-md text-label-md">Platform Analytics</span></a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="settings.html"><span class="material-symbols-outlined">settings</span><span class="font-label-md text-label-md">Global Settings</span></a>
+</nav>
+<div class="mt-auto flex flex-col gap-sm pt-md border-t border-border-light">
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="mailto:support@fleetcore.app">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="#" id="logout-link">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- App Container -->
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- Header -->
+<header class="bg-surface-container-lowest border-b border-border-light h-16 px-container-margin flex justify-between items-center flex-shrink-0">
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-headline-md">arrow_back</span>
+</button>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface" id="td-name">Loading…</h1>
+<p class="font-label-sm text-label-sm text-text-muted" id="td-subtitle">—</p>
+</div>
+</div>
+<div class="flex items-center gap-md" id="td-header-actions"></div>
+</header>
+<!-- Main Content Scroll Area -->
+<main class="flex-1 overflow-y-auto p-container-margin relative">
+<div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Left Column -->
+<div class="lg:col-span-8 space-y-lg">
+<!-- Quick Stats Bento -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+<div class="flat-card p-md">
+<p class="font-label-sm text-label-sm text-text-muted uppercase mb-xs">Vehicles</p>
+<div class="flex items-end gap-sm">
+<span class="font-headline-lg text-headline-lg font-semibold" id="td-vehicle-count">0</span>
+</div>
+</div>
+<div class="flat-card p-md">
+<p class="font-label-sm text-label-sm text-text-muted uppercase mb-xs">Total Users</p>
+<div class="flex items-end gap-sm">
+<span class="font-headline-lg text-headline-lg font-semibold" id="td-user-count">0</span>
+<span class="font-label-sm text-label-sm text-text-muted pb-1" id="td-admin-count">0 Admins</span>
+</div>
+</div>
+<div class="flat-card p-md">
+<p class="font-label-sm text-label-sm text-text-muted uppercase mb-xs">Open Incidents</p>
+<div class="flex items-end gap-sm">
+<span class="font-headline-lg text-headline-lg font-semibold" id="td-incident-count">0</span>
+</div>
+</div>
+</div>
+<!-- User List Table -->
+<div class="flat-card">
+<div class="p-md border-b border-border-light flex justify-between items-center">
+<h2 class="font-label-md text-label-md font-semibold text-on-surface">Personnel</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-text-muted font-label-sm text-label-sm uppercase">
+<th class="p-sm font-medium">Name</th>
+<th class="p-sm font-medium">Role</th>
+<th class="p-sm font-medium">Status</th>
+<th class="p-sm font-medium">Joined</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm" id="td-personnel-tbody">
+<tr><td colspan="4" class="p-md text-center text-text-muted font-body-sm">Loading…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Right Column -->
+<div class="lg:col-span-4 space-y-lg">
+<!-- Account Status -->
+<div class="flat-card p-md">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">domain</span>
+<h2 class="font-label-md text-label-md font-semibold text-on-surface">Account Status</h2>
+</div>
+<div class="mb-md">
+<p class="font-label-sm text-label-sm text-text-muted uppercase">Status</p>
+<div class="mt-xs inline-flex items-center gap-xs px-2 py-0.5 rounded font-label-sm text-label-sm" id="td-status-badge">—</div>
+</div>
+<div class="space-y-sm text-body-sm font-body-sm pt-md border-t border-border-light">
+<div class="flex justify-between">
+<span class="text-text-muted">Plan</span>
+<span class="font-medium capitalize" id="td-plan">—</span>
+</div>
+<div class="flex justify-between">
+<span class="text-text-muted">Subdomain</span>
+<span class="font-mono-data" id="td-subdomain-val">—</span>
+</div>
+</div>
+<div class="flex flex-col gap-sm mt-md pt-md border-t border-border-light" id="td-status-actions"></div>
+</div>
+<!-- Metadata -->
+<div class="p-md text-center text-text-muted font-label-sm text-label-sm">
+<p id="td-created">—</p>
+<p id="td-city">—</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="../js/config.js" type="module"></script><script src="../js/auth.js" type="module"></script><script src="../js/nav.js" type="module"></script><script src="../js/modules/bex-tenant-detail.js" type="module"></script></body></html>

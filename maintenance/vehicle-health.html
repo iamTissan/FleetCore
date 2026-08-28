@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vehicle Health List - FleetCore</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#00714e",
+                      "danger-red": "#DC2626",
+                      "on-surface": "#131b2e",
+                      "on-secondary-fixed": "#002114",
+                      "tertiary": "#3750a0",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#faf8ff",
+                      "tertiary-fixed-dim": "#b6c4ff",
+                      "surface-dim": "#d2d9f4",
+                      "inverse-on-surface": "#eef0ff",
+                      "on-secondary-fixed-variant": "#005137",
+                      "surface-bright": "#faf8ff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-container": "#eeefff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "outline": "#737686",
+                      "inverse-primary": "#b4c5ff",
+                      "on-tertiary-container": "#eff0ff",
+                      "primary-container": "#2563eb",
+                      "on-tertiary-fixed-variant": "#264191",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed-dim": "#68dba9",
+                      "text-muted": "#64748B",
+                      "secondary": "#006c4a",
+                      "background-subtle": "#F8FAFC",
+                      "primary-fixed": "#dbe1ff",
+                      "on-background": "#131b2e",
+                      "primary": "#004ac6",
+                      "surface-variant": "#dae2fd",
+                      "on-primary-fixed": "#00174b",
+                      "surface-container-high": "#e2e7ff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "border-light": "#E2E8F0",
+                      "surface-container-low": "#f2f3ff",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "warning-amber": "#D97706",
+                      "inverse-surface": "#283044",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed": "#00164e",
+                      "surface-tint": "#0053db",
+                      "background": "#faf8ff",
+                      "on-error-container": "#93000a",
+                      "surface-container": "#eaedff",
+                      "on-surface-variant": "#434655",
+                      "secondary-fixed": "#85f8c4",
+                      "tertiary-container": "#5069bb",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c3c6d7",
+                      "tertiary-fixed": "#dce1ff",
+                      "surface-container-highest": "#dae2fd",
+                      "secondary-container": "#82f5c1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "gutter": "16px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "container-margin": "24px",
+                      "xl": "32px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Manrope"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Manrope"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "mono-data": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "14px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-data": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background-subtle text-on-surface font-body-md h-screen flex overflow-hidden selection:bg-primary-container selection:text-on-primary-container" data-fc-guard="maintenance">
+<!-- TopNavBar (Mobile Only) -->
+<header class="md:hidden flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50 bg-surface-container-lowest border-b border-border-light flat no shadows">
+<div class="font-display text-headline-md font-bold text-primary">FleetCore</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150 p-sm rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150 p-sm rounded-full">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden border border-border-light">
+<img class="w-full h-full object-cover" data-alt="A small, professional headshot of an African logistics manager looking directly at the camera, well-lit against a neutral grey background. The image is crisp, modern, and conveys reliability and corporate professionalism, fitting for a minimalist SaaS dashboard interface." src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<aside class="bg-surface-container-lowest text-primary font-body-md docked left-0 h-screen w-64 border-r border-border-light flat no-shadows flex flex-col h-full p-md gap-sm z-40 overflow-y-auto hidden md:flex transition-all duration-200 ease-in-out shrink-0" data-fc-sidebar="">
+<div class="mb-lg px-sm">
+<div class="flex items-center gap-sm mb-xs">
+<img alt="Organization Logo" class="w-8 h-8 rounded-md object-cover" src="../assets/images/logo.png"/>
+<span class="font-display text-headline-sm font-black text-primary">FleetCore</span>
+</div>
+<div class="font-label-sm text-label-sm text-text-muted" id="fc-org-name">Your Company</div>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="dashboard.html"><span class="material-symbols-outlined">dashboard</span><span class="font-label-md text-label-md">Dashboard</span></a>
+<a class="flex items-center gap-sm px-md py-sm bg-primary-container text-on-primary-container rounded-lg font-semibold transition-all duration-200 ease-in-out" data-fc-nav="" href="vehicle-health.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">monitor_heart</span><span class="font-label-md text-label-md">Vehicle Health</span></a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="work-orders.html"><span class="material-symbols-outlined">build</span><span class="font-label-md text-label-md">Work Orders</span></a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="service-history.html"><span class="material-symbols-outlined">history</span><span class="font-label-md text-label-md">Service History</span></a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="schedule.html"><span class="material-symbols-outlined">calendar_month</span><span class="font-label-md text-label-md">Schedule</span></a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="profile.html"><span class="material-symbols-outlined">person</span><span class="font-label-md text-label-md">Profile</span></a>
+</nav>
+<div class="mt-auto flex flex-col gap-sm pt-md border-t border-border-light">
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="mailto:support@fleetcore.app">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="#" id="logout-link">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col md:ml-64 h-full overflow-hidden">
+<!-- Header Actions -->
+<div class="px-container-margin md:px-xl py-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md bg-surface-container-lowest border-b border-border-light z-10">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Vehicle Health</h1>
+<p class="font-body-md text-body-md text-text-muted mt-xs">Monitor fleet status and scheduled maintenance.</p>
+</div>
+<div class="flex items-center gap-sm w-full sm:w-auto">
+<div class="relative flex-1 sm:w-64">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-text-muted" data-icon="search">search</span>
+<input class="w-full pl-xl pr-sm py-sm rounded-lg border border-border-light bg-surface-container-lowest focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/10 font-body-sm text-body-sm text-on-surface placeholder:text-text-muted" id="vh-search" placeholder="Search plates or models..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Data Table Canvas -->
+<div class="flex-1 overflow-auto p-container-margin md:p-xl">
+<div class="bg-surface-container-lowest rounded-lg border border-border-light overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-md py-sm font-label-sm text-label-sm text-text-muted font-medium border-b border-border-light">VEHICLE ID</th>
+<th class="px-md py-sm font-label-sm text-label-sm text-text-muted font-medium border-b border-border-light">STATUS</th>
+<th class="px-md py-sm font-label-sm text-label-sm text-text-muted font-medium border-b border-border-light hidden md:table-cell">MODEL / TYPE</th>
+<th class="px-md py-sm font-label-sm text-label-sm text-text-muted font-medium border-b border-border-light hidden sm:table-cell">ROADWORTHINESS</th>
+<th class="px-md py-sm font-label-sm text-label-sm text-text-muted font-medium border-b border-border-light text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm divide-y divide-border-light" id="vh-tbody">
+<tr><td colspan="5" class="py-lg text-center text-text-muted font-body-sm px-md">Loading vehicles…</td></tr>
+</tbody>
+</table>
+</div>
+<div class="mt-md flex items-center justify-between text-body-sm text-text-muted">
+<span id="vh-count">Showing 0 vehicles</span>
+</div>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="../js/config.js" type="module"></script><script src="../js/auth.js" type="module"></script><script src="../js/nav.js" type="module"></script><script src="../js/modules/maintenance-vehicle-health.js" type="module"></script></body></html>

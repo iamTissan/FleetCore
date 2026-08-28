@@ -1,0 +1,21 @@
+project_id = "fleetcore"
+
+[functions.assign-trip]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/assign-trip/index.ts"
+
+[functions.create-user]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/create-user/index.ts"
+
+[functions.send-invite]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/send-invite/index.ts"
+
+[functions.send-fleet-alert]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/send-fleet-alert/index.ts"

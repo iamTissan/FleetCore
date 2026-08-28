@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FleetCore - Email Confirmed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&amp;family=Inter:wght@400..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#82f5c1",
+                        "secondary-fixed": "#85f8c4",
+                        "border-light": "#E2E8F0",
+                        "on-primary": "#ffffff",
+                        "warning-amber": "#D97706",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "outline-variant": "#c3c6d7",
+                        "on-tertiary-fixed": "#00164e",
+                        "background": "#faf8ff",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#eeefff",
+                        "on-background": "#131b2e",
+                        "secondary-fixed-dim": "#68dba9",
+                        "on-surface-variant": "#434655",
+                        "primary-container": "#2563eb",
+                        "surface-dim": "#d2d9f4",
+                        "tertiary-container": "#5069bb",
+                        "background-subtle": "#F8FAFC",
+                        "tertiary-fixed": "#dce1ff",
+                        "secondary": "#006c4a",
+                        "primary": "#004ac6",
+                        "on-secondary-container": "#00714e",
+                        "on-surface": "#131b2e",
+                        "inverse-on-surface": "#eef0ff",
+                        "inverse-primary": "#b4c5ff",
+                        "on-primary-fixed": "#00174b",
+                        "surface-container": "#eaedff",
+                        "tertiary": "#3750a0",
+                        "on-tertiary-container": "#eff0ff",
+                        "surface-container-highest": "#dae2fd",
+                        "surface-container-high": "#e2e7ff",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-fixed-dim": "#b6c4ff",
+                        "on-secondary": "#ffffff",
+                        "text-muted": "#64748B",
+                        "inverse-surface": "#283044",
+                        "surface-tint": "#0053db",
+                        "surface-variant": "#dae2fd",
+                        "danger-red": "#DC2626",
+                        "on-secondary-fixed": "#002114",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#737686",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-bright": "#faf8ff",
+                        "error": "#ba1a1a",
+                        "surface": "#faf8ff",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f2f3ff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#005137",
+                        "on-tertiary-fixed-variant": "#264191"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "container-margin": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "mono-data": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display": ["Manrope"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "mono-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-subtle text-on-surface font-body-md min-h-screen flex items-center justify-center antialiased p-md">
+<div class="w-full max-w-md bg-surface-container-lowest border border-border-light rounded-2xl p-xl shadow-sm">
+<div class="flex items-center gap-sm mb-lg">
+<img alt="FleetCore" class="w-9 h-9 rounded-md" src="assets/images/logo.png"/>
+<span class="font-display text-headline-sm font-black text-primary">FleetCore</span>
+</div>
+
+<div style="text-align:center;">
+<span class="material-symbols-outlined text-5xl text-secondary mb-md">verified</span>
+<h1 class="font-display text-headline-md font-bold text-on-background mb-xs">Email Confirmed</h1>
+<p class="font-body-sm text-body-sm text-text-muted mb-lg">Your account is verified. You can now log in.</p>
+<a class="block w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-md rounded-lg transition-all" href="index.html">Continue to Login</a>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script type="module" src="./js/config.js"></script>
+<script type="module" src="./js/auth.js"></script>
+</body>
+</html>

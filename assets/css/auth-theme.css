@@ -1,0 +1,175 @@
+/* ============================================================
+   AUTH-THEME.CSS — FleetCore animated login system
+   Dark navy → teal mesh backdrop, glassmorphic card,
+   sliding role-tab pill, gradient input focus rings.
+   ============================================================ */
+
+.fc-auth-bg {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(120% 120% at 15% 10%, #0f2e4a 0%, #0a1b2e 45%, #060f1c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ── Ambient glow blobs ─────────────────────────────────────── */
+.fc-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(90px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.fc-glow-1 { width: 480px; height: 480px; background: #16a394; top: -140px; left: -120px; animation: fcFloat1 16s ease-in-out infinite; }
+.fc-glow-2 { width: 420px; height: 420px; background: #1e5fd9; bottom: -160px; right: -100px; animation: fcFloat2 20s ease-in-out infinite; }
+@keyframes fcFloat1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,30px) scale(1.08); } }
+@keyframes fcFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-30px,-40px) scale(1.05); } }
+
+/* ── Mesh / network nodes (echoes the logo's node motif) ────── */
+.fc-mesh { position: absolute; inset: 0; pointer-events: none; opacity: 0.55; }
+.fc-mesh circle { animation: fcPulseNode 4s ease-in-out infinite; }
+.fc-mesh line { stroke-dasharray: 4 6; animation: fcDash 30s linear infinite; }
+@keyframes fcPulseNode { 0%,100% { opacity: 0.25; } 50% { opacity: 0.9; } }
+@keyframes fcDash { to { stroke-dashoffset: -400; } }
+
+/* ── Road telemetry lines ────────────────────────────────────── */
+.fc-road {
+  position: absolute;
+  inset: -20% -20%;
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(45, 212, 191, 0.08) 0px,
+    rgba(45, 212, 191, 0.08) 2px,
+    transparent 2px,
+    transparent 90px
+  );
+  animation: fcRoadScroll 22s linear infinite;
+  pointer-events: none;
+}
+@keyframes fcRoadScroll { from { background-position: 0 0; } to { background-position: 600px 300px; } }
+
+/* ── Glass card ───────────────────────────────────────────────── */
+.fc-glass {
+  position: relative;
+  z-index: 10;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(45,212,191,0.05) inset;
+  border-radius: 28px;
+  animation: fcCardIn 0.7s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes fcCardIn { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.fc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 8px 14px 8px 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  animation: fcBadgeIn 0.6s 0.1s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes fcBadgeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Role tab segmented control ─────────────────────────────── */
+.fc-tabs {
+  position: relative;
+  display: grid;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 4px;
+}
+.fc-tabs-pill {
+  position: absolute;
+  top: 4px; bottom: 4px; left: 4px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #0e9488, #1957c2);
+  box-shadow: 0 4px 14px rgba(14,148,136,0.35);
+  transition: transform 0.35s cubic-bezier(.22,1,.36,1);
+  z-index: 0;
+}
+.fc-tab-btn {
+  position: relative;
+  z-index: 1;
+  padding: 9px 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: rgba(255,255,255,0.55);
+  border-radius: 10px;
+  transition: color 0.25s ease;
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+.fc-tab-btn.active { color: #fff; }
+.fc-tab-btn:hover:not(.active) { color: rgba(255,255,255,0.85); }
+
+.fc-hint {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.fc-hint.fc-hint-swap { opacity: 0; transform: translateY(4px); }
+
+/* ── Gradient-ring inputs ────────────────────────────────────── */
+.fc-input-glow {
+  border-radius: 13px;
+  padding: 1.5px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05));
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.fc-input-glow:focus-within {
+  background: linear-gradient(135deg, #2dd4bf, #1957c2);
+  box-shadow: 0 0 0 4px rgba(45,212,191,0.12);
+}
+.fc-input-glow input {
+  width: 100%;
+  background: #0c1c2e;
+  color: #fff;
+  border: none;
+  border-radius: 11.5px;
+  padding: 13px 14px;
+  font-size: 14.5px;
+  outline: none;
+}
+.fc-input-glow input::placeholder { color: rgba(255,255,255,0.35); }
+.fc-input-glow input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px #0c1c2e inset; -webkit-text-fill-color: #fff; }
+
+/* ── Submit button ───────────────────────────────────────────── */
+.fc-submit {
+  width: 100%;
+  padding: 14px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #0e9488, #1957c2);
+  background-size: 200% 200%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: 0.01em;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.25s ease, background-position 0.6s ease;
+  box-shadow: 0 8px 24px rgba(25,87,194,0.35);
+}
+.fc-submit:hover { transform: translateY(-1px); background-position: 100% 100%; box-shadow: 0 10px 30px rgba(25,87,194,0.45); }
+.fc-submit:active { transform: translateY(0); }
+.fc-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+
+/* ── Discreet Bex Admin footer link ─────────────────────────── */
+.fc-secret-link {
+  opacity: 0.28;
+  transition: opacity 0.3s ease, letter-spacing 0.3s ease;
+  letter-spacing: 0.15em;
+}
+.fc-secret-link:hover { opacity: 0.75; letter-spacing: 0.22em; }
+
+/* ── Fade/slide utility for entrance staggering ─────────────── */
+.fc-rise { animation: fcRise 0.6s cubic-bezier(.22,1,.36,1) both; }
+@keyframes fcRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
