@@ -1,43 +1,44 @@
 /**
- * DRIVER-INCIDENT.JS — SOS / incident report flow for Driver.
- * Inserts a real incidents row, optionally with a geolocation ping and
- * an uploaded photo. Generates a real reference number.
+ * DRIVER-INCIDENT.JS — Mobile SOS Incident Report dispatch.
  */
 import { supabase, getUserProfile, uploadFile } from '../config.js';
 import { showToast } from '../auth.js';
 
 const form = document.getElementById('incident-form');
-if (form) init();
+if (form) initIncident();
 
 let selectedType = null;
 let orgId = null;
 let profileId = null;
 let vehicleId = null;
 
-async function init() {
+export async function initIncident() {
   const profile = await getUserProfile();
   if (!profile) return;
   orgId = profile.organization_id;
   profileId = profile.id;
 
-  const { data: vehicle } = await supabase.from('vehicles').select('id').eq('assigned_driver_id', profile.id).maybeSingle();
+  const { data: vehicle } = await supabase
+    .from('vehicles')
+    .select('id')
+    .eq('assigned_driver_id', profile.id)
+    .maybeSingle();
+
   vehicleId = vehicle?.id || null;
 
   const hint = document.getElementById('incident-type-hint');
   document.querySelectorAll('[data-incident-type]').forEach(btn => {
     btn.addEventListener('click', () => {
       selectedType = btn.getAttribute('data-incident-type');
-      document.querySelectorAll('[data-incident-type]').forEach(b => b.classList.remove('border-danger-red', 'bg-error-container/10'));
-      btn.classList.add('border-danger-red', 'bg-error-container/10');
-      if (hint) hint.textContent = `Selected: ${btn.querySelector('span:last-child').textContent}`;
+      document.querySelectorAll('[data-incident-type]').forEach(b => {
+        b.classList.remove('border-rose-600', 'bg-rose-50/30');
+      });
+      btn.classList.add('border-rose-600', 'bg-rose-50/30');
+      if (hint) hint.textContent = `Selected: ${btn.querySelector('span').textContent}`;
     });
   });
 
   form.addEventListener('submit', onSubmit);
-}
-
-function generateReference() {
-  return 'INC-' + Math.floor(1000 + Math.random() * 9000);
 }
 
 function getLocation() {
@@ -62,12 +63,12 @@ async function onSubmit(e) {
   const btn = form.querySelector('button[type="submit"]');
   const original = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = '<span class="material-symbols-outlined">emergency</span> Sending…';
+  btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i> Transmitting...`;
 
   const [location, photoUrl] = await Promise.all([
     getLocation(),
     (async () => {
-      const file = document.getElementById('incident-photo').files[0];
+      const file = document.getElementById('incident-photo')?.files[0];
       if (!file) return null;
       try { return await uploadFile(file, 'incident-photos'); }
       catch { return null; }
@@ -80,12 +81,11 @@ async function onSubmit(e) {
     vehicle_id: vehicleId,
     incident_type: selectedType,
     severity: selectedType === 'health' || selectedType === 'security' ? 'critical' : 'high',
-    details: document.getElementById('incident-details').value.trim() || null,
+    description: document.getElementById('incident-details').value.trim() || 'Urgent incident alert',
     photo_url: photoUrl,
-    lat: location?.lat || null,
-    lng: location?.lng || null,
+    latitude: location?.lat || null,
+    longitude: location?.lng || null,
     status: 'open',
-    reference: generateReference(),
   };
 
   const { error } = await supabase.from('incidents').insert(payload);
@@ -94,13 +94,13 @@ async function onSubmit(e) {
   btn.innerHTML = original;
 
   if (error) {
-    showToast(`Could not send SOS: ${error.message}`, 'error');
+    showToast(`Emergency transmission failed: ${error.message}`, 'error');
     return;
   }
 
-  showToast(`SOS sent — reference ${payload.reference}. Help is on the way.`, 'success', 6000);
+  showToast('Emergency alert broadcasted. Help is on the way.', 'success', 6000);
   form.reset();
   selectedType = null;
-  document.querySelectorAll('[data-incident-type]').forEach(b => b.classList.remove('border-danger-red', 'bg-error-container/10'));
-  document.getElementById('incident-type-hint').textContent = 'Select an incident type above';
+  document.querySelectorAll('[data-incident-type]').forEach(b => b.classList.remove('border-rose-600', 'bg-rose-50/30'));
+  document.getElementById('incident-type-hint').textContent = 'Tap a category above';
 }

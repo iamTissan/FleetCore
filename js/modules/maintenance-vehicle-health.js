@@ -1,20 +1,40 @@
 /**
- * MAINTENANCE-VEHICLE-HEALTH.JS — Fleet vehicle list for Maintenance Officer.
- * Real vehicles + real open work order counts. No mock rows.
+ * MAINTENANCE-VEHICLE-HEALTH.JS — Fleet health, roadworthiness, and maintenance flagging.
  */
 import { supabase, getUserProfile, formatDate, daysUntil, escapeHtml } from '../config.js';
-import { showToast } from '../auth.js';
+import { showToast, performLogout } from '../auth.js';
 
 const tbody = document.getElementById('vh-tbody');
-if (tbody) init();
+if (tbody) initVehicleHealth();
 
 let vehicles = [];
 let searchTerm = '';
 
-async function init() {
+export async function initVehicleHealth() {
   const profile = await getUserProfile();
   if (!profile) return;
   const orgId = profile.organization_id;
+
+  // Hydrate header & sidebar
+  const fullName = profile.full_name || 'Maintenance Officer';
+  const initials = fullName.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'MO';
+  
+  const headerName = document.getElementById('header-user-name');
+  const headerAvatar = document.getElementById('header-avatar');
+  const sidebarName = document.getElementById('sidebar-name');
+  const sidebarInitial = document.getElementById('sidebar-initial');
+
+  if (headerName) headerName.textContent = fullName;
+  if (headerAvatar) headerAvatar.textContent = initials;
+  if (sidebarName) sidebarName.textContent = fullName;
+  if (sidebarInitial) sidebarInitial.textContent = initials;
+
+  let orgName = 'TransCore Logistics';
+  if (orgId) {
+    const { data: org } = await supabase.from('organizations').select('name').eq('id', orgId).maybeSingle();
+    if (org?.name) orgName = org.name;
+  }
+  document.querySelectorAll('#fc-org-name').forEach(el => el.textContent = orgName);
 
   const [vehiclesRes, ordersRes] = await Promise.all([
     supabase.from('vehicles').select('*').eq('organization_id', orgId).order('plate_number'),
@@ -22,7 +42,7 @@ async function init() {
   ]);
 
   if (vehiclesRes.error) {
-    tbody.innerHTML = `<tr><td colspan="5" class="py-lg text-center text-error font-body-sm px-md">Failed to load: ${escapeHtml(vehiclesRes.error.message)}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-rose-500 text-xs">Failed to load: ${escapeHtml(vehiclesRes.error.message)}</td></tr>`;
     return;
   }
 
@@ -56,11 +76,11 @@ function render() {
   document.getElementById('vh-count').textContent = `Showing ${list.length} of ${vehicles.length} vehicle${vehicles.length === 1 ? '' : 's'}`;
 
   if (vehicles.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="py-lg text-center text-text-muted font-body-sm px-md">No vehicles registered yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400 text-xs">No vehicles registered yet.</td></tr>`;
     return;
   }
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="py-lg text-center text-text-muted font-body-sm px-md">No matches.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400 text-xs">No matching vehicle records.</td></tr>`;
     return;
   }
 
@@ -68,45 +88,51 @@ function render() {
 }
 
 function healthStatus(v) {
-  if (v.openUrgencies.some(u => u === 'critical')) return { label: 'Critical', cls: 'bg-error-container text-error' };
-  if (v.openUrgencies.length > 0) return { label: 'In Service', cls: 'bg-warning-amber/10 text-warning-amber' };
-  if (v.status === 'flagged') return { label: 'Flagged', cls: 'bg-error-container text-error' };
-  return { label: 'Operational', cls: 'bg-secondary-container/30 text-secondary' };
+  if (v.openUrgencies.some(u => u === 'critical')) return { label: 'Critical Service', cls: 'bg-rose-50 text-rose-700 border-rose-200/60' };
+  if (v.openUrgencies.length > 0) return { label: 'In Service', cls: 'bg-amber-50 text-amber-700 border-amber-200/60' };
+  if (v.status === 'flagged') return { label: 'Flagged Issue', cls: 'bg-rose-50 text-rose-700 border-rose-200/60' };
+  return { label: 'Operational', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200/60' };
 }
 
 function rowHtml(v) {
   const status = healthStatus(v);
   const d = daysUntil(v.roadworthiness_expiry);
-  let rwCell = `<span class="text-text-muted italic text-xs">Not on file</span>`;
+  let rwCell = `<span class="text-slate-400 italic text-xs">Not recorded</span>`;
+  
   if (v.roadworthiness_expiry) {
-    const cls = d < 0 ? 'text-danger-red' : d <= 30 ? 'text-warning-amber' : 'text-text-muted';
-    const icon = d < 0 ? 'warning' : 'calendar_today';
-    rwCell = `<div class="flex items-center gap-xs ${cls}"><span class="material-symbols-outlined text-xs" style="font-size:14px;">${icon}</span> ${d < 0 ? `Expired ${formatDate(v.roadworthiness_expiry)}` : formatDate(v.roadworthiness_expiry)}</div>`;
+    const isExpired = d < 0;
+    const isNear = d <= 30 && d >= 0;
+    const cls = isExpired ? 'text-rose-600 font-bold' : isNear ? 'text-amber-600 font-bold' : 'text-slate-500';
+    const icon = isExpired ? 'bi-exclamation-triangle-fill' : 'bi-calendar-check';
+    rwCell = `<div class="flex items-center gap-1.5 ${cls}"><i class="bi ${icon}"></i> ${isExpired ? `Expired ${formatDate(v.roadworthiness_expiry)}` : formatDate(v.roadworthiness_expiry)}</div>`;
   }
 
-  return `<tr class="hover:bg-surface-container-low hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)] transition-all duration-150 group ${status.label === 'Critical' ? 'bg-error-container/20' : ''}" data-id="${v.id}">
-    <td class="px-md py-md align-middle">
-      <div class="flex items-center gap-sm">
-        <div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-text-muted group-hover:bg-primary-fixed group-hover:text-primary transition-colors">
-          <span class="material-symbols-outlined text-base">local_shipping</span>
+  return `
+    <tr class="hover:bg-slate-50/80 transition-colors" data-id="${v.id}">
+      <td class="py-3 px-4">
+        <div class="flex items-center gap-2">
+          <span class="font-mono font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">${escapeHtml(v.plate_number)}</span>
         </div>
-        <span class="font-mono-data text-mono-data bg-surface-container-highest px-xs py-1 rounded text-on-surface border border-border-light uppercase">${escapeHtml(v.plate_number)}</span>
-      </div>
-    </td>
-    <td class="px-md py-md align-middle">
-      <span class="inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${status.cls} uppercase tracking-wider">${status.label}</span>
-    </td>
-    <td class="px-md py-md align-middle text-on-surface-variant hidden md:table-cell">${escapeHtml([v.make, v.model, v.year].filter(Boolean).join(' ') || '—')}</td>
-    <td class="px-md py-md align-middle text-on-surface-variant hidden sm:table-cell">${rwCell}</td>
-    <td class="px-md py-md align-middle text-right">
-      <button class="text-text-muted hover:text-danger-red transition-colors p-sm rounded hover:bg-error-container" data-action="flag" title="Flag for Maintenance">
-        <span class="material-symbols-outlined text-base">flag</span>
-      </button>
-      <a class="text-text-muted hover:text-primary transition-colors p-sm rounded hover:bg-surface-container ml-xs inline-flex" href="work-orders.html?vehicle=${v.id}" title="View Work Orders">
-        <span class="material-symbols-outlined text-base">more_vert</span>
-      </a>
-    </td>
-  </tr>`;
+      </td>
+      <td class="py-3 px-4">
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider ${status.cls}">
+          <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+          ${status.label}
+        </span>
+      </td>
+      <td class="py-3 px-4 text-slate-600 hidden md:table-cell">${escapeHtml([v.make, v.model, v.year].filter(Boolean).join(' ') || '—')}</td>
+      <td class="py-3 px-4 hidden sm:table-cell">${rwCell}</td>
+      <td class="py-3 px-4 text-right">
+        <div class="flex items-center justify-end gap-1.5">
+          <button class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" data-action="flag" title="Flag for Maintenance">
+            <i class="bi bi-flag-fill text-xs"></i>
+          </button>
+          <a class="p-1.5 text-slate-400 hover:text-brand-blue hover:bg-slate-100 rounded-lg transition" href="work-orders.html?vehicle=${v.id}" title="View Work Orders">
+            <i class="bi bi-arrow-up-right text-xs"></i>
+          </a>
+        </div>
+      </td>
+    </tr>`;
 }
 
 async function onTableClick(e) {
@@ -115,11 +141,18 @@ async function onTableClick(e) {
   const id = btn.closest('tr[data-id]')?.getAttribute('data-id');
   const vehicle = vehicles.find(v => v.id === id);
   if (!vehicle) return;
-  if (!confirm(`Flag ${vehicle.plate_number} for maintenance?`)) return;
+  if (!confirm(`Flag vehicle ${vehicle.plate_number} for urgent maintenance?`)) return;
 
   const { error } = await supabase.from('vehicles').update({ status: 'flagged' }).eq('id', id);
-  if (error) { showToast(error.message, 'error'); return; }
+  if (error) { 
+    showToast(error.message, 'error'); 
+    return; 
+  }
   vehicle.status = 'flagged';
   render();
-  showToast(`${vehicle.plate_number} flagged for maintenance.`, 'success');
+  showToast(`${vehicle.plate_number} flagged for technical maintenance.`, 'success');
 }
+
+document.getElementById('logout-btn')?.addEventListener('click', () => {
+  if (confirm('Sign out from Maintenance Console?')) performLogout();
+});

@@ -1,301 +1,371 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>FleetCore - Route Architect & Dispatch</title>
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>FleetCore - Dispatch Management</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "surface-container": "#eaedff",
-                        "inverse-primary": "#b4c5ff",
-                        "on-secondary-fixed": "#002114",
-                        "on-primary": "#ffffff",
-                        "tertiary-fixed-dim": "#b6c4ff",
-                        "on-tertiary-container": "#eff0ff",
-                        "surface-container-lowest": "#ffffff",
-                        "on-tertiary": "#ffffff",
-                        "on-surface": "#131b2e",
-                        "surface-container-high": "#e2e7ff",
-                        "on-surface-variant": "#434655",
-                        "error": "#ba1a1a",
-                        "primary-fixed-dim": "#b4c5ff",
-                        "warning-amber": "#D97706",
-                        "secondary": "#006c4a",
-                        "error-container": "#ffdad6",
-                        "on-secondary-container": "#00714e",
-                        "on-primary-container": "#eeefff",
-                        "on-tertiary-fixed": "#00164e",
-                        "on-error-container": "#93000a",
-                        "on-secondary": "#ffffff",
-                        "surface-container-highest": "#dae2fd",
-                        "danger-red": "#DC2626",
-                        "primary": "#004ac6",
-                        "secondary-fixed-dim": "#68dba9",
-                        "primary-fixed": "#dbe1ff",
-                        "surface-bright": "#faf8ff",
-                        "on-primary-fixed-variant": "#003ea8",
-                        "outline": "#737686",
-                        "surface-container-low": "#f2f3ff",
-                        "surface-dim": "#d2d9f4",
-                        "secondary-fixed": "#85f8c4",
-                        "background-subtle": "#F8FAFC",
-                        "tertiary": "#3750a0",
-                        "outline-variant": "#c3c6d7",
-                        "text-muted": "#64748B",
-                        "border-light": "#E2E8F0",
-                        "background": "#faf8ff",
-                        "surface-variant": "#dae2fd",
-                        "secondary-container": "#82f5c1",
-                        "inverse-on-surface": "#eef0ff",
-                        "tertiary-container": "#5069bb",
-                        "on-secondary-fixed-variant": "#005137",
-                        "on-error": "#ffffff",
-                        "surface": "#faf8ff",
-                        "primary-container": "#2563eb",
-                        "on-primary-fixed": "#00174b",
-                        "surface-tint": "#0053db",
-                        "on-background": "#131b2e",
-                        "tertiary-fixed": "#dce1ff",
-                        "on-tertiary-fixed-variant": "#264191",
-                        "inverse-surface": "#283044"
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    spacing: {
-                        "sm": "8px",
-                        "md": "16px",
-                        "xs": "4px",
-                        "gutter": "16px",
-                        "container-margin": "24px",
-                        "lg": "24px",
-                        "xl": "32px",
-                        "base": "4px"
-                    },
-                    fontFamily: {
-                        "body-sm": ["Inter"],
-                        "headline-lg": ["Manrope"],
-                        "label-sm": ["Inter"],
-                        "display": ["Manrope"],
-                        "headline-md": ["Manrope"],
-                        "body-md": ["Inter"],
-                        "mono-data": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "label-md": ["Inter"]
-                    },
-                    fontSize: {
-                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
-                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "mono-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }]
-                    }
-                }
-            }
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#0B2545', blue: '#134074', teal: '#00A896', mint: '#02C39A', subtle: '#EEF4F8' },
+            primary: "#004ac6", "border-light": "#E2E8F0"
+          },
+          fontFamily: { display: ["Manrope", "sans-serif"], sans: ["Inter", "sans-serif"] }
         }
-    </script>
-<style>
-        .plate-tag {
-            background-color: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            font-family: 'Inter', monospace;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #334155;
-            display: inline-flex;
-            align-items: center;
-        }
-        
-        .kanban-column {
-            min-height: calc(100vh - 180px);
-        }
-
-        .kanban-card {
-            transition: all 0.2s ease;
-        }
-        
-        .kanban-card:hover {
-            box-shadow: 0px 4px 12px rgba(15, 23, 42, 0.05);
-            transform: translateY(-2px);
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+      }
+    }
+  </script>
+  <style>
+    .kanban-card { transition: all 0.2s ease; }
+    .kanban-card:hover { box-shadow: 0px 8px 20px rgba(15, 23, 42, 0.08); transform: translateY(-2px); }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    #route-map { border-radius: 16px; z-index: 10; height: 380px; width: 100%; }
+  </style>
 </head>
-<body class="bg-background-subtle font-body-md text-on-surface flex h-screen overflow-hidden" data-fc-guard="admin"><aside class="bg-surface-container-lowest text-primary font-body-md docked left-0 h-screen w-64 border-r border-border-light flat no-shadows flex flex-col h-full p-md gap-sm z-40 overflow-y-auto hidden md:flex transition-all duration-200 ease-in-out shrink-0" data-fc-sidebar="">
-<div class="mb-lg px-sm">
-<div class="flex items-center gap-sm mb-xs">
-<img alt="Organization Logo" class="w-8 h-8 rounded-md object-cover" src="../assets/images/logo.png"/>
-<span class="font-display text-headline-sm font-black text-primary">FleetCore</span>
-</div>
-<div class="font-label-sm text-label-sm text-text-muted" id="fc-org-name">Your Company</div>
-</div>
-<nav class="flex-1 flex flex-col gap-xs">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="dashboard.html"><span class="material-symbols-outlined">dashboard</span><span class="font-label-md text-label-md">Dashboard</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="vehicles.html"><span class="material-symbols-outlined">local_shipping</span><span class="font-label-md text-label-md">Vehicles</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="drivers.html"><span class="material-symbols-outlined">person</span><span class="font-label-md text-label-md">Drivers</span></a>
-<a class="flex items-center gap-sm px-md py-sm bg-primary-container text-on-primary-container rounded-lg font-semibold transition-all duration-200 ease-in-out" data-fc-nav="" href="dispatch.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">route</span><span class="font-label-md text-label-md">Trips</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="maintenance.html"><span class="material-symbols-outlined">build</span><span class="font-label-md text-label-md">Maintenance</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="finance.html"><span class="material-symbols-outlined">payments</span><span class="font-label-md text-label-md">Finance</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="incidents.html"><span class="material-symbols-outlined">emergency</span><span class="font-label-md text-label-md">Incidents</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="analytics.html"><span class="material-symbols-outlined">insights</span><span class="font-label-md text-label-md">Analytics</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="team.html"><span class="material-symbols-outlined">group</span><span class="font-label-md text-label-md">Team</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="settings.html"><span class="material-symbols-outlined">settings</span><span class="font-label-md text-label-md">Settings</span></a>
-</nav>
-<div class="mt-auto flex flex-col gap-sm pt-md border-t border-border-light">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="mailto:support@fleetcore.app">
-<span class="material-symbols-outlined">contact_support</span>
-<span class="font-label-md text-label-md">Support</span>
-</a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="#" id="logout-link">
-<span class="material-symbols-outlined">logout</span>
-<span class="font-label-md text-label-md">Log Out</span>
-</a>
-</div>
-</aside>
-<!-- Main Content Area -->
-<div class="flex-1 flex flex-col h-screen overflow-hidden">
-<!-- TopNavBar -->
-<header class="bg-surface-container-lowest dark:bg-inverse-surface border-b border-border-light dark:border-outline-variant docked full-width top-0 sticky z-40 flex justify-between items-center h-16 px-container-margin w-full md:hidden">
-<div class="flex items-center gap-lg h-full">
-<h1 class="font-headline-md text-headline-md font-black text-primary dark:text-inverse-primary">FleetCore</h1>
-</div>
-<div class="flex items-center gap-4">
-<button class="text-text-muted hover:text-on-surface transition-colors duration-150">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-</button>
-<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-border-light ml-2">
-<img alt="User profile" class="w-full h-full object-cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
-</div>
-</div>
-</header>
-<!-- Canvas -->
-<main class="flex-1 overflow-x-auto overflow-y-hidden bg-background-subtle p-lg">
-<div class="flex justify-between items-center mb-lg">
-<div>
-<h2 class="font-headline-lg text-headline-lg text-on-surface">Dispatch Management</h2>
-<p class="font-body-sm text-body-sm text-text-muted mt-1">Live tracking of active fleet deployments.</p>
-</div>
-<button class="fc-create-trip-btn bg-primary text-on-primary rounded-lg py-2 px-5 font-label-md text-label-md shadow-sm hover:bg-surface-tint transition-colors duration-150 flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px]">add_box</span>
-                    Create New Trip
-                </button>
-</div>
-<div class="flex gap-lg h-full pb-8">
-<!-- Column 1: Pending -->
-<div class="w-80 flex-shrink-0 flex flex-col">
-<div class="flex items-center justify-between mb-4 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Pending</h3>
-<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-full" id="count-pending">0</span>
-</div>
-<div class="kanban-column space-y-4 overflow-y-auto scrollbar-hide" id="col-pending"></div>
-</div>
-<!-- Column 2: In Transit -->
-<div class="w-80 flex-shrink-0 flex flex-col">
-<div class="flex items-center justify-between mb-4 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">In Transit</h3>
-<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-full" id="count-transit">0</span>
-</div>
-<div class="kanban-column space-y-4 overflow-y-auto scrollbar-hide" id="col-transit"></div>
-</div>
-<!-- Column 3: Completed -->
-<div class="w-80 flex-shrink-0 flex flex-col">
-<div class="flex items-center justify-between mb-4 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Completed</h3>
-<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-0.5 rounded-full" id="count-completed">0</span>
-</div>
-<div class="kanban-column space-y-4 overflow-y-auto scrollbar-hide opacity-80" id="col-completed"></div>
-</div>
-<!-- Column 4: Issues -->
-<div class="w-80 flex-shrink-0 flex flex-col">
-<div class="flex items-center justify-between mb-4 px-1">
-<h3 class="font-label-md text-label-md text-on-surface uppercase tracking-wider flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-danger-red"></span>
-                            Issues
-                        </h3>
-<span class="bg-error-container text-on-error-container font-label-sm text-label-sm px-2 py-0.5 rounded-full" id="count-issues">0</span>
-</div>
-<div class="kanban-column space-y-4 overflow-y-auto scrollbar-hide" id="col-issues"></div>
-</div>
-</div>
-</main>
-</div>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="admin">
 
-<!-- Create Trip Modal -->
-<div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-md" id="trip-modal">
-<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" id="trip-modal-backdrop"></div>
-<div class="relative bg-surface-container-lowest rounded-xl border border-border-light shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-<div class="flex items-center justify-between p-md border-b border-border-light sticky top-0 bg-surface-container-lowest">
-<h3 class="font-headline-md text-headline-md text-on-surface">Create New Trip</h3>
-<button class="text-text-muted hover:text-on-surface p-1 rounded hover:bg-surface-container-low" id="trip-modal-close" type="button">
-<span class="material-symbols-outlined">close</span>
-</button>
-</div>
-<form class="p-md flex flex-col gap-md" id="trip-form">
-<div class="grid grid-cols-2 gap-md">
-<div class="col-span-2">
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Origin *</label>
-<input class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10" id="trip-origin" placeholder="Lagos (HQ)" required="" type="text"/>
-</div>
-<div class="col-span-2">
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Destination *</label>
-<input class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10" id="trip-destination" placeholder="Ibadan (Depot A)" required="" type="text"/>
-</div>
-<div>
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Vehicle *</label>
-<select class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10" id="trip-vehicle" required=""></select>
-</div>
-<div>
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Driver *</label>
-<select class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10" id="trip-driver" required=""></select>
-</div>
-<div class="col-span-2">
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Scheduled Date/Time</label>
-<input class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10" id="trip-scheduled" type="datetime-local"/>
-</div>
-<div class="col-span-2">
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Notes</label>
-<textarea class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10" id="trip-notes" rows="2"></textarea>
-</div>
-</div>
-<div class="flex justify-end gap-sm pt-sm border-t border-border-light">
-<button class="px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors" id="trip-cancel-btn" type="button">Cancel</button>
-<button class="px-md py-sm rounded-lg font-label-md text-label-md bg-primary text-on-primary hover:opacity-90 transition-opacity" id="trip-save-btn" type="submit">Create Trip</button>
-</div>
-</form>
-</div>
-</div>
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+  <div id="mobile-overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-<!-- Trip Card Actions Modal (status transitions) -->
-<div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-md" id="trip-actions-modal">
-<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" id="trip-actions-backdrop"></div>
-<div class="relative bg-surface-container-lowest rounded-xl border border-border-light shadow-xl w-full max-w-sm p-md">
-<h3 class="font-headline-md text-headline-md text-on-surface mb-md" id="trip-actions-title">Trip</h3>
-<div class="flex flex-col gap-xs" id="trip-actions-buttons"></div>
-<button class="mt-md w-full px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors" id="trip-actions-close" type="button">Close</button>
-</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="../js/config.js" type="module"></script><script src="../js/auth.js" type="module"></script><script src="../js/nav.js" type="module"></script><script src="../js/modules/admin-dispatch.js" type="module"></script></body></html>
+  <!-- Top Navigation Bar -->
+  <header class="bg-white border-b border-border-light h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-30 shrink-0">
+    <div class="flex items-center gap-3 sm:gap-4">
+      <button type="button" id="sidebar-toggle" class="md:hidden text-slate-600 hover:text-slate-900 focus:outline-none p-1 rounded-lg hover:bg-slate-100">
+        <i class="bi bi-list text-2xl"></i>
+      </button>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <img alt="FleetCore Logo" class="h-7 sm:h-8 w-auto object-contain" src="../assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+        <span class="font-display font-black text-lg sm:text-xl tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+      </div>
+    </div>
+
+    <!-- Mode Switcher Tabs + Actions (Route Architect as Primary) -->
+    <div class="flex items-center gap-3 sm:gap-4">
+      <div class="flex p-1 bg-slate-100 rounded-xl text-xs font-bold border border-slate-200">
+        <button id="tab-btn-architect" onclick="switchViewMode('architect')" class="px-3 py-1.5 rounded-lg bg-white text-slate-900 shadow-sm transition">
+          <i class="bi bi-map mr-1"></i> Routes
+        </button>
+        <button id="tab-btn-kanban" onclick="switchViewMode('kanban')" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-slate-900 transition">
+          <i class="bi bi-kanban mr-1"></i> Dispatch Board
+        </button>
+      </div>
+
+      <button type="button" onclick="openCreateModal()" class="fc-create-trip-btn hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 text-white rounded-xl text-xs font-bold transition shadow-sm">
+        <i class="bi bi-plus-lg"></i>
+        <span>Deploy Trip</span>
+      </button>
+
+      <div class="h-5 w-[1px] bg-slate-200"></div>
+
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-brand-blue" id="header-avatar">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="hidden sm:flex flex-col text-left">
+          <span class="text-xs font-bold text-slate-800 leading-tight" id="header-user-name">Loading...</span>
+          <span class="text-[10px] font-semibold text-teal-600 uppercase tracking-wider">Company Admin</span>
+        </div>
+      </div>
+
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 flex flex-col h-full p-4 gap-1 z-50 md:z-20 shrink-0 overflow-y-auto transition-transform duration-200 ease-in-out -translate-x-full md:translate-x-0 fixed md:relative top-0 bottom-0 left-0">
+      <div class="mb-4 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Active Organization</span>
+        <span class="text-sm font-extrabold text-brand-navy truncate block" id="fc-org-name">Loading Organization...</span>
+      </div>
+
+      <nav class="flex-1 flex flex-col gap-1">
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dashboard.html"><i class="bi bi-grid-1x2 text-base"></i><span>Dashboard</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="vehicles.html"><i class="bi bi-truck text-base"></i><span>Vehicles</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="drivers.html"><i class="bi bi-person-badge text-base"></i><span>Drivers</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 bg-blue-50 text-brand-blue font-bold text-xs rounded-xl transition border border-blue-100/60 shadow-sm" href="dispatch.html"><i class="bi bi-signpost-split text-base text-blue-600"></i><span>Routes & Dispatch</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="maintenance.html"><i class="bi bi-tools text-base"></i><span>Maintenance</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="finance.html"><i class="bi bi-wallet2 text-base"></i><span>Finance & Fuel</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="incidents.html"><i class="bi bi-shield-exclamation text-base"></i><span>Crisis Center & SOS</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="analytics.html"><i class="bi bi-bar-chart-line text-base"></i><span>Analytics</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="team.html"><i class="bi bi-people text-base"></i><span>Team & Roles</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="settings.html"><i class="bi bi-gear text-base"></i><span>Settings</span></a>
+      </nav>
+
+      <div class="mt-auto pt-3 border-t border-slate-100">
+        <a class="flex items-center gap-3 px-3.5 py-2 text-slate-500 hover:text-slate-800 hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="profile.html"><i class="bi bi-person text-base"></i><span>My Profile</span></a>
+      </div>
+    </aside>
+
+    <!-- Main Canvas -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 flex flex-col gap-6 custom-scroll">
+      
+      <!-- PRIMARY DEFAULT VIEW: ROUTE ARCHITECT -->
+      <div id="view-architect" class="flex flex-col gap-6 flex-1">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 shrink-0">
+          <div>
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Route Architect & Sequencer</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Design waypoint stop progressions on the interactive map for driver manifests.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openNewRouteModal()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+              <i class="bi bi-plus-circle"></i>
+              <span>Create Route</span>
+            </button>
+            <button type="button" onclick="saveActiveRouteSequence()" class="px-3.5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5">
+              <i class="bi bi-cloud-arrow-up-fill"></i>
+              <span>Sync Stops</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 flex-1 items-start">
+          <!-- Left: Route List & Stop Configurator -->
+          <div class="space-y-4">
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">Fleet Routes</span>
+                <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full" id="route-count-badge">0 Routes</span>
+              </div>
+              <div class="space-y-2 max-h-52 overflow-y-auto custom-scroll" id="route-library-list">
+                <div class="text-center py-6 text-slate-400 text-xs">Loading routes...</div>
+              </div>
+            </div>
+
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm space-y-3">
+              <div class="flex items-center gap-2">
+                <i class="bi bi-pin-map-fill text-teal-600"></i>
+                <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Stop Configurator</h3>
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Waypoint Name</label>
+                <input type="text" id="new-stop-name" placeholder="Click map or enter stop name..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none"/>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Arrival Time</label>
+                  <input type="time" id="new-stop-time" value="08:00" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs"/>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Est. Load</label>
+                  <input type="number" id="new-stop-capacity" placeholder="0" class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono"/>
+                </div>
+              </div>
+              <button type="button" onclick="appendStopToSequence()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
+                <i class="bi bi-plus-lg"></i>
+                <span>Append to Sequence</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Interactive Map & Sequence Table -->
+          <div class="lg:col-span-2 space-y-4">
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-3 shadow-sm space-y-2">
+              <div class="flex justify-between items-center px-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-bold text-slate-900" id="active-route-title">Drafting Canvas</span>
+                  <span class="text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200/60">CLICK MAP TO PIN STOPS</span>
+                </div>
+              </div>
+              <div id="route-map"></div>
+            </div>
+
+            <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
+              <div class="p-3.5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">Stop Management Sequence</span>
+                <span class="text-[10px] font-bold text-slate-400 font-mono" id="sequence-count">0 STOPS</span>
+              </div>
+              <div class="overflow-x-auto max-h-56 custom-scroll">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="border-b border-slate-100 bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      <th class="py-2.5 px-3">#</th>
+                      <th class="py-2.5 px-3">Stop Identity</th>
+                      <th class="py-2.5 px-3">Schedule</th>
+                      <th class="py-2.5 px-3">Load</th>
+                      <th class="py-2.5 px-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-xs font-medium" id="sequence-tbody">
+                    <tr><td colspan="5" class="py-8 text-center text-slate-400 text-xs">Select a route or click on the map to define stops.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECONDARY VIEW: KANBAN DISPATCH BOARD -->
+      <div id="view-kanban" class="hidden flex flex-col gap-6 flex-1">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 shrink-0">
+          <div>
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Active Dispatch Board</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Manage live trip deployments, execution stages, and exception handling.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="loadTrips()" class="px-3.5 py-2 border border-slate-200 bg-white rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm flex items-center gap-1.5">
+              <i class="bi bi-arrow-clockwise"></i>
+              <span>Refresh Board</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1">
+          <!-- Pending -->
+          <div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col shadow-sm">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span><h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Pending Assignment</h3></div>
+              <span class="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 rounded-full border border-slate-200" id="count-pending">0</span>
+            </div>
+            <div class="space-y-3 overflow-y-auto max-h-72 custom-scroll pr-1" id="col-pending"><div class="p-6 text-center text-slate-400 text-xs font-medium">Fetching trips...</div></div>
+          </div>
+
+          <!-- Transit -->
+          <div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col shadow-sm">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse"></span><h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">In Transit</h3></div>
+              <span class="bg-teal-50 text-teal-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-teal-200/60" id="count-transit">0</span>
+            </div>
+            <div class="space-y-3 overflow-y-auto max-h-72 custom-scroll pr-1" id="col-transit"><div class="p-6 text-center text-slate-400 text-xs font-medium">Fetching trips...</div></div>
+          </div>
+
+          <!-- Completed -->
+          <div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col shadow-sm">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Completed Deployments</h3></div>
+              <span class="bg-emerald-50 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-200/60" id="count-completed">0</span>
+            </div>
+            <div class="space-y-3 overflow-y-auto max-h-72 custom-scroll pr-1" id="col-completed"><div class="p-6 text-center text-slate-400 text-xs font-medium">Fetching trips...</div></div>
+          </div>
+
+          <!-- Issues -->
+          <div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col shadow-sm">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><h3 class="text-xs font-bold text-rose-700 uppercase tracking-wider">Exceptions & Issues</h3></div>
+              <span class="bg-rose-50 text-rose-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-rose-200/60" id="count-issues">0</span>
+            </div>
+            <div class="space-y-3 overflow-y-auto max-h-72 custom-scroll pr-1" id="col-issues"><div class="p-6 text-center text-slate-400 text-xs font-medium">Fetching trips...</div></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Create Trip Modal -->
+  <div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" id="trip-modal">
+    <div class="relative bg-white rounded-3xl border border-slate-100 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 sm:p-7 animate-in fade-in duration-200">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4 sticky top-0 bg-white z-10">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 bg-teal-50 text-teal-600 rounded-xl"><i class="bi bi-signpost-2 text-lg"></i></div>
+          <div>
+            <h3 class="font-display text-lg font-bold text-slate-900">Dispatch New Trip</h3>
+            <p class="text-xs text-slate-500">Assign vehicle, driver, and destination route.</p>
+          </div>
+        </div>
+        <button class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition" onclick="closeCreateModal()" type="button">
+          <i class="bi bi-x-lg text-base"></i>
+        </button>
+      </div>
+
+      <form class="flex flex-col gap-4" id="trip-form">
+        <div class="grid grid-cols-2 gap-3.5">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pre-configured Route (Optional)</label>
+            <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:border-teal-500 focus:outline-none" id="trip-route-preset" onchange="onSelectRoutePreset(this.value)">
+              <option value="">Custom Point-to-Point...</option>
+            </select>
+          </div>
+
+          <div class="col-span-2 sm:col-span-1">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Departure Origin <span class="text-teal-600">*</span></label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none" id="trip-origin" placeholder="e.g. Lagos Central Depot" required type="text"/>
+          </div>
+
+          <div class="col-span-2 sm:col-span-1">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Destination Target <span class="text-teal-600">*</span></label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none" id="trip-destination" placeholder="e.g. Ibadan Distribution Hub" required type="text"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Deploy Vehicle <span class="text-teal-600">*</span></label>
+            <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:border-teal-500 focus:outline-none" id="trip-vehicle" required></select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Designated Driver <span class="text-teal-600">*</span></label>
+            <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:border-teal-500 focus:outline-none" id="trip-driver" required></select>
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Scheduled Departure Time</label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none" id="trip-scheduled" type="datetime-local"/>
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Trip Instructions & Notes</label>
+            <textarea class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none" id="trip-notes" placeholder="Delivery notes, cargo specifications..." rows="2"></textarea>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition" onclick="closeCreateModal()" type="button">Cancel</button>
+          <button class="px-5 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white rounded-xl shadow-md transition" id="trip-save-btn" type="submit">Dispatch Trip</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Route Modal -->
+  <div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" id="create-route-modal">
+    <div class="relative bg-white rounded-3xl border border-slate-100 shadow-2xl w-full max-w-sm p-6 animate-in fade-in duration-200">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-display text-sm font-bold text-slate-900">Create New Route</h3>
+        <button onclick="closeNewRouteModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="bi bi-x-lg text-sm"></i></button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Route Name <span class="text-rose-500">*</span></label>
+          <input type="text" id="new-route-name-input" placeholder="e.g. Lagos Mainland Corridor A" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none"/>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <button onclick="closeNewRouteModal()" class="px-3 py-2 text-xs font-bold text-slate-500">Cancel</button>
+          <button onclick="submitCreateRoute()" class="px-4 py-2 bg-teal-600 text-white rounded-xl text-xs font-bold shadow-sm">Save Route</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trip Actions Modal -->
+  <div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" id="trip-actions-modal">
+    <div class="relative bg-white rounded-3xl border border-slate-100 shadow-2xl w-full max-w-sm p-6 animate-in fade-in duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-display text-sm font-bold text-slate-900 truncate" id="trip-actions-title">Trip Workflow</h3>
+        <button onclick="closeActionsModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="bi bi-x-lg text-sm"></i></button>
+      </div>
+      <div class="flex flex-col gap-2" id="trip-actions-buttons"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script src="../js/modules/admin-dispatch.js" type="module"></script>
+</body>
+</html>

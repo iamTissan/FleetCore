@@ -1,203 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>FleetCore - Company Admin Profile</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&amp;family=Inter:wght@400..700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "secondary-container": "#82f5c1",
-                        "secondary-fixed": "#85f8c4",
-                        "border-light": "#E2E8F0",
-                        "on-primary": "#ffffff",
-                        "warning-amber": "#D97706",
-                        "on-primary-fixed-variant": "#003ea8",
-                        "outline-variant": "#c3c6d7",
-                        "on-tertiary-fixed": "#00164e",
-                        "background": "#faf8ff",
-                        "error-container": "#ffdad6",
-                        "on-primary-container": "#eeefff",
-                        "on-background": "#131b2e",
-                        "secondary-fixed-dim": "#68dba9",
-                        "on-surface-variant": "#434655",
-                        "primary-container": "#2563eb",
-                        "surface-dim": "#d2d9f4",
-                        "tertiary-container": "#5069bb",
-                        "background-subtle": "#F8FAFC",
-                        "tertiary-fixed": "#dce1ff",
-                        "secondary": "#006c4a",
-                        "primary": "#004ac6",
-                        "on-secondary-container": "#00714e",
-                        "on-surface": "#131b2e",
-                        "inverse-on-surface": "#eef0ff",
-                        "inverse-primary": "#b4c5ff",
-                        "on-primary-fixed": "#00174b",
-                        "surface-container": "#eaedff",
-                        "tertiary": "#3750a0",
-                        "on-tertiary-container": "#eff0ff",
-                        "surface-container-highest": "#dae2fd",
-                        "surface-container-high": "#e2e7ff",
-                        "on-tertiary": "#ffffff",
-                        "primary-fixed": "#dbe1ff",
-                        "tertiary-fixed-dim": "#b6c4ff",
-                        "on-secondary": "#ffffff",
-                        "text-muted": "#64748B",
-                        "inverse-surface": "#283044",
-                        "surface-tint": "#0053db",
-                        "surface-variant": "#dae2fd",
-                        "danger-red": "#DC2626",
-                        "on-secondary-fixed": "#002114",
-                        "surface-container-lowest": "#ffffff",
-                        "outline": "#737686",
-                        "primary-fixed-dim": "#b4c5ff",
-                        "surface-bright": "#faf8ff",
-                        "error": "#ba1a1a",
-                        "surface": "#faf8ff",
-                        "on-error-container": "#93000a",
-                        "surface-container-low": "#f2f3ff",
-                        "on-error": "#ffffff",
-                        "on-secondary-fixed-variant": "#005137",
-                        "on-tertiary-fixed-variant": "#264191"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "sm": "8px",
-                        "gutter": "16px",
-                        "container-margin": "24px",
-                        "xs": "4px",
-                        "base": "4px",
-                        "xl": "32px",
-                        "md": "16px",
-                        "lg": "24px"
-                    },
-                    "fontFamily": {
-                        "body-lg": ["Inter"],
-                        "label-md": ["Inter"],
-                        "mono-data": ["Inter"],
-                        "label-sm": ["Inter"],
-                        "display": ["Manrope"],
-                        "body-sm": ["Inter"],
-                        "headline-md": ["Manrope"],
-                        "body-md": ["Inter"],
-                        "headline-lg": ["Manrope"]
-                    },
-                    "fontSize": {
-                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
-                        "mono-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
-                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
-                    }
-                }
-            }
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>FleetCore - Administrator Profile & Security</title>
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#0B2545',
+              blue: '#134074',
+              teal: '#00A896',
+              mint: '#02C39A',
+              subtle: '#EEF4F8'
+            },
+            primary: "#004ac6",
+            "border-light": "#E2E8F0"
+          },
+          fontFamily: {
+            display: ["Manrope", "sans-serif"],
+            sans: ["Inter", "sans-serif"]
+          }
         }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
+      }
+    }
+  </script>
 </head>
-<body class="bg-background-subtle text-on-surface font-body-md h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="admin">
-<nav class="bg-surface-container-lowest text-primary font-body-md docked full-width top-0 border-b border-border-light flat no-shadows flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50">
-<div class="flex items-center gap-md">
-<button class="md:hidden p-xs" id="fc-menu-toggle"><span class="material-symbols-outlined">menu</span></button>
-<span class="font-display text-headline-md font-bold text-primary">Company Admin Profile</span>
-</div>
-<div class="flex items-center gap-gutter">
-<button class="flex items-center gap-sm px-sm py-xs hover:bg-surface-container-low transition-colors duration-150 rounded-lg">
-<span class="font-label-md text-label-md text-on-surface-variant" id="fc-org-name">Your Company</span>
-<span class="material-symbols-outlined text-on-surface-variant" style="font-size: 20px;">expand_more</span>
-</button>
-<div class="flex items-center gap-sm">
-<button aria-label="notifications" class="p-xs text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150 rounded-full">
-<span class="material-symbols-outlined">notifications</span>
-</button>
-<img alt="User profile" class="w-8 h-8 rounded-full object-cover border border-border-light" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
-</div>
-</div>
-</nav>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased">
 
-<div class="flex flex-1 overflow-hidden">
-<aside class="bg-surface-container-lowest text-primary font-body-md docked left-0 h-screen w-64 border-r border-border-light flat no-shadows flex flex-col h-full p-md gap-sm z-40 overflow-y-auto hidden md:flex transition-all duration-200 ease-in-out shrink-0" data-fc-sidebar>
-<div class="mb-lg px-sm">
-<div class="flex items-center gap-sm mb-xs">
-<img alt="Organization Logo" class="w-8 h-8 rounded-md object-cover" src="../assets/images/logo.png"/>
-<span class="font-display text-headline-sm font-black text-primary">FleetCore</span>
-</div>
-<div class="font-label-sm text-label-sm text-text-muted">Your Company</div>
-</div>
-<nav class="flex-1 flex flex-col gap-xs">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="dashboard.html" data-fc-nav><span class="material-symbols-outlined">dashboard</span><span class="font-label-md text-label-md">Dashboard</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="vehicles.html" data-fc-nav><span class="material-symbols-outlined">local_shipping</span><span class="font-label-md text-label-md">Vehicles</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="drivers.html" data-fc-nav><span class="material-symbols-outlined">person</span><span class="font-label-md text-label-md">Drivers</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="dispatch.html" data-fc-nav><span class="material-symbols-outlined">route</span><span class="font-label-md text-label-md">Trips</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="maintenance.html" data-fc-nav><span class="material-symbols-outlined">build</span><span class="font-label-md text-label-md">Maintenance</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="finance.html" data-fc-nav><span class="material-symbols-outlined">payments</span><span class="font-label-md text-label-md">Finance</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="incidents.html" data-fc-nav><span class="material-symbols-outlined">emergency</span><span class="font-label-md text-label-md">Incidents</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="analytics.html" data-fc-nav><span class="material-symbols-outlined">insights</span><span class="font-label-md text-label-md">Analytics</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="team.html" data-fc-nav><span class="material-symbols-outlined">group</span><span class="font-label-md text-label-md">Team</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="settings.html" data-fc-nav><span class="material-symbols-outlined">settings</span><span class="font-label-md text-label-md">Settings</span></a>
-</nav>
-<div class="mt-auto flex flex-col gap-sm pt-md border-t border-border-light">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="mailto:support@fleetcore.app">
-<span class="material-symbols-outlined">contact_support</span>
-<span class="font-label-md text-label-md">Support</span>
-</a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="#" id="logout-link">
-<span class="material-symbols-outlined">logout</span>
-<span class="font-label-md text-label-md">Log Out</span>
-</a>
-</div>
-</aside>
-<main class="flex-1 overflow-y-auto bg-background-subtle p-lg">
-<div class="mb-lg">
-<h1 class="font-display text-headline-lg font-bold text-on-background">Company Admin Profile</h1>
-<p class="font-body-sm text-body-sm text-text-muted mt-xs">Manage your account details and security.</p>
-</div>
-<div class="bg-surface-container-lowest border border-border-light rounded-xl p-lg max-w-2xl">
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+  <div id="mobile-overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-<form class="flex flex-col gap-md" id="fc-profile-form">
-<div><label class="font-label-sm text-label-sm text-text-muted">Full Name</label>
-<input class="w-full mt-xs px-sm py-sm border border-border-light rounded-lg font-body-sm" type="text" id="fc-full-name"/></div>
-<div><label class="font-label-sm text-label-sm text-text-muted">Email</label>
-<input class="w-full mt-xs px-sm py-sm border border-border-light rounded-lg font-body-sm bg-surface-container-low" type="email" id="fc-email" disabled/></div>
-<div><label class="font-label-sm text-label-sm text-text-muted">Phone Number (+234)</label>
-<input class="w-full mt-xs px-sm py-sm border border-border-light rounded-lg font-body-sm" type="tel" id="fc-phone" placeholder="+234 8xx xxx xxxx"/></div>
-<div class="pt-sm border-t border-border-light">
-<p class="font-label-sm text-label-sm text-text-muted">Last login</p>
-<p class="font-body-sm text-body-sm text-on-surface mt-xs" id="fc-last-login">—</p>
-</div>
-<button class="mt-sm bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-sm rounded-lg self-start px-lg transition-colors" type="submit">Save Changes</button>
-</form>
+  <header class="bg-white border-b border-border-light h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-30 shrink-0">
+    <div class="flex items-center gap-3 sm:gap-4">
+      <button type="button" id="sidebar-toggle" class="md:hidden text-slate-600 hover:text-slate-900 focus:outline-none p-1 rounded-lg hover:bg-slate-100">
+        <i class="bi bi-list text-2xl"></i>
+      </button>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <img alt="FleetCore Logo" class="h-7 sm:h-8 w-auto object-contain" src="../assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+        <span class="font-display font-black text-lg sm:text-xl tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+      </div>
+    </div>
 
-</div>
-</main>
-</div>
+    <div class="flex items-center gap-3 sm:gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-brand-blue" id="header-avatar">
+          DM
+        </div>
+        <div class="hidden sm:flex flex-col text-left">
+          <span class="text-xs font-bold text-slate-800 leading-tight" id="header-user-name">David Moses</span>
+          <span class="text-[10px] font-semibold text-teal-600 uppercase tracking-wider">Company Admin</span>
+        </div>
+      </div>
 
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-lg"></i>
+      </button>
+    </div>
+  </header>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script type="module" src="../js/config.js"></script>
-<script type="module" src="../js/auth.js"></script>
-<script type="module" src="../js/nav.js"></script>
+  <div class="flex flex-1 overflow-hidden relative">
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 flex flex-col h-full p-4 gap-1 z-50 md:z-20 shrink-0 overflow-y-auto transition-transform duration-200 ease-in-out -translate-x-full md:translate-x-0 fixed md:relative top-0 bottom-0 left-0">
+      <div class="mb-4 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Active Organization</span>
+        <span class="text-sm font-extrabold text-brand-navy truncate block" id="fc-org-name">TransCore Logistics</span>
+      </div>
 
-<script src="../js/modules/shared-profile.js" type="module"></script>
+      <nav class="flex-1 flex flex-col gap-1">
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dashboard.html">
+          <i class="bi bi-grid-1x2 text-base"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="vehicles.html">
+          <i class="bi bi-truck text-base"></i>
+          <span>Vehicles</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="drivers.html">
+          <i class="bi bi-person-badge text-base"></i>
+          <span>Drivers</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dispatch.html">
+          <i class="bi bi-signpost-split text-base"></i>
+          <span>Trips & Dispatch</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="maintenance.html">
+          <i class="bi bi-tools text-base"></i>
+          <span>Maintenance</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="finance.html">
+          <i class="bi bi-wallet2 text-base"></i>
+          <span>Finance & Fuel</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="incidents.html">
+          <i class="bi bi-shield-exclamation text-base"></i>
+          <span>Crisis Center & SOS</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="analytics.html">
+          <i class="bi bi-bar-chart-line text-base"></i>
+          <span>Analytics</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="team.html">
+          <i class="bi bi-people text-base"></i>
+          <span>Team & Roles</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="settings.html">
+          <i class="bi bi-gear text-base"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="mt-auto pt-3 border-t border-slate-100 flex flex-col gap-1">
+        <a class="flex items-center gap-3 px-3.5 py-2 bg-blue-50 text-brand-blue text-xs font-bold rounded-xl transition border border-blue-100/60 shadow-sm" href="profile.html">
+          <i class="bi bi-person-fill text-base text-blue-600"></i>
+          <span>My Profile</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 w-full">
+      <div class="max-w-4xl mx-auto space-y-6">
+        
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+          <div>
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Account Profile & Security</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Manage your personal credentials, contact info, and security credentials.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <div class="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl shadow-sm p-6 sm:p-7 space-y-6">
+            
+            <div class="flex items-center gap-4 pb-6 border-b border-slate-100">
+              <div class="relative group">
+                <img id="profile-avatar-preview" alt="Profile Picture" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-sm" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%230B2545'/%3E%3Ctext x='20' y='25' font-family='Inter, sans-serif' font-size='14' font-weight='bold' fill='%2300A896' text-anchor='middle'%3EDM%3C/text%3E%3C/svg%3E"/>
+                
+                <label for="avatar-file-input" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-lg bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center text-xs shadow-md cursor-pointer transition">
+                  <i class="bi bi-camera-fill text-[11px]"></i>
+                </label>
+                <input type="file" id="avatar-file-input" class="hidden" accept="image/png, image/jpeg, image/webp"/>
+              </div>
+
+              <div>
+                <h3 class="text-sm font-bold text-slate-900" id="profile-display-name">David Moses</h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">JPG, WebP, or PNG. Maximum 3MB.</p>
+                <button type="button" onclick="document.getElementById('avatar-file-input').click()" class="text-xs font-bold text-teal-600 hover:text-teal-700 mt-1 inline-flex items-center gap-1">
+                  <span>Upload new avatar</span>
+                </button>
+              </div>
+            </div>
+
+            <form class="flex flex-col gap-4" id="fc-profile-form" onsubmit="handleProfileUpdate(event)">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Full Name <span class="text-teal-600">*</span></label>
+                <div class="relative">
+                  <i class="bi bi-person absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                  <input class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition" type="text" id="fc-full-name" value="David Moses" required/>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Address</label>
+                <div class="relative">
+                  <i class="bi bi-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                  <input class="w-full pl-10 pr-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-500 cursor-not-allowed" type="email" id="fc-email" value="bextestaccount24@gmail.com" disabled/>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Contact Phone Number</label>
+                <div class="relative">
+                  <i class="bi bi-telephone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                  <input class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition" type="tel" id="fc-phone" placeholder="+234 800 000 0000"/>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Organization Affiliation</label>
+                <div class="relative">
+                  <i class="bi bi-building absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                  <input class="w-full pl-10 pr-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 cursor-not-allowed" type="text" id="fc-org-display" value="TransCore Logistics" disabled/>
+                </div>
+              </div>
+
+              <div class="flex justify-between items-center pt-3 border-t border-slate-100 text-xs">
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Last Active Session</span>
+                  <span class="font-medium text-slate-700 mt-0.5 block" id="fc-last-login">Active Now</span>
+                </div>
+
+                <button class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-md shadow-teal-600/20 transition flex items-center gap-1.5" id="profile-save-btn" type="submit">
+                  <i class="bi bi-floppy-fill"></i>
+                  <span>Save Profile</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl shadow-sm p-6 sm:p-7 space-y-5">
+            <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100">
+              <div class="p-2 bg-amber-50 text-amber-600 rounded-xl text-base">
+                <i class="bi bi-shield-lock-fill"></i>
+              </div>
+              <div>
+                <h3 class="font-display text-sm font-bold text-slate-900">Security & Password</h3>
+                <p class="text-[11px] text-slate-500">Update your account login password.</p>
+              </div>
+            </div>
+
+            <form class="flex flex-col gap-4" id="fc-password-form" onsubmit="handlePasswordUpdate(event)">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">New Password</label>
+                <div class="relative">
+                  <i class="bi bi-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                  <input class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition" type="password" id="new-password" placeholder="••••••••" required minlength="6"/>
+                  <button type="button" onclick="toggleFieldVisibility('new-password', 'toggle-new-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <i class="bi bi-eye text-xs" id="toggle-new-icon"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                <div class="relative">
+                  <i class="bi bi-key-fill absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                  <input class="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition" type="password" id="confirm-password" placeholder="••••••••" required minlength="6"/>
+                  <button type="button" onclick="toggleFieldVisibility('confirm-password', 'toggle-conf-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <i class="bi bi-eye text-xs" id="toggle-conf-icon"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <button class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-1.5" id="password-save-btn" type="submit">
+                  <i class="bi bi-lock-fill"></i>
+                  <span>Update Password</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <script>
+    const SUPABASE_URL = 'https://toftrzitubdzhrdtkyyu.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZnRyeml0dWJkemhyZHRreXl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5MDY0MTMsImV4cCI6MjEwMzQ4MjQxM30.X45H1mHqQms9SBhYB63BDjsnkc_da6Bl8RwL0S4G80I';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentAuthUser = null;
+    let userId = '0ad771fc-1eb4-47ec-9b60-f65e6f51a100';
+
+    function showToast(message, type = 'info') {
+      const host = document.getElementById('fc-toast-host');
+      if (!host) return;
+
+      const colors = {
+        success: 'bg-emerald-600 text-white',
+        error: 'bg-rose-600 text-white',
+        info: 'bg-blue-600 text-white',
+        warning: 'bg-amber-600 text-white'
+      };
+
+      const toast = document.createElement('div');
+      toast.className = `${colors[type] || colors.info} pointer-events-auto px-4 py-2.5 rounded-xl shadow-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 transform translate-x-4 opacity-0`;
+      toast.innerHTML = `<i class="bi ${type === 'success' ? 'bi-check-circle-fill' : type === 'error' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'}"></i> <span>${message}</span>`;
+      
+      host.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove('translate-x-4', 'opacity-0'));
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-x-4');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      return new Date(dateStr).toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function timeAgo(dateStr) {
+      if (!dateStr) return '—';
+      const diffMs = Date.now() - new Date(dateStr).getTime();
+      const mins = Math.floor(diffMs / 60000);
+      if (mins < 1) return 'Just now';
+      if (mins < 60) return `${mins}m ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}h ago`;
+      const days = Math.floor(hrs / 24);
+      return `${days}d ago`;
+    }
+
+    function avatarDataUri(name) {
+      const initials = (name || 'David Moses').trim().split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'DM';
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='12' fill='%230B2545'/><text x='20' y='25' font-family='Inter, sans-serif' font-size='14' font-weight='bold' fill='%2300A896' text-anchor='middle'>${initials}</text></svg>`;
+      return 'data:image/svg+xml,' + encodeURIComponent(svg);
+    }
+
+    async function loadProfileData() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          currentAuthUser = user;
+          userId = user.id;
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle();
+
+        let orgName = 'TransCore Logistics';
+        const orgId = profile?.organization_id;
+
+        if (orgId) {
+          const { data: org } = await supabase
+            .from('organizations')
+            .select('name')
+            .eq('id', orgId)
+            .maybeSingle();
+          if (org?.name) orgName = org.name;
+        } else {
+          const { data: anyOrg } = await supabase
+            .from('organizations')
+            .select('name')
+            .limit(1)
+            .maybeSingle();
+          if (anyOrg?.name) orgName = anyOrg.name;
+        }
+
+        const fullName = profile?.full_name || 'David Moses';
+        const phone = profile?.phone_number || '';
+        const email = profile?.email || currentAuthUser?.email || 'bextestaccount24@gmail.com';
+
+        // Update UI
+        document.querySelectorAll('#fc-org-name').forEach(el => el.textContent = orgName);
+        document.getElementById('fc-org-display').value = orgName;
+
+        document.getElementById('header-user-name').textContent = fullName;
+        document.getElementById('profile-display-name').textContent = fullName;
+
+        const initials = fullName.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        document.getElementById('header-avatar').textContent = initials;
+
+        document.getElementById('fc-full-name').value = fullName;
+        document.getElementById('fc-email').value = email;
+        document.getElementById('fc-phone').value = phone;
+
+        const lastLoginEl = document.getElementById('fc-last-login');
+        if (lastLoginEl) {
+          const lastSignIn = currentAuthUser?.last_sign_in_at || new Date().toISOString();
+          lastLoginEl.textContent = `${formatDate(lastSignIn)} (${timeAgo(lastSignIn)})`;
+        }
+
+        const preview = document.getElementById('profile-avatar-preview');
+        if (preview) {
+          preview.src = profile?.avatar_url || avatarDataUri(fullName);
+        }
+
+      } catch (err) {
+        console.error('Profile Load Exception:', err);
+      }
+    }
+
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      const btn = document.getElementById('profile-save-btn');
+      const originalHTML = btn.innerHTML;
+
+      const full_name = document.getElementById('fc-full-name').value.trim();
+      const phone_number = document.getElementById('fc-phone').value.trim() || null;
+
+      if (!full_name) {
+        showToast('Full name is required.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i><span>Saving...</span>`;
+
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ full_name, phone_number })
+          .eq('id', userId);
+
+        if (error) throw error;
+
+        showToast('Profile information updated successfully.', 'success');
+        
+        document.getElementById('header-user-name').textContent = full_name;
+        document.getElementById('profile-display-name').textContent = full_name;
+        const initials = full_name.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        document.getElementById('header-avatar').textContent = initials;
+      } catch (err) {
+        showToast(err.message || 'Failed to save profile.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+      }
+    }
+
+    async function handleAvatarUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      if (file.size > 3 * 1024 * 1024) {
+        showToast('Image size exceeds 3MB limit.', 'error');
+        return;
+      }
+
+      showToast('Updating profile picture...', 'info');
+
+      try {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          const base64Url = reader.result;
+
+          const { error } = await supabase
+            .from('profiles')
+            .update({ avatar_url: base64Url })
+            .eq('id', userId);
+
+          if (error) throw error;
+
+          document.getElementById('profile-avatar-preview').src = base64Url;
+          showToast('Profile photo updated.', 'success');
+        };
+        reader.readAsDataURL(file);
+      } catch (err) {
+        showToast(err.message || 'Avatar upload failed.', 'error');
+      }
+    }
+
+    async function handlePasswordUpdate(e) {
+      e.preventDefault();
+      const btn = document.getElementById('password-save-btn');
+      const originalHTML = btn.innerHTML;
+
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (newPassword !== confirmPassword) {
+        showToast('New passwords do not match.', 'error');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        showToast('Password must be at least 6 characters long.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i><span>Updating...</span>`;
+
+      try {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) throw error;
+
+        showToast('Password updated successfully.', 'success');
+        document.getElementById('fc-password-form').reset();
+      } catch (err) {
+        showToast(err.message || 'Password update failed.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+      }
+    }
+
+    function toggleFieldVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input || !icon) return;
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash text-xs';
+      } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye text-xs';
+      }
+    }
+
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+
+    function toggleMobileMenu() {
+      const isOpen = !sidebar.classList.contains('-translate-x-full');
+      if (isOpen) {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      } else {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      }
+    }
+
+    if (sidebarToggle) sidebarToggle.addEventListener('click', toggleMobileMenu);
+    if (overlay) overlay.addEventListener('click', toggleMobileMenu);
+
+    document.getElementById('logout-btn')?.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '../index.html';
+    });
+
+    document.getElementById('avatar-file-input')?.addEventListener('change', handleAvatarUpload);
+
+    // Run Immediately
+    loadProfileData();
+  </script>
 </body>
 </html>

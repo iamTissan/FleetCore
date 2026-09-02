@@ -4,15 +4,30 @@
    sliding role-tab pill, gradient input focus rings.
    ============================================================ */
 
+html {
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
 .fc-auth-bg {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  width: 100%;
+  overflow: visible;
   background: radial-gradient(120% 120% at 15% 10%, #0f2e4a 0%, #0a1b2e 45%, #060f1c 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 2.5rem 1rem;
 }
 
 /* ── Ambient glow blobs ─────────────────────────────────────── */
@@ -23,21 +38,59 @@
   opacity: 0.35;
   pointer-events: none;
 }
-.fc-glow-1 { width: 480px; height: 480px; background: #16a394; top: -140px; left: -120px; animation: fcFloat1 16s ease-in-out infinite; }
-.fc-glow-2 { width: 420px; height: 420px; background: #1e5fd9; bottom: -160px; right: -100px; animation: fcFloat2 20s ease-in-out infinite; }
-@keyframes fcFloat1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,30px) scale(1.08); } }
-@keyframes fcFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-30px,-40px) scale(1.05); } }
+.fc-glow-1 {
+  width: 480px;
+  height: 480px;
+  background: #16a394;
+  top: -140px;
+  left: -120px;
+  animation: fcFloat1 16s ease-in-out infinite;
+}
+.fc-glow-2 {
+  width: 420px;
+  height: 420px;
+  background: #1e5fd9;
+  bottom: -160px;
+  right: -100px;
+  animation: fcFloat2 20s ease-in-out infinite;
+}
+@keyframes fcFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.08); }
+}
+@keyframes fcFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, -40px) scale(1.05); }
+}
 
-/* ── Mesh / network nodes (echoes the logo's node motif) ────── */
-.fc-mesh { position: absolute; inset: 0; pointer-events: none; opacity: 0.55; }
-.fc-mesh circle { animation: fcPulseNode 4s ease-in-out infinite; }
-.fc-mesh line { stroke-dasharray: 4 6; animation: fcDash 30s linear infinite; }
-@keyframes fcPulseNode { 0%,100% { opacity: 0.25; } 50% { opacity: 0.9; } }
-@keyframes fcDash { to { stroke-dashoffset: -400; } }
+/* ── Mesh / network nodes (echoes the logo motif) ───────────── */
+.fc-mesh {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.45;
+  z-index: 1;
+}
+.fc-mesh circle {
+  animation: fcPulseNode 4s ease-in-out infinite;
+}
+.fc-mesh line {
+  stroke-dasharray: 4 6;
+  animation: fcDash 30s linear infinite;
+}
+@keyframes fcPulseNode {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.9; }
+}
+@keyframes fcDash {
+  to { stroke-dashoffset: -400; }
+}
 
 /* ── Road telemetry lines ────────────────────────────────────── */
 .fc-road {
-  position: absolute;
+  position: fixed;
   inset: -20% -20%;
   background-image: repeating-linear-gradient(
     115deg,
@@ -48,128 +101,195 @@
   );
   animation: fcRoadScroll 22s linear infinite;
   pointer-events: none;
+  z-index: 1;
 }
-@keyframes fcRoadScroll { from { background-position: 0 0; } to { background-position: 600px 300px; } }
+@keyframes fcRoadScroll {
+  from { background-position: 0 0; }
+  to { background-position: 600px 300px; }
+}
 
 /* ── Glass card ───────────────────────────────────────────────── */
 .fc-glass {
   position: relative;
   z-index: 10;
-  background: rgba(255,255,255,0.06);
+  background: rgba(13, 27, 44, 0.75);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,0.14);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(45,212,191,0.05) inset;
-  border-radius: 28px;
-  animation: fcCardIn 0.7s cubic-bezier(.22,1,.36,1) both;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(45, 212, 191, 0.05) inset;
+  border-radius: 24px;
+  animation: fcCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-@keyframes fcCardIn { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fcCardIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 .fc-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   background: #ffffff;
-  border-radius: 14px;
-  padding: 8px 14px 8px 8px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-  animation: fcBadgeIn 0.6s 0.1s cubic-bezier(.22,1,.36,1) both;
+  border-radius: 9999px;
+  padding: 6px 14px 6px 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  animation: fcBadgeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-@keyframes fcBadgeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fcBadgeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Mode Toggle (Log In / Register) ────────────────────────── */
+.fc-mode-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 9999px;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.fc-mode-btn {
+  flex: 1;
+  padding: 0.35rem 0.75rem;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9999px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.fc-mode-btn.active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
 
 /* ── Role tab segmented control ─────────────────────────────── */
 .fc-tabs {
   position: relative;
   display: grid;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
-  padding: 4px;
+  padding: 3px;
 }
 .fc-tabs-pill {
   position: absolute;
-  top: 4px; bottom: 4px; left: 4px;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
   border-radius: 10px;
   background: linear-gradient(135deg, #0e9488, #1957c2);
-  box-shadow: 0 4px 14px rgba(14,148,136,0.35);
-  transition: transform 0.35s cubic-bezier(.22,1,.36,1);
+  box-shadow: 0 4px 14px rgba(14, 148, 136, 0.35);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 0;
 }
 .fc-tab-btn {
   position: relative;
   z-index: 1;
-  padding: 9px 6px;
-  font-size: 12.5px;
+  padding: 7px 4px;
+  font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.01em;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255, 255, 255, 0.55);
   border-radius: 10px;
-  transition: color 0.25s ease;
+  transition: color 0.2s ease;
   text-align: center;
   cursor: pointer;
   background: transparent;
   border: none;
 }
-.fc-tab-btn.active { color: #fff; }
-.fc-tab-btn:hover:not(.active) { color: rgba(255,255,255,0.85); }
+.fc-tab-btn.active {
+  color: #ffffff;
+}
+.fc-tab-btn:hover:not(.active) {
+  color: rgba(255, 255, 255, 0.85);
+}
 
 .fc-hint {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.fc-hint.fc-hint-swap { opacity: 0; transform: translateY(4px); }
+.fc-hint.fc-hint-swap {
+  opacity: 0;
+  transform: translateY(3px);
+}
 
 /* ── Gradient-ring inputs ────────────────────────────────────── */
 .fc-input-glow {
-  border-radius: 13px;
+  border-radius: 12px;
   padding: 1.5px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.05));
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+  transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 .fc-input-glow:focus-within {
   background: linear-gradient(135deg, #2dd4bf, #1957c2);
-  box-shadow: 0 0 0 4px rgba(45,212,191,0.12);
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.15);
 }
-.fc-input-glow input {
+.fc-input-glow input,
+.fc-input-glow select {
   width: 100%;
   background: #0c1c2e;
-  color: #fff;
+  color: #ffffff;
   border: none;
-  border-radius: 11.5px;
-  padding: 13px 14px;
-  font-size: 14.5px;
+  border-radius: 10.5px;
+  padding: 10px 12px;
+  font-size: 13.5px;
   outline: none;
 }
-.fc-input-glow input::placeholder { color: rgba(255,255,255,0.35); }
-.fc-input-glow input:-webkit-autofill { -webkit-box-shadow: 0 0 0 1000px #0c1c2e inset; -webkit-text-fill-color: #fff; }
+.fc-input-glow input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+.fc-input-glow input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #0c1c2e inset;
+  -webkit-text-fill-color: #ffffff;
+}
 
 /* ── Submit button ───────────────────────────────────────────── */
 .fc-submit {
   width: 100%;
-  padding: 14px;
-  border-radius: 13px;
+  padding: 12px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #0e9488, #1957c2);
   background-size: 200% 200%;
-  color: #fff;
+  color: #ffffff;
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: 14px;
   letter-spacing: 0.01em;
   border: none;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.25s ease, background-position 0.6s ease;
-  box-shadow: 0 8px 24px rgba(25,87,194,0.35);
+  transition: transform 0.15s ease, box-shadow 0.25s ease;
+  box-shadow: 0 6px 20px rgba(25, 87, 194, 0.35);
 }
-.fc-submit:hover { transform: translateY(-1px); background-position: 100% 100%; box-shadow: 0 10px 30px rgba(25,87,194,0.45); }
-.fc-submit:active { transform: translateY(0); }
-.fc-submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+.fc-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(25, 87, 194, 0.45);
+}
+.fc-submit:active {
+  transform: translateY(0);
+}
+.fc-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
 
 /* ── Discreet Bex Admin footer link ─────────────────────────── */
 .fc-secret-link {
-  opacity: 0.28;
-  transition: opacity 0.3s ease, letter-spacing 0.3s ease;
-  letter-spacing: 0.15em;
+  opacity: 0.35;
+  transition: opacity 0.2s ease, letter-spacing 0.2s ease;
+  letter-spacing: 0.12em;
 }
-.fc-secret-link:hover { opacity: 0.75; letter-spacing: 0.22em; }
+.fc-secret-link:hover {
+  opacity: 0.85;
+  letter-spacing: 0.18em;
+}
 
-/* ── Fade/slide utility for entrance staggering ─────────────── */
-.fc-rise { animation: fcRise 0.6s cubic-bezier(.22,1,.36,1) both; }
-@keyframes fcRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.fc-rise {
+  animation: fcRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes fcRise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

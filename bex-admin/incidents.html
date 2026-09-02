@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Bex Admin - Crisis Oversight & SOS</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo.png">
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#0B2545', blue: '#134074', teal: '#00A896', mint: '#02C39A', subtle: '#EEF4F8' },
+            primary: "#004ac6", "border-light": "#E2E8F0"
+          },
+          fontFamily: { display: ["Manrope", "sans-serif"], sans: ["Inter", "sans-serif"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { min-height: 100dvh; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="bex_admin">
+
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+  <header class="bg-white border-b border-border-light h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-30 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <img alt="FleetCore Logo" class="h-7 w-auto object-contain" src="../assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+        <span class="font-display font-black text-lg sm:text-xl tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+        <span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-extrabold uppercase tracking-wider ml-1">Platform Admin</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 sm:gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-slate-900 text-teal-400 font-bold text-xs flex items-center justify-center border border-slate-700" id="header-avatar">
+          BX
+        </div>
+        <div class="hidden sm:flex flex-col text-left">
+          <span class="text-xs font-bold text-slate-800 leading-tight" id="header-user-name">Bex Administrator</span>
+          <span class="text-[10px] font-semibold text-rose-600 uppercase tracking-wider">Root Access</span>
+        </div>
+      </div>
+
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 hidden md:flex flex-col h-full p-4 gap-1 z-20 shrink-0 overflow-y-auto">
+      <div class="mb-4 px-3 py-2.5 bg-slate-900 text-white rounded-xl shadow-sm">
+        <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest block">System Context</span>
+        <span class="text-sm font-extrabold truncate block">Bex Platform Root</span>
+      </div>
+
+      <nav class="flex-1 flex flex-col gap-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Platform Management</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dashboard.html">
+          <i class="bi bi-grid-1x2 text-base"></i><span>Overview</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="radar.html">
+          <i class="bi bi-radar text-base"></i><span>Global Radar</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="companies.html">
+          <i class="bi bi-buildings text-base"></i><span>Tenants & Orgs</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="users.html">
+          <i class="bi bi-people text-base"></i><span>Global Users</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 bg-blue-50 text-brand-blue font-bold text-xs rounded-xl transition border border-blue-100/60 shadow-sm" href="incidents.html">
+          <i class="bi bi-shield-exclamation text-base text-blue-600"></i><span>Crisis Oversight</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="audit-logs.html">
+          <i class="bi bi-shield-check text-base"></i><span>Security & Audits</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="platform-analytics.html">
+          <i class="bi bi-graph-up text-base"></i><span>Platform Growth</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="settings.html">
+          <i class="bi bi-sliders text-base"></i><span>Global Settings</span>
+        </a>
+
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-3 mb-1">Account</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="profile.html">
+          <i class="bi bi-person-gear text-base"></i><span>Admin Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 custom-scroll">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Cross-Tenant Crisis Command</h1>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Global aggregated feed of vehicular SOS alerts, collisions, breakdowns, and dispatch freezes.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <select class="px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shadow-sm focus:border-teal-500 focus:outline-none" id="inc-filter-status">
+            <option value="all">All Incident Statuses</option>
+            <option value="open">Active / Unresolved</option>
+            <option value="investigating">Under Investigation</option>
+            <option value="resolved">Resolved</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Active Open SOS</span>
+          <span class="font-display text-2xl font-black text-rose-600 mt-1 block" id="inc-open-count">0</span>
+        </div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">In Investigation</span>
+          <span class="font-display text-2xl font-black text-amber-600 mt-1 block" id="inc-investigating-count">0</span>
+        </div>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Resolved Cases</span>
+          <span class="font-display text-2xl font-black text-emerald-600 mt-1 block" id="inc-resolved-count">0</span>
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[750px]">
+            <thead>
+              <tr class="border-b border-slate-100 bg-slate-50/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <th class="py-3 px-4">Origin Organization</th>
+                <th class="py-3 px-4">Severity / Nature</th>
+                <th class="py-3 px-4">Vehicle Unit</th>
+                <th class="py-3 px-4">Designated Driver</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Logged</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs font-medium" id="inc-tbody">
+              <tr><td colspan="6" class="py-8 text-center text-slate-400">Loading cross-fleet incident logs...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script src="../js/modules/bex-incidents.js" type="module"></script>
+</body>
+</html>

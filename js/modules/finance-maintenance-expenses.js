@@ -1,36 +1,58 @@
 /**
- * FINANCE-MAINTENANCE-EXPENSES.JS — Work order cost log for Account Manager.
+ * FINANCE-MAINTENANCE-EXPENSES.JS — Work order cost ledger for Account Manager.
  */
 import { supabase, getUserProfile, formatDate, formatNaira, escapeHtml, statusBadge } from '../config.js';
+import { performLogout } from '../auth.js';
 
 const STATUS_MAP = {
-  open: { label: 'Open', cls: 'bg-warning-amber/10 text-warning-amber' },
-  in_progress: { label: 'In Progress', cls: 'bg-primary-fixed text-primary' },
-  completed: { label: 'Completed', cls: 'bg-secondary-container/20 text-secondary' },
-  cancelled: { label: 'Cancelled', cls: 'bg-surface-container-high text-on-surface-variant' },
+  open: { label: 'Open', cls: 'bg-amber-50 text-amber-700 border-amber-200/60' },
+  in_progress: { label: 'In Progress', cls: 'bg-blue-50 text-brand-blue border-blue-200/60' },
+  completed: { label: 'Completed', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200/60' },
+  cancelled: { label: 'Cancelled', cls: 'bg-slate-100 text-slate-600 border-slate-200' },
 };
 
 const tbody = document.getElementById('me-tbody');
-if (tbody) init();
+if (tbody) initMaintenanceExpenses();
 
 let records = [];
 let searchTerm = '';
 
-async function init() {
+export async function initMaintenanceExpenses() {
   const profile = await getUserProfile();
   if (!profile) return;
+  const orgId = profile.organization_id;
+
+  const fullName = profile.full_name || 'Account Manager';
+  const initials = fullName.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'AM';
+  
+  const headerName = document.getElementById('header-user-name');
+  const headerAvatar = document.getElementById('header-avatar');
+  const sidebarName = document.getElementById('sidebar-name');
+  const sidebarInitial = document.getElementById('sidebar-initial');
+
+  if (headerName) headerName.textContent = fullName;
+  if (headerAvatar) headerAvatar.textContent = initials;
+  if (sidebarName) sidebarName.textContent = fullName;
+  if (sidebarInitial) sidebarInitial.textContent = initials;
+
+  let orgName = 'TransCore Logistics';
+  if (orgId) {
+    const { data: org } = await supabase.from('organizations').select('name').eq('id', orgId).maybeSingle();
+    if (org?.name) orgName = org.name;
+  }
+  document.querySelectorAll('#fc-org-name').forEach(el => el.textContent = orgName);
 
   const { data, error } = await supabase
     .from('work_orders')
     .select('*, vehicle:vehicles(plate_number, make, model)')
-    .eq('organization_id', profile.organization_id)
+    .eq('organization_id', orgId)
     .order('created_at', { ascending: false });
 
-  const tableWrap = tbody.closest('.bg-surface-container-lowest');
+  const tableWrap = tbody.closest('.bg-white');
   const empty = document.getElementById('me-empty');
 
   if (error) {
-    tbody.innerHTML = `<tr><td colspan="5" class="py-lg text-center text-error font-body-sm px-md">Failed to load: ${escapeHtml(error.message)}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-rose-500 text-xs font-bold">Failed to load: ${escapeHtml(error.message)}</td></tr>`;
     return;
   }
 
@@ -59,15 +81,19 @@ function render() {
     );
   }
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" class="py-lg text-center text-text-muted font-body-sm px-md">No matches.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400 text-xs">No matching maintenance expenses found.</td></tr>`;
     return;
   }
   tbody.innerHTML = list.map(r => `
-    <tr class="border-t border-border-light hover:bg-surface-container-low transition-colors">
-      <td class="px-md py-sm font-mono-data text-mono-data text-on-surface">${r.vehicle ? escapeHtml(r.vehicle.plate_number) : '—'}</td>
-      <td class="px-md py-sm font-body-sm text-body-sm text-on-surface">${escapeHtml(r.service_type || '—')}</td>
-      <td class="px-md py-sm font-mono-data text-mono-data text-on-surface">${formatNaira(r.cost_naira)}</td>
-      <td class="px-md py-sm">${statusBadge(r.status, STATUS_MAP)}</td>
-      <td class="px-md py-sm font-body-sm text-body-sm text-text-muted">${formatDate(r.created_at)}</td>
+    <tr class="hover:bg-slate-50 transition-colors">
+      <td class="py-3 px-4 font-mono font-bold text-slate-900">${r.vehicle ? escapeHtml(r.vehicle.plate_number) : '—'}</td>
+      <td class="py-3 px-4 font-bold text-slate-800">${escapeHtml(r.service_type || 'General Service')}</td>
+      <td class="py-3 px-4 font-mono font-bold text-slate-900">${formatNaira(r.cost_naira || 0)}</td>
+      <td class="py-3 px-4">${statusBadge(r.status, STATUS_MAP)}</td>
+      <td class="py-3 px-4 text-slate-500">${formatDate(r.created_at)}</td>
     </tr>`).join('');
 }
+
+document.getElementById('logout-btn')?.addEventListener('click', () => {
+  if (confirm('Sign out from Finance Console?')) performLogout();
+});

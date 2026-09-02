@@ -4,401 +4,381 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>FleetCore - Portal Authentication</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png">
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <link href="assets/css/auth-theme.css" rel="stylesheet"/>
+  
+  <!-- Bootstrap Icons Standard -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#0B2545',
+              blue: '#134074',
+              teal: '#00A896',
+              mint: '#02C39A',
+              subtle: '#EEF4F8'
+            },
+            primary: "#004ac6",
+            "border-light": "#E2E8F0"
+          },
+          fontFamily: {
+            display: ["Manrope", "sans-serif"],
+            sans: ["Inter", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
   <style>
     body { font-family: 'Inter', sans-serif; }
     .font-display { font-family: 'Manrope', sans-serif; }
     
-    /* Self-contained auth theme fallback */
-    .fc-auth-bg {
-      background: radial-gradient(circle at 50% 10%, #0f2744 0%, #050d18 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow-x: hidden;
-      padding: 1.5rem 1rem;
+    /* Full-Cover Backdrop Photo with Contrast Gradient */
+    .fc-photo-bg {
+      background: linear-gradient(rgba(11, 37, 69, 0.78), rgba(15, 23, 42, 0.88)),
+                  url('https://images.unsplash.com/photo-1772440223098-cc23f6f01209?q=80&w=1200&auto=format&fit=crop') no-repeat center center fixed;
+      background-size: cover;
     }
-    .fc-glow {
-      position: absolute;
-      border-radius: 9999px;
-      filter: blur(100px);
-      pointer-events: none;
-      opacity: 0.35;
-    }
-    .fc-glow-1 { top: -10%; left: -5%; width: 28rem; height: 28rem; background: #0ea5e9; }
-    .fc-glow-2 { bottom: -10%; right: -5%; width: 32rem; height: 32rem; background: #14b8a6; }
-    .fc-mesh {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      opacity: 0.25;
-    }
-    .fc-glass {
-      background: rgba(13, 27, 44, 0.75);
+
+    /* Glass Container */
+    .fc-auth-card {
+      background: rgba(11, 37, 69, 0.88);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 1.5rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
     }
-    .fc-badge {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 0.5rem 1.25rem;
-      border-radius: 9999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-    }
-    .fc-tabs {
-      position: relative;
-      display: grid;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 0.875rem;
-      padding: 3px;
-    }
-    .fc-tabs-pill {
-      position: absolute;
-      top: 3px;
-      bottom: 3px;
-      left: 3px;
-      background: #0ea5e9;
-      background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
-      border-radius: 0.65rem;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
-    }
-    .fc-tab-btn {
-      position: relative;
-      z-index: 10;
-      padding: 0.45rem 0.25rem;
-      font-size: 11.5px;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.6);
-      text-align: center;
-      transition: color 0.2s;
-    }
-    .fc-tab-btn.active { color: #ffffff; }
-    .fc-input-glow input, .fc-input-glow select {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 0.75rem;
-      padding: 0.65rem 0.85rem;
-      color: #ffffff;
-      font-size: 0.875rem;
-      outline: none;
+
+    /* High-contrast Input Styling overriding Tailwind Form Defaults */
+    .fc-input-field {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.22) !important;
+      color: #ffffff !important;
       transition: all 0.2s ease;
     }
-    .fc-input-glow input:focus, .fc-input-glow select:focus {
-      border-color: #2dd4bf;
-      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
-      background: rgba(255, 255, 255, 0.09);
+    .fc-input-field:focus {
+      background-color: rgba(255, 255, 255, 0.14) !important;
+      border-color: #00A896 !important;
+      box-shadow: 0 0 0 2px rgba(0, 168, 150, 0.35) !important;
+      outline: none !important;
     }
-    .fc-input-glow select option { background: #0b1e33; color: #fff; }
-    .fc-submit {
-      width: 100%;
-      background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 0.875rem;
-      padding: 0.75rem 1rem;
-      border-radius: 0.75rem;
-      transition: all 0.2s;
-      box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.4);
+    .fc-input-field::placeholder {
+      color: rgba(255, 255, 255, 0.45) !important;
     }
-    .fc-submit:hover {
-      opacity: 0.95;
-      transform: translateY(-1px);
-      box-shadow: 0 14px 24px -5px rgba(13, 148, 136, 0.5);
-    }
-    .fc-submit:active { transform: translateY(0); }
-    .fc-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-    .fc-mode-toggle {
-      display: flex;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 9999px;
-      padding: 3px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .fc-mode-btn {
-      flex: 1;
-      padding: 0.35rem 0.75rem;
-      font-size: 12px;
-      font-weight: 600;
-      border-radius: 9999px;
-      color: rgba(255, 255, 255, 0.5);
-      transition: all 0.2s;
-    }
-    .fc-mode-btn.active {
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
+
+    /* Prevent browser autofill from turning inputs opaque white */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #0e294b inset !important;
+      -webkit-text-fill-color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.25) !important;
+      transition: background-color 5000s ease-in-out 0s;
     }
   </style>
 </head>
-<body class="fc-auth-bg">
+<body class="fc-photo-bg min-h-screen flex flex-col justify-center items-center p-4 antialiased">
 
-<div class="fc-glow fc-glow-1"></div>
-<div class="fc-glow fc-glow-2"></div>
+  <div class="w-full max-w-md my-auto relative z-10">
 
-<svg class="fc-mesh" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-  <line x1="80" y1="120" x2="260" y2="220" stroke="#2dd4bf" stroke-width="1"/>
-  <line x1="260" y1="220" x2="180" y2="380" stroke="#2dd4bf" stroke-width="1"/>
-  <line x1="180" y1="380" x2="40" y2="320" stroke="#2dd4bf" stroke-width="1"/>
-  <line x1="1020" y1="140" x2="1140" y2="260" stroke="#38bdf8" stroke-width="1"/>
-  <line x1="1140" y1="260" x2="1080" y2="440" stroke="#38bdf8" stroke-width="1"/>
-  <line x1="1080" y1="440" x2="960" y2="360" stroke="#38bdf8" stroke-width="1"/>
-  <circle cx="80" cy="120" r="4" fill="#2dd4bf"/>
-  <circle cx="260" cy="220" r="5" fill="#2dd4bf"/>
-  <circle cx="1020" cy="140" r="4" fill="#38bdf8"/>
-  <circle cx="1140" cy="260" r="5" fill="#38bdf8"/>
-</svg>
-
-<div class="w-full max-w-md z-10">
-
-  <!-- Logo Pill -->
-  <div class="flex justify-center mb-5">
-    <div class="fc-badge">
-      <img alt="FleetCore" class="w-7 h-7 object-contain" src="assets/images/logo.png"/>
-      <span class="font-display text-base font-black tracking-tight">
-        <span style="color:#0b2545">FLEET</span><span style="color:#0e9488">CORE</span>
+    <!-- Logo Badge -->
+    <div class="flex justify-center items-center gap-2 mb-4 bg-white px-4 py-2 rounded-2xl w-fit mx-auto shadow-xl">
+      <img alt="FleetCore Logo" class="h-6 w-auto object-contain" src="assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+      <span class="font-display text-sm font-black tracking-tight">
+        <span class="text-brand-navy">FLEET</span><span class="text-teal-600">CORE</span>
       </span>
     </div>
-  </div>
 
-  <div class="fc-glass p-7 sm:p-9">
-    
-    <!-- Auth Mode Switcher (Log In / Sign Up) -->
-    <div class="fc-mode-toggle mb-6 max-w-[200px] mx-auto">
-      <button class="fc-mode-btn active" id="btn-mode-login" onclick="setAuthMode('login')" type="button">Log In</button>
-      <button class="fc-mode-btn" id="btn-mode-signup" onclick="setAuthMode('signup')" type="button">Register</button>
-    </div>
-
-    <div class="text-center mb-5">
-      <h1 class="font-display text-2xl font-extrabold text-white mb-1" id="auth-title">Welcome back</h1>
-      <p class="text-xs text-white/50" id="auth-subtitle">Smart. Connected. Managed.</p>
-    </div>
-
-    <!-- Role Switcher -->
-    <div class="fc-tabs grid-cols-4 mb-2" id="fc-role-tabs">
-      <div class="fc-tabs-pill" id="fc-tabs-pill"></div>
-      <button class="fc-tab-btn active" data-index="0" data-role="company_admin" type="button">Admin</button>
-      <button class="fc-tab-btn" data-index="1" data-role="driver" type="button">Driver</button>
-      <button class="fc-tab-btn" data-index="2" data-role="maintenance_officer" type="button">Service</button>
-      <button class="fc-tab-btn" data-index="3" data-role="account_manager" type="button">Finance</button>
-    </div>
-    <p class="text-center text-[11.5px] text-white/40 mb-5 h-4" id="fc-role-hint">Full fleet visibility and live operations.</p>
-
-    <!-- Error/Notification banner -->
-    <div class="hidden mb-4 p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2" id="auth-alert">
-      <span class="material-symbols-outlined text-sm">error</span>
-      <span id="auth-alert-msg"></span>
-    </div>
-
-    <!-- Unified Form -->
-    <form class="flex flex-col gap-3.5" id="auth-form" onsubmit="handleAuthSubmit(event)">
+    <!-- Main Card Container -->
+    <div class="fc-auth-card rounded-3xl p-6 sm:p-8">
       
-      <!-- Extra fields for Sign Up -->
-      <div class="hidden space-y-3.5" id="signup-fields">
+      <!-- Mode Switcher (Log In / Register) -->
+      <div class="flex p-1 bg-black/30 rounded-xl mb-5 max-w-[210px] mx-auto text-xs font-bold border border-white/10">
+        <button class="flex-1 py-1.5 rounded-lg text-white transition-all duration-200 bg-teal-600 shadow-md" id="btn-mode-login" onclick="setAuthMode('login')" type="button">Log In</button>
+        <button class="flex-1 py-1.5 rounded-lg text-white/60 hover:text-white transition-all duration-200" id="btn-mode-signup" onclick="setAuthMode('signup')" type="button">Register</button>
+      </div>
+
+      <div class="text-center mb-4">
+        <h1 class="font-display text-xl sm:text-2xl font-black text-white tracking-tight" id="auth-title">Welcome back</h1>
+        <p class="text-xs text-white/60 mt-0.5" id="auth-subtitle">Smart. Connected. Managed.</p>
+      </div>
+
+      <!-- Role Selector Tabs -->
+      <div class="grid grid-cols-4 gap-1 p-1 bg-black/30 rounded-xl mb-2 text-center text-[11px] font-bold border border-white/10" id="fc-role-tabs">
+        <button class="py-1.5 rounded-lg text-white bg-white/20 transition fc-tab-btn shadow-sm" data-role="company_admin" type="button">Admin</button>
+        <button class="py-1.5 rounded-lg text-white/60 hover:text-white transition fc-tab-btn" data-role="driver" type="button">Driver</button>
+        <button class="py-1.5 rounded-lg text-white/60 hover:text-white transition fc-tab-btn" data-role="maintenance_officer" type="button">Service</button>
+        <button class="py-1.5 rounded-lg text-white/60 hover:text-white transition fc-tab-btn" data-role="account_manager" type="button">Finance</button>
+      </div>
+      <p class="text-center text-[11px] text-teal-300 mb-4 h-4 font-semibold transition-all" id="fc-role-hint">Full fleet visibility and live operations.</p>
+
+      <!-- Error / Alert Box -->
+      <div class="hidden mb-3.5 p-3 rounded-xl border text-xs flex items-center gap-2.5 transition" id="auth-alert">
+        <i class="bi bi-exclamation-circle-fill text-sm" id="auth-alert-icon"></i>
+        <span id="auth-alert-msg"></span>
+      </div>
+
+      <!-- Unified Form -->
+      <form class="flex flex-col gap-3.5" id="auth-form" onsubmit="handleAuthSubmit(event)">
+        
+        <!-- Registration Fields -->
+        <div class="hidden space-y-3" id="signup-fields">
+          <div>
+            <label class="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1">Full Name</label>
+            <div class="relative flex items-center">
+              <i class="bi bi-person text-white/70 absolute left-3.5 z-20 text-sm pointer-events-none"></i>
+              <input autocomplete="name" id="full_name" name="full_name" placeholder="John Doe" type="text" class="fc-input-field w-full pl-10 pr-3.5 py-2.5 rounded-xl text-xs font-semibold relative z-10"/>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1">Company Name</label>
+              <div class="relative flex items-center">
+                <i class="bi bi-building text-white/70 absolute left-3.5 z-20 text-sm pointer-events-none"></i>
+                <input autocomplete="organization" id="company_name" name="company_name" placeholder="TransCore Ltd" type="text" class="fc-input-field w-full pl-10 pr-3.5 py-2.5 rounded-xl text-xs font-semibold relative z-10"/>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1">Company Code <span class="text-teal-400">*</span></label>
+              <div class="relative flex items-center">
+                <i class="bi bi-hash text-white/70 absolute left-3.5 z-20 text-sm pointer-events-none"></i>
+                <input autocomplete="off" id="company_code" name="company_code" placeholder="TC-001" type="text" class="fc-input-field w-full pl-10 pr-3.5 py-2.5 rounded-xl text-xs font-mono font-bold uppercase relative z-10"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Field -->
         <div>
-          <label class="block text-[11px] font-semibold text-white/60 mb-1 uppercase tracking-wider">Full Name</label>
-          <div class="fc-input-glow">
-            <input autocomplete="name" id="full_name" name="full_name" placeholder="John Doe" type="text"/>
+          <label class="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1" id="email-label">Email Address</label>
+          <div class="relative flex items-center">
+            <i class="bi bi-envelope text-white/70 absolute left-3.5 z-20 text-sm pointer-events-none"></i>
+            <input autocomplete="email" id="email" name="email" placeholder="you@company.com" required type="email" class="fc-input-field w-full pl-10 pr-3.5 py-2.5 rounded-xl text-xs font-semibold relative z-10"/>
           </div>
         </div>
-        <div id="company-name-container">
-          <label class="block text-[11px] font-semibold text-white/60 mb-1 uppercase tracking-wider">Company / Fleet Name</label>
-          <div class="fc-input-glow">
-            <input autocomplete="organization" id="company_name" name="company_name" placeholder="TransCore Logistics" type="text"/>
+
+        <!-- Password Field with Contrast Visibility Toggle -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-[11px] font-bold text-white/80 uppercase tracking-wider">Password</label>
+            <a class="text-[11px] font-bold text-teal-300 hover:text-teal-200 transition" href="forgot-password.html" id="forgot-link">Forgot?</a>
+          </div>
+          <div class="relative flex items-center">
+            <i class="bi bi-key text-white/70 absolute left-3.5 z-20 text-sm pointer-events-none"></i>
+            <input autocomplete="current-password" class="fc-input-field w-full pl-10 pr-10 py-2.5 rounded-xl text-xs font-semibold relative z-10" id="password" name="password" placeholder="••••••••" required type="password"/>
+            <button type="button" onclick="togglePasswordVisibility('password', 'password-toggle-icon')" class="absolute right-3.5 z-20 text-white/70 hover:text-white p-1 rounded-lg focus:outline-none transition">
+              <i class="bi bi-eye text-base" id="password-toggle-icon"></i>
+            </button>
           </div>
         </div>
-      </div>
 
-      <div>
-        <label class="block text-[11px] font-semibold text-white/60 mb-1 uppercase tracking-wider" id="email-label">Email Address</label>
-        <div class="fc-input-glow">
-          <input autocomplete="email" id="email" name="email" placeholder="you@company.com" required type="email"/>
+        <!-- Remember Me Checkbox -->
+        <div class="flex items-center justify-between text-[11.5px] text-white/70 pt-0.5" id="remember-row">
+          <label class="flex items-center gap-2 cursor-pointer font-medium select-none">
+            <input class="rounded border-white/30 bg-white/10 text-teal-500 focus:ring-0 w-4 h-4 cursor-pointer" id="remember" type="checkbox"/> Remember me
+          </label>
         </div>
-      </div>
 
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <label class="block text-[11px] font-semibold text-white/60 uppercase tracking-wider">Password</label>
-          <a class="text-[11.5px] text-teal-300 hover:text-teal-200" href="forgot-password.html" id="forgot-link">Forgot?</a>
-        </div>
-        <div class="fc-input-glow relative">
-          <input autocomplete="current-password" id="password" name="password" placeholder="••••••••" required type="password"/>
-        </div>
-      </div>
+        <!-- Submit Button -->
+        <button class="w-full py-3.5 mt-1 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-teal-600/30 active:scale-95 transition flex items-center justify-center gap-2" id="submit-btn" type="submit">
+          <span id="submit-btn-text">Sign In</span>
+        </button>
+      </form>
+    </div>
 
-      <div class="flex items-center justify-between text-[12px] text-white/50" id="remember-row">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input class="rounded border-white/20 bg-transparent text-teal-500 focus:ring-0" id="remember" type="checkbox"/> Remember me
-        </label>
-      </div>
+    <!-- Restricted Portal Footer Link -->
+    <div class="text-center mt-5">
+      <a class="inline-flex items-center gap-1.5 text-[11px] text-white/50 hover:text-white uppercase font-bold tracking-widest transition" href="bex-admin/dashboard.html" title="Platform Admin">
+        <i class="bi bi-lock-fill text-xs"></i> <span>Restricted Platform Console</span>
+      </a>
+    </div>
 
-      <button class="fc-submit mt-1.5 flex items-center justify-center gap-2" id="submit-btn" type="submit">
-        <span id="submit-btn-text">Sign In</span>
-      </button>
-    </form>
-
-    <p class="text-center text-[12px] text-white/40 mt-5">
-      Driver mobile console? <a class="text-teal-300 hover:text-teal-200 font-semibold" href="driver/login.html">Launch driver mode →</a>
-    </p>
   </div>
 
-  <!-- Superadmin Secret Entry -->
-  <div class="text-center mt-6">
-    <a class="inline-flex items-center gap-1.5 text-[10.5px] text-white/40 hover:text-white/80 transition uppercase tracking-wider font-semibold" href="bex-admin/dashboard.html" title="Platform SuperAdmin">
-      <span class="material-symbols-outlined" style="font-size:13px;">shield</span> Restricted Platform Admin
-    </a>
-  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script type="module" src="./js/config.js"></script>
+  <script type="module" src="./js/auth.js"></script>
 
-</div>
+  <script>
+    let currentMode = 'login';
+    let currentRole = 'company_admin';
 
-<!-- Real Functional Logic -->
-<script>
-  let currentMode = 'login'; // 'login' | 'signup'
-  let currentRole = 'company_admin';
+    const ROLE_HINTS = {
+      company_admin: "Full fleet visibility and live operations.",
+      driver: "In-cab console — today's trips, GPS radar, and SOS.",
+      maintenance_officer: "Vehicle health diagnostics and work orders.",
+      account_manager: "Fuel expenses, invoices, and fleet audit reports.",
+    };
 
-  const ROLE_HINTS = {
-    company_admin: "Full fleet visibility and live operations.",
-    driver: "Mobile-first — today's trips, fuel, and SOS.",
-    maintenance_officer: "Vehicle health diagnostics and work orders.",
-    account_manager: "Fuel expenses, invoices, and fleet audit reports.",
-  };
+    const ROLE_ROUTES = {
+      company_admin: 'admin/dashboard.html',
+      driver: 'driver/dashboard.html',
+      maintenance_officer: 'maintenance/dashboard.html',
+      account_manager: 'finance/dashboard.html'
+    };
 
-  const ROLE_ROUTES = {
-    company_admin: 'admin/dashboard.html',
-    driver: 'driver/dashboard.html',
-    maintenance_officer: 'maintenance/dashboard.html',
-    account_manager: 'finance/dashboard.html'
-  };
+    const tabs = document.querySelectorAll('.fc-tab-btn');
+    const hint = document.getElementById('fc-role-hint');
 
-  const tabs = document.querySelectorAll('.fc-tab-btn');
-  const pill = document.getElementById('fc-tabs-pill');
-  const hint = document.getElementById('fc-role-hint');
-
-  function positionPill(index) {
-    pill.style.width = `calc(25% - 6px)`;
-    pill.style.transform = `translateX(${index * 100}%)`;
-  }
-
-  function selectTab(btn) {
-    tabs.forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    currentRole = btn.dataset.role;
-    positionPill(Number(btn.dataset.index));
-    hint.textContent = ROLE_HINTS[currentRole];
-  }
-
-  tabs.forEach(btn => btn.addEventListener('click', () => selectTab(btn)));
-  window.addEventListener('load', () => positionPill(0));
-
-  function setAuthMode(mode) {
-    currentMode = mode;
-    const loginBtn = document.getElementById('btn-mode-login');
-    const signupBtn = document.getElementById('btn-mode-signup');
-    const signupFields = document.getElementById('signup-fields');
-    const title = document.getElementById('auth-title');
-    const subtitle = document.getElementById('auth-subtitle');
-    const submitText = document.getElementById('submit-btn-text');
-    const forgotLink = document.getElementById('forgot-link');
-    const rememberRow = document.getElementById('remember-row');
-    const alertBox = document.getElementById('auth-alert');
-    alertBox.classList.add('hidden');
-
-    if (mode === 'signup') {
-      loginBtn.classList.remove('active');
-      signupBtn.classList.add('active');
-      signupFields.classList.remove('hidden');
-      title.textContent = "Create Account";
-      subtitle.textContent = "Join FleetCore to manage your operations.";
-      submitText.textContent = "Register & Continue";
-      forgotLink.classList.add('hidden');
-      rememberRow.classList.add('hidden');
-    } else {
-      signupBtn.classList.remove('active');
-      loginBtn.classList.add('active');
-      signupFields.classList.add('hidden');
-      title.textContent = "Welcome back";
-      subtitle.textContent = "Smart. Connected. Managed.";
-      submitText.textContent = "Sign In";
-      forgotLink.classList.remove('hidden');
-      rememberRow.classList.remove('hidden');
+    function selectTab(btn) {
+      tabs.forEach(t => {
+        t.className = "py-1.5 rounded-lg text-white/60 hover:text-white transition fc-tab-btn";
+      });
+      btn.className = "py-1.5 rounded-lg text-white bg-white/20 transition fc-tab-btn shadow-sm";
+      currentRole = btn.dataset.role;
+      hint.textContent = ROLE_HINTS[currentRole];
     }
-  }
 
-  function showAlert(message) {
-    const alertBox = document.getElementById('auth-alert');
-    const alertMsg = document.getElementById('auth-alert-msg');
-    alertMsg.textContent = message;
-    alertBox.classList.remove('hidden');
-  }
+    tabs.forEach(btn => btn.addEventListener('click', () => selectTab(btn)));
 
-  async function handleAuthSubmit(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submit-btn');
-    const btnText = document.getElementById('submit-btn-text');
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const fullName = document.getElementById('full_name')?.value?.trim();
-    const companyName = document.getElementById('company_name')?.value?.trim();
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (!input || !icon) return;
 
-    btn.disabled = true;
-    btnText.textContent = currentMode === 'login' ? 'Authenticating...' : 'Registering...';
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bi bi-eye-slash text-base';
+      } else {
+        input.type = 'password';
+        icon.className = 'bi bi-eye text-base';
+      }
+    }
 
-    try {
-      // Check if Supabase client is initialized from js/config.js
-      if (window.supabaseClient) {
+    function setAuthMode(mode) {
+      currentMode = mode;
+      const loginBtn = document.getElementById('btn-mode-login');
+      const signupBtn = document.getElementById('btn-mode-signup');
+      const signupFields = document.getElementById('signup-fields');
+      const title = document.getElementById('auth-title');
+      const subtitle = document.getElementById('auth-subtitle');
+      const submitText = document.getElementById('submit-btn-text');
+      const forgotLink = document.getElementById('forgot-link');
+      const rememberRow = document.getElementById('remember-row');
+      const alertBox = document.getElementById('auth-alert');
+      alertBox.classList.add('hidden');
+
+      if (mode === 'signup') {
+        loginBtn.className = "flex-1 py-1.5 rounded-lg text-white/60 hover:text-white transition-all duration-200";
+        signupBtn.className = "flex-1 py-1.5 rounded-lg text-white bg-teal-600 shadow-md transition-all duration-200";
+        signupFields.classList.remove('hidden');
+        title.textContent = "Create Account";
+        subtitle.textContent = "Join FleetCore to manage your operations.";
+        submitText.textContent = "Register & Continue";
+        forgotLink.classList.add('hidden');
+        rememberRow.classList.add('hidden');
+      } else {
+        signupBtn.className = "flex-1 py-1.5 rounded-lg text-white/60 hover:text-white transition-all duration-200";
+        loginBtn.className = "flex-1 py-1.5 rounded-lg text-white bg-teal-600 shadow-md transition-all duration-200";
+        signupFields.classList.add('hidden');
+        title.textContent = "Welcome back";
+        subtitle.textContent = "Smart. Connected. Managed.";
+        submitText.textContent = "Sign In";
+        forgotLink.classList.remove('hidden');
+        rememberRow.classList.remove('hidden');
+      }
+    }
+
+    function showAlert(message, isSuccess = false) {
+      const alertBox = document.getElementById('auth-alert');
+      const alertMsg = document.getElementById('auth-alert-msg');
+      const alertIcon = document.getElementById('auth-alert-icon');
+      
+      alertMsg.textContent = message;
+      if (isSuccess) {
+        alertBox.className = "mb-3.5 p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2.5";
+        alertIcon.className = "bi bi-check-circle-fill text-sm text-emerald-400 shrink-0";
+      } else {
+        alertBox.className = "mb-3.5 p-3 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2.5";
+        alertIcon.className = "bi bi-exclamation-triangle-fill text-sm text-rose-400 shrink-0";
+      }
+      alertBox.classList.remove('hidden');
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const btnText = document.getElementById('submit-btn-text');
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const fullName = document.getElementById('full_name')?.value?.trim();
+      const companyName = document.getElementById('company_name')?.value?.trim();
+      const companyCode = document.getElementById('company_code')?.value?.trim().toUpperCase();
+
+      if (currentMode === 'signup' && !companyCode) {
+        showAlert('Company Code is required for registration.');
+        return;
+      }
+
+      btn.disabled = true;
+      btnText.textContent = currentMode === 'login' ? 'Authenticating...' : 'Registering...';
+
+      try {
+        const client = window.supabaseClient || window.supabase;
+        if (!client) throw new Error('Connecting to Supabase... Please try again.');
+
         if (currentMode === 'login') {
-          const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
+          const { data, error } = await client.auth.signInWithPassword({ email, password });
           if (error) throw error;
           
-          // Role routing
+          if (document.getElementById('remember')?.checked) {
+            localStorage.setItem('fc_remember_email', email);
+          }
+
           const userRole = data?.user?.user_metadata?.role || currentRole;
           window.location.href = ROLE_ROUTES[userRole] || ROLE_ROUTES[currentRole];
         } else {
-          // Sign up flow with role metadata
-          const { data, error } = await window.supabaseClient.auth.signUp({
+          const { data, error } = await client.auth.signUp({
             email,
             password,
             options: {
               data: {
                 full_name: fullName,
                 company_name: companyName,
+                company_code: companyCode,
                 role: currentRole
               }
             }
           });
           if (error) throw error;
+
+          if (data?.user && !data?.session) {
+            showAlert("Account registered! Please check your email to confirm your account.", true);
+            btn.disabled = false;
+            btnText.textContent = "Register & Continue";
+            return;
+          }
           
           window.location.href = ROLE_ROUTES[currentRole];
         }
-      } else {
-        // Fallback demo redirect if Supabase keys are not set yet
-        setTimeout(() => {
-          window.location.href = ROLE_ROUTES[currentRole];
-        }, 600);
+      } catch (err) {
+        showAlert(err.message || 'Authentication failed. Please check your credentials.');
+        btn.disabled = false;
+        btnText.textContent = currentMode === 'login' ? 'Sign In' : 'Register & Continue';
       }
-    } catch (err) {
-      showAlert(err.message || 'Authentication failed. Please check your credentials.');
-      btn.disabled = false;
-      btnText.textContent = currentMode === 'login' ? 'Sign In' : 'Register & Continue';
     }
-  }
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script type="module" src="./js/config.js"></script>
-<script type="module" src="./js/auth.js"></script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const remembered = localStorage.getItem('fc_remember_email');
+      if (remembered) {
+        const emailInput = document.getElementById('email');
+        const rememberBox = document.getElementById('remember');
+        if (emailInput) emailInput.value = remembered;
+        if (rememberBox) rememberBox.checked = true;
+      }
+    });
+  </script>
 </body>
 </html>

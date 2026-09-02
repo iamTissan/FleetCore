@@ -1,198 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>FleetCore - Bex Admin Profile</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&amp;family=Inter:wght@400..700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "secondary-container": "#82f5c1",
-                        "secondary-fixed": "#85f8c4",
-                        "border-light": "#E2E8F0",
-                        "on-primary": "#ffffff",
-                        "warning-amber": "#D97706",
-                        "on-primary-fixed-variant": "#003ea8",
-                        "outline-variant": "#c3c6d7",
-                        "on-tertiary-fixed": "#00164e",
-                        "background": "#faf8ff",
-                        "error-container": "#ffdad6",
-                        "on-primary-container": "#eeefff",
-                        "on-background": "#131b2e",
-                        "secondary-fixed-dim": "#68dba9",
-                        "on-surface-variant": "#434655",
-                        "primary-container": "#2563eb",
-                        "surface-dim": "#d2d9f4",
-                        "tertiary-container": "#5069bb",
-                        "background-subtle": "#F8FAFC",
-                        "tertiary-fixed": "#dce1ff",
-                        "secondary": "#006c4a",
-                        "primary": "#004ac6",
-                        "on-secondary-container": "#00714e",
-                        "on-surface": "#131b2e",
-                        "inverse-on-surface": "#eef0ff",
-                        "inverse-primary": "#b4c5ff",
-                        "on-primary-fixed": "#00174b",
-                        "surface-container": "#eaedff",
-                        "tertiary": "#3750a0",
-                        "on-tertiary-container": "#eff0ff",
-                        "surface-container-highest": "#dae2fd",
-                        "surface-container-high": "#e2e7ff",
-                        "on-tertiary": "#ffffff",
-                        "primary-fixed": "#dbe1ff",
-                        "tertiary-fixed-dim": "#b6c4ff",
-                        "on-secondary": "#ffffff",
-                        "text-muted": "#64748B",
-                        "inverse-surface": "#283044",
-                        "surface-tint": "#0053db",
-                        "surface-variant": "#dae2fd",
-                        "danger-red": "#DC2626",
-                        "on-secondary-fixed": "#002114",
-                        "surface-container-lowest": "#ffffff",
-                        "outline": "#737686",
-                        "primary-fixed-dim": "#b4c5ff",
-                        "surface-bright": "#faf8ff",
-                        "error": "#ba1a1a",
-                        "surface": "#faf8ff",
-                        "on-error-container": "#93000a",
-                        "surface-container-low": "#f2f3ff",
-                        "on-error": "#ffffff",
-                        "on-secondary-fixed-variant": "#005137",
-                        "on-tertiary-fixed-variant": "#264191"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "sm": "8px",
-                        "gutter": "16px",
-                        "container-margin": "24px",
-                        "xs": "4px",
-                        "base": "4px",
-                        "xl": "32px",
-                        "md": "16px",
-                        "lg": "24px"
-                    },
-                    "fontFamily": {
-                        "body-lg": ["Inter"],
-                        "label-md": ["Inter"],
-                        "mono-data": ["Inter"],
-                        "label-sm": ["Inter"],
-                        "display": ["Manrope"],
-                        "body-sm": ["Inter"],
-                        "headline-md": ["Manrope"],
-                        "body-md": ["Inter"],
-                        "headline-lg": ["Manrope"]
-                    },
-                    "fontSize": {
-                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
-                        "mono-data": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
-                        "label-sm": ["12px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
-                        "display": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
-                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
-                    }
-                }
-            }
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Bex Admin - Root Profile</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo.png">
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#0B2545', blue: '#134074', teal: '#00A896', mint: '#02C39A', subtle: '#EEF4F8' },
+            primary: "#004ac6", "border-light": "#E2E8F0"
+          },
+          fontFamily: { display: ["Manrope", "sans-serif"], sans: ["Inter", "sans-serif"] }
         }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
+      }
+    }
+  </script>
 </head>
-<body class="bg-background-subtle text-on-surface font-body-md h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="bex-admin">
-<nav class="bg-surface-container-lowest text-primary font-body-md docked full-width top-0 border-b border-border-light flat no-shadows flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50">
-<div class="flex items-center gap-md">
-<button class="md:hidden p-xs" id="fc-menu-toggle"><span class="material-symbols-outlined">menu</span></button>
-<span class="font-display text-headline-md font-bold text-primary">Bex Admin Profile</span>
-</div>
-<div class="flex items-center gap-gutter">
-<button class="flex items-center gap-sm px-sm py-xs hover:bg-surface-container-low transition-colors duration-150 rounded-lg">
-<span class="font-label-md text-label-md text-on-surface-variant" id="fc-org-name">Platform Admin</span>
-<span class="material-symbols-outlined text-on-surface-variant" style="font-size: 20px;">expand_more</span>
-</button>
-<div class="flex items-center gap-sm">
-<button aria-label="notifications" class="p-xs text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150 rounded-full">
-<span class="material-symbols-outlined">notifications</span>
-</button>
-<img alt="User profile" class="w-8 h-8 rounded-full object-cover border border-border-light" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
-</div>
-</div>
-</nav>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="bex_admin">
 
-<div class="flex flex-1 overflow-hidden">
-<aside class="bg-surface-container-lowest text-primary font-body-md docked left-0 h-screen w-64 border-r border-border-light flat no-shadows flex flex-col h-full p-md gap-sm z-40 overflow-y-auto hidden md:flex transition-all duration-200 ease-in-out shrink-0" data-fc-sidebar>
-<div class="mb-lg px-sm">
-<div class="flex items-center gap-sm mb-xs">
-<img alt="Organization Logo" class="w-8 h-8 rounded-md object-cover" src="../assets/images/logo.png"/>
-<span class="font-display text-headline-sm font-black text-primary">FleetCore</span>
-</div>
-<div class="font-label-sm text-label-sm text-text-muted">Your Company</div>
-</div>
-<nav class="flex-1 flex flex-col gap-xs">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="dashboard.html" data-fc-nav><span class="material-symbols-outlined">dashboard</span><span class="font-label-md text-label-md">Dashboard</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="companies.html" data-fc-nav><span class="material-symbols-outlined">domain</span><span class="font-label-md text-label-md">Tenants</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="audit-logs.html" data-fc-nav><span class="material-symbols-outlined">shield</span><span class="font-label-md text-label-md">Security</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="platform-analytics.html" data-fc-nav><span class="material-symbols-outlined">monitoring</span><span class="font-label-md text-label-md">Platform Analytics</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="settings.html" data-fc-nav><span class="material-symbols-outlined">settings</span><span class="font-label-md text-label-md">Global Settings</span></a>
-</nav>
-<div class="mt-auto flex flex-col gap-sm pt-md border-t border-border-light">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="mailto:support@fleetcore.app">
-<span class="material-symbols-outlined">contact_support</span>
-<span class="font-label-md text-label-md">Support</span>
-</a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="#" id="logout-link">
-<span class="material-symbols-outlined">logout</span>
-<span class="font-label-md text-label-md">Log Out</span>
-</a>
-</div>
-</aside>
-<main class="flex-1 overflow-y-auto bg-background-subtle p-lg">
-<div class="mb-lg">
-<h1 class="font-display text-headline-lg font-bold text-on-background">Bex Admin Profile</h1>
-<p class="font-body-sm text-body-sm text-text-muted mt-xs">Manage your account details and security.</p>
-</div>
-<div class="bg-surface-container-lowest border border-border-light rounded-xl p-lg max-w-2xl">
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
-<form class="flex flex-col gap-md" id="fc-profile-form">
-<div><label class="font-label-sm text-label-sm text-text-muted">Full Name</label>
-<input class="w-full mt-xs px-sm py-sm border border-border-light rounded-lg font-body-sm" type="text" id="fc-full-name"/></div>
-<div><label class="font-label-sm text-label-sm text-text-muted">Email</label>
-<input class="w-full mt-xs px-sm py-sm border border-border-light rounded-lg font-body-sm bg-surface-container-low" type="email" id="fc-email" disabled/></div>
-<div><label class="font-label-sm text-label-sm text-text-muted">Phone Number (+234)</label>
-<input class="w-full mt-xs px-sm py-sm border border-border-light rounded-lg font-body-sm" type="tel" id="fc-phone" placeholder="+234 8xx xxx xxxx"/></div>
-<div class="pt-sm border-t border-border-light">
-<p class="font-label-sm text-label-sm text-text-muted">Last login</p>
-<p class="font-body-sm text-body-sm text-on-surface mt-xs" id="fc-last-login">—</p>
-</div>
-<button class="mt-sm bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md py-sm rounded-lg self-start px-lg transition-colors" type="submit">Save Changes</button>
-</form>
+  <header class="bg-white border-b border-border-light h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-30 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <img alt="FleetCore Logo" class="h-7 w-auto object-contain" src="../assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+        <span class="font-display font-black text-lg sm:text-xl tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+        <span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-extrabold uppercase tracking-wider ml-1">Platform Admin</span>
+      </div>
+    </div>
 
-</div>
-</main>
-</div>
+    <div class="flex items-center gap-3 sm:gap-4">
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-lg"></i>
+      </button>
+    </div>
+  </header>
 
+  <div class="flex flex-1 overflow-hidden relative">
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 hidden md:flex flex-col h-full p-4 gap-1 z-20 shrink-0 overflow-y-auto">
+      <div class="mb-4 px-3 py-2.5 bg-slate-900 text-white rounded-xl shadow-sm">
+        <span class="text-[10px] font-bold text-teal-400 uppercase tracking-widest block">System Context</span>
+        <span class="text-sm font-extrabold truncate block">Bex Platform Root</span>
+      </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script type="module" src="../js/config.js"></script>
-<script type="module" src="../js/auth.js"></script>
-<script type="module" src="../js/nav.js"></script>
+      <nav class="flex-1 flex flex-col gap-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Platform Management</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dashboard.html">
+          <i class="bi bi-grid-1x2 text-base"></i><span>Overview</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="radar.html">
+          <i class="bi bi-radar text-base"></i><span>Global Radar</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="companies.html">
+          <i class="bi bi-buildings text-base"></i><span>Tenants & Orgs</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="users.html">
+          <i class="bi bi-people text-base"></i><span>Global Users</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="incidents.html">
+          <i class="bi bi-shield-exclamation text-base"></i><span>Crisis Oversight</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="audit-logs.html">
+          <i class="bi bi-shield-check text-base"></i><span>Security & Audits</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="platform-analytics.html">
+          <i class="bi bi-graph-up text-base"></i><span>Platform Growth</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="settings.html">
+          <i class="bi bi-sliders text-base"></i><span>Global Settings</span>
+        </a>
 
-<script src="../js/modules/shared-profile.js" type="module"></script>
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-3 mb-1">Account</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 bg-blue-50 text-brand-blue font-bold text-xs rounded-xl transition border border-blue-100/60 shadow-sm" href="profile.html">
+          <i class="bi bi-person-gear text-base text-blue-600"></i><span>Admin Profile</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 custom-scroll">
+      <div class="max-w-2xl mx-auto space-y-6">
+        <div>
+          <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Super-Admin Credentials</h1>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Manage root credentials and cross-tenant platform identities.</p>
+        </div>
+
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
+          <form class="flex flex-col gap-4 text-xs" id="fc-profile-form">
+            <div>
+              <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1">Full Name</label>
+              <input class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:border-teal-500 focus:outline-none" type="text" id="fc-full-name"/>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1">Root Email (Read Only)</label>
+              <input class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs text-slate-500 font-mono font-bold cursor-not-allowed" type="email" id="fc-email" disabled/>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1">Contact Phone</label>
+              <input class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:border-teal-500 focus:outline-none" type="tel" id="fc-phone" placeholder="+234 8xx xxx xxxx"/>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Session History</span>
+              <p class="text-xs font-semibold text-slate-600 mt-0.5" id="fc-last-login">—</p>
+            </div>
+
+            <button class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-md transition" type="submit">
+              Save Root Profile
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script src="../js/modules/shared-profile.js" type="module"></script>
+  <script type="module">
+    import { performLogout } from '../js/auth.js';
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+      if (confirm('Sign out from Bex Admin Console?')) performLogout();
+    });
+  </script>
 </body>
 </html>

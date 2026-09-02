@@ -1,354 +1,296 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Maintenance Overview - FleetCore</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo.png">
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>FleetCore - Maintenance Dashboard</title>
-<!-- Material Symbols -->
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Tailwind Configuration -->
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-secondary-container": "#00714e",
-                    "danger-red": "#DC2626",
-                    "on-surface": "#131b2e",
-                    "on-secondary-fixed": "#002114",
-                    "tertiary": "#3750a0",
-                    "surface-container-lowest": "#ffffff",
-                    "surface": "#faf8ff",
-                    "tertiary-fixed-dim": "#b6c4ff",
-                    "surface-dim": "#d2d9f4",
-                    "inverse-on-surface": "#eef0ff",
-                    "on-secondary-fixed-variant": "#005137",
-                    "surface-bright": "#faf8ff",
-                    "on-tertiary": "#ffffff",
-                    "on-primary-container": "#eeefff",
-                    "on-primary-fixed-variant": "#003ea8",
-                    "outline": "#737686",
-                    "inverse-primary": "#b4c5ff",
-                    "on-tertiary-container": "#eff0ff",
-                    "primary-container": "#2563eb",
-                    "on-tertiary-fixed-variant": "#264191",
-                    "on-secondary": "#ffffff",
-                    "secondary-fixed-dim": "#68dba9",
-                    "text-muted": "#64748B",
-                    "secondary": "#006c4a",
-                    "background-subtle": "#F8FAFC",
-                    "primary-fixed": "#dbe1ff",
-                    "on-background": "#131b2e",
-                    "primary": "#004ac6",
-                    "surface-variant": "#dae2fd",
-                    "on-primary-fixed": "#00174b",
-                    "surface-container-high": "#e2e7ff",
-                    "primary-fixed-dim": "#b4c5ff",
-                    "border-light": "#E2E8F0",
-                    "surface-container-low": "#f2f3ff",
-                    "on-error": "#ffffff",
-                    "on-primary": "#ffffff",
-                    "warning-amber": "#D97706",
-                    "inverse-surface": "#283044",
-                    "error": "#ba1a1a",
-                    "on-tertiary-fixed": "#00164e",
-                    "surface-tint": "#0053db",
-                    "background": "#faf8ff",
-                    "on-error-container": "#93000a",
-                    "surface-container": "#eaedff",
-                    "on-surface-variant": "#434655",
-                    "secondary-fixed": "#85f8c4",
-                    "tertiary-container": "#5069bb",
-                    "error-container": "#ffdad6",
-                    "outline-variant": "#c3c6d7",
-                    "tertiary-fixed": "#dce1ff",
-                    "surface-container-highest": "#dae2fd",
-                    "secondary-container": "#82f5c1"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.25rem",
-                    "lg": "0.5rem",
-                    "xl": "0.75rem",
-                    "full": "9999px"
-            },
-            "spacing": {
-                    "md": "16px",
-                    "gutter": "16px",
-                    "lg": "24px",
-                    "base": "4px",
-                    "xs": "4px",
-                    "sm": "8px",
-                    "container-margin": "24px",
-                    "xl": "32px"
-            },
-            "fontFamily": {
-                    "body-md": ["Inter"],
-                    "label-sm": ["Inter"],
-                    "headline-md": ["Manrope"],
-                    "body-lg": ["Inter"],
-                    "display": ["Manrope"],
-                    "headline-lg": ["Manrope"],
-                    "body-sm": ["Inter"],
-                    "mono-data": ["Inter"],
-                    "label-md": ["Inter"]
-            },
-            "fontSize": {
-                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                    "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
-                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                    "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                    "mono-data": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
-            }
-          }
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  
+  <!-- Bootstrap Icons Standard -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#0B2545', blue: '#134074', teal: '#00A896', mint: '#02C39A', subtle: '#EEF4F8' },
+            primary: "#004ac6", "border-light": "#E2E8F0"
+          },
+          fontFamily: { display: ["Manrope", "sans-serif"], sans: ["Inter", "sans-serif"] }
         }
       }
-    </script>
-<style>
-        /* Utility for Material Symbols */
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .icon-fill {
-            font-variation-settings: 'FILL' 1;
-        }
-        /* Custom Scrollbar for sleek SaaS look */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #E2E8F0;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #cbd5e1;
-        }
-    </style>
+    }
+  </script>
+  <style>
+    body { min-height: 100dvh; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  </style>
 </head>
-<body class="bg-background-subtle font-body-md text-on-background flex h-screen overflow-hidden antialiased" data-fc-guard="maintenance">
-<!-- Shared Component: SideNavBar -->
-<aside class="bg-surface-container-lowest text-primary font-body-md docked left-0 h-screen w-64 border-r border-border-light flat no-shadows flex flex-col h-full p-md gap-sm z-40 overflow-y-auto hidden md:flex transition-all duration-200 ease-in-out shrink-0" data-fc-sidebar="">
-<div class="mb-lg px-sm">
-<div class="flex items-center gap-sm mb-xs">
-<img alt="Organization Logo" class="w-8 h-8 rounded-md object-cover" src="../assets/images/logo.png"/>
-<span class="font-display text-headline-sm font-black text-primary">FleetCore</span>
-</div>
-<div class="font-label-sm text-label-sm text-text-muted" id="fc-org-name">Your Company</div>
-</div>
-<nav class="flex-1 flex flex-col gap-xs">
-<a class="flex items-center gap-sm px-md py-sm bg-primary-container text-on-primary-container rounded-lg font-semibold transition-all duration-200 ease-in-out" data-fc-nav="" href="dashboard.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span><span class="font-label-md text-label-md">Dashboard</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="vehicle-health.html"><span class="material-symbols-outlined">monitor_heart</span><span class="font-label-md text-label-md">Vehicle Health</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="work-orders.html"><span class="material-symbols-outlined">build</span><span class="font-label-md text-label-md">Work Orders</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="service-history.html"><span class="material-symbols-outlined">history</span><span class="font-label-md text-label-md">Service History</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="schedule.html"><span class="material-symbols-outlined">calendar_month</span><span class="font-label-md text-label-md">Schedule</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="profile.html"><span class="material-symbols-outlined">person</span><span class="font-label-md text-label-md">Profile</span></a>
-</nav>
-<div class="mt-auto flex flex-col gap-sm pt-md border-t border-border-light">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="mailto:support@fleetcore.app">
-<span class="material-symbols-outlined">contact_support</span>
-<span class="font-label-md text-label-md">Support</span>
-</a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="#" id="logout-link">
-<span class="material-symbols-outlined">logout</span>
-<span class="font-label-md text-label-md">Log Out</span>
-</a>
-</div>
-</aside>
-<!-- Main Content Area -->
-<main class="flex-1 flex flex-col min-w-0 md:ml-64 relative">
-<!-- Shared Component: TopNavBar -->
-<header class="bg-surface-container-lowest border-b border-border-light docked full-width top-0 flex justify-between items-center w-full px-lg h-16 sticky top-0 z-50">
-<!-- Left: Search -->
-<div class="flex-1 flex items-center">
-<div class="relative w-full max-w-md hidden md:block">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[20px]">search</span>
-<input class="w-full pl-10 pr-4 py-2 bg-surface border border-border-light rounded-lg font-body-sm text-body-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search plates, work orders, drivers..." type="text"/>
-</div>
-</div>
-<!-- Right: Actions & Profile -->
-<div class="flex items-center gap-md">
-<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors relative">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-danger-red rounded-full"></span>
-</button>
-<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors hidden md:flex">
-<span class="material-symbols-outlined">help</span>
-</button>
-<div class="w-px h-6 bg-border-light mx-sm hidden md:block"></div>
-<!-- Organization Switcher / Profile -->
-<button class="flex items-center gap-sm p-1 rounded-lg hover:bg-surface-container-low transition-colors">
-<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-border-light flex items-center justify-center">
-<span class="material-symbols-outlined text-text-muted">person</span>
-</div>
-<div class="flex flex-col items-start hidden lg:flex">
-<span class="font-label-md text-label-md text-on-surface" id="fc-org-name">Your Company</span>
-<span class="font-label-sm text-label-sm text-text-muted">Organization</span>
-</div>
-<span class="material-symbols-outlined text-text-muted text-[18px] hidden lg:block">expand_more</span>
-</button>
-</div>
-</header>
-<!-- Scrollable Canvas -->
-<div class="flex-1 overflow-y-auto p-md md:p-lg space-y-lg pb-xl">
-<!-- Page Header -->
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
-<div>
-<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Maintenance Overview</h1>
-<p class="font-body-md text-body-md text-text-muted mt-1">Monitor fleet health, manage work orders, and schedule preventative service.</p>
-</div>
-<div class="flex gap-sm">
-<button class="fc-add-workorder-btn px-md py-2 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity flex items-center gap-sm shadow-sm">
-<span class="material-symbols-outlined text-[18px]">add</span> New Work Order
-                    </button>
-</div>
-</div>
-<!-- Bento Grid: KPIs -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
-<!-- KPI 1: Service Urgency (RAG) -->
-<div class="bg-surface-container-lowest border border-border-light rounded-xl p-lg flex flex-col justify-between hover:shadow-[0_4px_12px_rgba(15,23,42,0.03)] transition-shadow">
-<div class="flex justify-between items-start mb-md">
-<h2 class="font-label-md text-label-md text-text-muted uppercase tracking-wide">Service Pipeline</h2>
-<span class="material-symbols-outlined text-text-muted">tune</span>
-</div>
-<div class="flex items-end gap-sm mb-md">
-<span class="font-display text-display text-on-surface leading-none" id="kpi-vehicles-due">0</span>
-<span class="font-body-sm text-body-sm text-text-muted pb-1">vehicles due</span>
-</div>
-<!-- RAG Bar -->
-<div class="w-full h-2 rounded-full flex overflow-hidden gap-1 mt-auto" id="rag-bar">
-<div class="bg-surface-container-high h-full w-full"></div>
-</div>
-<div class="flex justify-between mt-sm">
-<span class="font-label-sm text-label-sm text-danger-red font-semibold" id="rag-critical">0 Critical</span>
-<span class="font-label-sm text-label-sm text-warning-amber font-semibold" id="rag-soon">0 Soon</span>
-<span class="font-label-sm text-label-sm text-secondary font-semibold" id="rag-upcoming">0 Upcoming</span>
-</div>
-</div>
-<!-- KPI 2: Open Work Orders -->
-<div class="bg-surface-container-lowest border border-border-light rounded-xl p-lg flex flex-col justify-between hover:shadow-[0_4px_12px_rgba(15,23,42,0.03)] transition-shadow">
-<div class="flex justify-between items-start mb-md">
-<h2 class="font-label-md text-label-md text-text-muted uppercase tracking-wide">Open Work Orders</h2>
-<div class="p-1 rounded-md bg-surface-container text-on-surface-variant">
-<span class="material-symbols-outlined text-[18px]">assignment</span>
-</div>
-</div>
-<div class="flex flex-col">
-<div class="flex items-center gap-md">
-<span class="font-display text-display text-on-surface leading-none" id="kpi-open-orders">0</span>
-</div>
-<p class="font-body-sm text-body-sm text-text-muted mt-sm" id="kpi-open-orders-sub">Loading…</p>
-</div>
-</div>
-<!-- KPI 3: Fleet Maintenance Cost -->
-<div class="bg-surface-container-lowest border border-border-light rounded-xl p-lg flex flex-col justify-between hover:shadow-[0_4px_12px_rgba(15,23,42,0.03)] transition-shadow">
-<div class="flex justify-between items-start mb-md">
-<h2 class="font-label-md text-label-md text-text-muted uppercase tracking-wide">Maint. Spend (MTD)</h2>
-<span class="material-symbols-outlined text-text-muted">account_balance_wallet</span>
-</div>
-<div class="flex flex-col">
-<span class="font-headline-lg text-headline-lg font-bold text-on-surface tabular-nums" id="kpi-mtd-spend">₦0</span>
-<div class="mt-sm flex items-center justify-between text-body-sm font-body-sm">
-<span class="text-text-muted">vs last month</span>
-<span class="font-medium" id="kpi-mtd-change">—</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Complex Layout: Main Table + Side Panel -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
-<!-- Main Action Table: Immediate Attention -->
-<div class="lg:col-span-2 bg-surface-container-lowest border border-border-light rounded-xl overflow-hidden flex flex-col">
-<div class="p-md border-b border-border-light flex justify-between items-center bg-surface-bright">
-<h3 class="font-headline-md text-headline-md text-on-surface">Immediate Attention Required</h3>
-</div>
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="border-b border-border-light bg-background-subtle">
-<th class="py-sm px-md font-label-sm text-label-sm text-text-muted uppercase tracking-wider font-medium">Vehicle Plate</th>
-<th class="py-sm px-md font-label-sm text-label-sm text-text-muted uppercase tracking-wider font-medium">Issue</th>
-<th class="py-sm px-md font-label-sm text-label-sm text-text-muted uppercase tracking-wider font-medium">Urgency</th>
-<th class="py-sm px-md font-label-sm text-label-sm text-text-muted uppercase tracking-wider font-medium text-right">Actions</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-border-light" id="attention-tbody">
-<tr><td colspan="4" class="py-lg text-center text-text-muted font-body-sm px-md">Loading…</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-<!-- Side Panel: Recent Activity -->
-<div class="bg-surface-container-lowest border border-border-light rounded-xl flex flex-col overflow-hidden">
-<div class="p-md border-b border-border-light bg-surface-bright">
-<h3 class="font-headline-md text-headline-md text-on-surface">Recent Activity</h3>
-</div>
-<div class="p-0 flex-1 overflow-y-auto">
-<ul class="divide-y divide-border-light" id="recent-activity-list">
-<li class="p-md text-center text-text-muted font-body-sm">Loading…</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-</main>
-<!-- New Work Order Modal -->
-<div class="hidden fixed inset-0 z-[100] flex items-center justify-center p-md" id="wo-modal">
-<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" id="wo-modal-backdrop"></div>
-<div class="relative bg-surface-container-lowest rounded-xl border border-border-light shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-<div class="flex items-center justify-between p-md border-b border-border-light sticky top-0 bg-surface-container-lowest">
-<h3 class="font-headline-md text-headline-md text-on-surface">New Work Order</h3>
-<button class="text-text-muted hover:text-on-surface p-1 rounded hover:bg-surface-container-low" id="wo-modal-close" type="button">
-<span class="material-symbols-outlined">close</span>
-</button>
-</div>
-<form class="p-md flex flex-col gap-md" id="wo-form">
-<div>
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Vehicle *</label>
-<select class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm" id="wo-vehicle" required=""></select>
-</div>
-<div class="grid grid-cols-2 gap-md">
-<div>
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Service Type *</label>
-<input class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm" id="wo-service-type" placeholder="Oil Change, Brake Service…" required="" type="text"/>
-</div>
-<div>
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Urgency</label>
-<select class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm" id="wo-urgency">
-<option value="low">Low</option>
-<option selected="" value="normal">Normal</option>
-<option value="high">High</option>
-<option value="critical">Critical</option>
-</select>
-</div>
-</div>
-<div>
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Description</label>
-<textarea class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm" id="wo-description" rows="3"></textarea>
-</div>
-<div>
-<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">Scheduled Date</label>
-<input class="w-full px-3 py-2 border border-border-light rounded-lg font-body-sm" id="wo-scheduled-date" type="date"/>
-</div>
-<div class="flex justify-end gap-sm pt-sm border-t border-border-light">
-<button class="px-md py-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors" id="wo-cancel-btn" type="button">Cancel</button>
-<button class="px-md py-sm rounded-lg font-label-md text-label-md bg-primary text-on-primary hover:opacity-90 transition-opacity" id="wo-save-btn" type="submit">Create Work Order</button>
-</div>
-</form>
-</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="../js/config.js" type="module"></script><script src="../js/auth.js" type="module"></script><script src="../js/nav.js" type="module"></script><script src="../js/modules/maintenance-dashboard.js" type="module"></script></body></html>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="maintenance">
+
+  <!-- Toast Notification Host -->
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Standard Top Navigation Bar -->
+  <header class="bg-white border-b border-border-light h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-30 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <img alt="FleetCore Logo" class="h-7 w-auto object-contain" src="../assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+        <span class="font-display font-black text-lg sm:text-xl tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 sm:gap-4">
+      <button type="button" class="fc-add-workorder-btn inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white rounded-xl text-xs font-bold transition shadow-sm">
+        <i class="bi bi-plus-lg"></i>
+        <span>New Work Order</span>
+      </button>
+
+      <div class="h-5 w-[1px] bg-slate-200"></div>
+
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-brand-blue" id="header-avatar">
+          MO
+        </div>
+        <div class="hidden sm:flex flex-col text-left">
+          <span class="text-xs font-bold text-slate-800 leading-tight" id="header-user-name">Maintenance Officer</span>
+          <span class="text-[10px] font-semibold text-teal-600 uppercase tracking-wider">Fleet Workshop</span>
+        </div>
+      </div>
+
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    <!-- Desktop Sidebar -->
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 hidden md:flex flex-col h-full p-4 gap-1 z-20 shrink-0 overflow-y-auto">
+      <div class="mb-4 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Active Organization</span>
+        <span class="text-sm font-extrabold text-brand-navy truncate block" id="fc-org-name">TransCore Logistics</span>
+      </div>
+
+      <nav class="flex-1 flex flex-col gap-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Workshop</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 bg-blue-50 text-brand-blue font-bold text-xs rounded-xl transition border border-blue-100/60 shadow-sm" href="dashboard.html">
+          <i class="bi bi-grid-1x2 text-base text-blue-600"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="vehicle-health.html">
+          <i class="bi bi-heart-pulse text-base"></i>
+          <span>Vehicle Health</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="work-orders.html">
+          <i class="bi bi-tools text-base"></i>
+          <span>Work Orders</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="service-history.html">
+          <i class="bi bi-clock-history text-base"></i>
+          <span>Service History</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="schedule.html">
+          <i class="bi bi-calendar-event text-base"></i>
+          <span>Schedule</span>
+        </a>
+
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-3 mb-1">Account</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="profile.html">
+          <i class="bi bi-person-gear text-base"></i>
+          <span>Profile</span>
+        </a>
+      </nav>
+
+      <div class="mt-auto pt-3 border-t border-slate-100 flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-full bg-amber-400 text-brand-navy font-black text-xs flex items-center justify-center border-2 border-white shadow-sm" id="sidebar-initial">MO</div>
+        <div class="flex flex-col min-w-0">
+          <span class="text-xs font-bold text-slate-800 truncate" id="sidebar-name">Maintenance Officer</span>
+          <span class="text-[10px] font-semibold text-slate-400 truncate">Lead Technician</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Canvas -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 custom-scroll">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Maintenance Overview</h1>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Monitor fleet health, manage work orders, and track preventative service schedules.</p>
+        </div>
+      </div>
+
+      <!-- Bento Grid: KPIs -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+        <!-- Service Pipeline -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div class="flex justify-between items-start mb-3">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Service Pipeline</h2>
+            <i class="bi bi-sliders2 text-slate-400"></i>
+          </div>
+          <div class="flex items-baseline gap-2 mb-4">
+            <span class="font-display text-3xl sm:text-4xl font-black text-slate-900 leading-none" id="kpi-vehicles-due">0</span>
+            <span class="text-xs text-slate-400 font-semibold">vehicles due</span>
+          </div>
+          <div class="w-full h-2 rounded-full flex overflow-hidden gap-0.5 bg-slate-100" id="rag-bar">
+            <div class="bg-slate-200 h-full w-full"></div>
+          </div>
+          <div class="flex justify-between text-[11px] font-bold mt-2">
+            <span class="text-rose-600" id="rag-critical">0 Critical</span>
+            <span class="text-amber-600" id="rag-soon">0 Soon</span>
+            <span class="text-emerald-600" id="rag-upcoming">0 Normal/Low</span>
+          </div>
+        </div>
+
+        <!-- Open Work Orders -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div class="flex justify-between items-start mb-3">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Open Work Orders</h2>
+            <div class="p-1.5 rounded-lg bg-blue-50 text-brand-blue">
+              <i class="bi bi-card-checklist text-base"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="font-display text-3xl sm:text-4xl font-black text-slate-900 leading-none" id="kpi-open-orders">0</span>
+            <span class="text-xs text-slate-400 font-semibold">active orders</span>
+          </div>
+          <p class="text-xs text-slate-500 mt-3 font-medium" id="kpi-open-orders-sub">Loading orders...</p>
+        </div>
+
+        <!-- Maintenance Spend -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div class="flex justify-between items-start mb-3">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Maint. Spend (MTD)</h2>
+            <div class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600">
+              <i class="bi bi-wallet2 text-base"></i>
+            </div>
+          </div>
+          <div>
+            <span class="font-display text-2xl sm:text-3xl font-black text-slate-900 tabular-nums block" id="kpi-mtd-spend">₦0</span>
+            <div class="mt-2 flex items-center justify-between text-xs">
+              <span class="text-slate-400 font-medium">vs last month</span>
+              <span class="font-bold" id="kpi-mtd-change">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Action Table & Side Activity Feed -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+        <!-- Immediate Attention Required -->
+        <div class="lg:col-span-2 bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm flex flex-col">
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <div class="flex items-center gap-2">
+              <i class="bi bi-exclamation-octagon text-amber-500"></i>
+              <h3 class="font-display text-sm font-bold text-slate-900">Immediate Attention Required</h3>
+            </div>
+            <a href="work-orders.html" class="text-xs font-bold text-teal-600 hover:underline">View All Orders</a>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-100 bg-slate-50/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <th class="py-3 px-4">Vehicle Plate</th>
+                  <th class="py-3 px-4">Service Issue</th>
+                  <th class="py-3 px-4">Urgency</th>
+                  <th class="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-xs" id="attention-tbody">
+                <tr><td colspan="4" class="py-8 text-center text-slate-400">Loading attention queue...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl flex flex-col overflow-hidden shadow-sm">
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center gap-2 bg-slate-50/50">
+            <i class="bi bi-clock-history text-slate-500"></i>
+            <h3 class="font-display text-sm font-bold text-slate-900">Recent Service Activity</h3>
+          </div>
+          <div class="p-0 overflow-y-auto max-h-[380px] custom-scroll">
+            <ul class="divide-y divide-slate-100" id="recent-activity-list">
+              <li class="p-6 text-center text-slate-400 text-xs">Loading activity logs...</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Work Order Modal -->
+  <div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" id="wo-modal">
+    <div class="relative bg-white rounded-3xl border border-slate-100 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 animate-in fade-in duration-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4 sticky top-0 bg-white z-10">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-teal-50 text-teal-600 rounded-xl">
+            <i class="bi bi-tools text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-base font-bold text-slate-900">New Work Order</h3>
+            <p class="text-[11px] text-slate-400">Log vehicle repair or preventative inspection.</p>
+          </div>
+        </div>
+        <button class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition" id="wo-modal-close" type="button">
+          <i class="bi bi-x-lg text-sm"></i>
+        </button>
+      </div>
+
+      <form class="flex flex-col gap-3.5 text-xs" id="wo-form">
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1">Target Vehicle *</label>
+          <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:border-teal-500 focus:outline-none" id="wo-vehicle" required></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1">Service Type *</label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none" id="wo-service-type" placeholder="e.g. Brake Pad Replacement" required type="text"/>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1">Priority Urgency</label>
+            <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:border-teal-500 focus:outline-none" id="wo-urgency">
+              <option value="low">Low</option>
+              <option selected value="normal">Normal</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1">Description & Scope</label>
+          <textarea class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none" id="wo-description" rows="3" placeholder="Technical diagnostic remarks or required parts..."></textarea>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1">Scheduled Service Date</label>
+          <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none" id="wo-scheduled-date" type="date"/>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100 mt-2">
+          <button class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition" id="wo-cancel-btn" type="button">Cancel</button>
+          <button class="px-5 py-2 text-xs font-bold bg-teal-600 hover:bg-teal-700 text-white rounded-xl shadow-md shadow-teal-600/20 transition" id="wo-save-btn" type="submit">Create Work Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script src="../js/modules/maintenance-dashboard.js" type="module"></script>
+</body>
+</html>

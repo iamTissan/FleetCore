@@ -1,25 +1,36 @@
 /**
- * BEX-SETTINGS.JS — Live platform status check for Bex Admin.
- * Runs a real lightweight query to confirm the DB connection works,
- * rather than displaying a static "Connected" claim.
+ * BEX-SETTINGS.JS — Live telemetry and DB latency diagnostics for Super-Admin console.
  */
 import { supabase } from '../config.js';
 
 const el = document.getElementById('settings-db-status');
-if (el) init();
+if (el) initBexSettings();
 
-async function init() {
+export async function initBexSettings() {
   const start = performance.now();
-  const { error, count } = await supabase.from('organizations').select('id', { count: 'exact', head: true });
-  const ms = Math.round(performance.now() - start);
+  const { count, error } = await supabase.from('organizations').select('id', { count: 'exact', head: true });
+  const latency = Math.round(performance.now() - start);
 
   if (error) {
-    el.innerHTML = `<div class="flex items-center gap-xs text-error"><span class="material-symbols-outlined" style="font-size:16px;">error</span> Connection failed: ${error.message}</div>`;
+    el.innerHTML = `
+      <div class="flex items-center gap-2 text-rose-600 font-bold text-xs">
+        <i class="bi bi-x-circle-fill"></i>
+        <span>Connection dropped: ${error.message}</span>
+      </div>`;
     return;
   }
 
   el.innerHTML = `
-    <div class="flex items-center gap-xs text-secondary"><span class="material-symbols-outlined" style="font-size:16px;">check_circle</span> Connected</div>
-    <div class="flex justify-between border-t border-border-light pt-xs mt-xs"><span class="text-text-muted">Response time</span><span class="font-mono-data">${ms}ms</span></div>
-    <div class="flex justify-between"><span class="text-text-muted">Organizations</span><span class="font-mono-data">${count ?? 0}</span></div>`;
+    <div class="flex items-center gap-2 text-emerald-600 font-bold text-xs">
+      <i class="bi bi-check-circle-fill"></i>
+      <span>PostgreSQL Engine Online</span>
+    </div>
+    <div class="flex justify-between border-t border-slate-100 pt-2 mt-2 text-xs">
+      <span class="text-slate-400 font-semibold">Network Latency</span>
+      <span class="font-mono font-bold text-slate-800">${latency} ms</span>
+    </div>
+    <div class="flex justify-between text-xs">
+      <span class="text-slate-400 font-semibold">Indexed Tenants</span>
+      <span class="font-mono font-bold text-slate-800">${count ?? 0}</span>
+    </div>`;
 }

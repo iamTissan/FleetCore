@@ -1,21 +1,40 @@
 /**
- * BEX-DASHBOARD.JS — Cross-tenant platform overview for Bex Admin.
- * No fake MRR (no billing table in schema), no fake "1,248 tenants" —
- * real counts across organizations/vehicles/profiles/incidents.
+ * BEX-DASHBOARD.JS — Super-Admin platform metrics & tenant aggregate controller.
  */
-import { supabase, formatDate, escapeHtml, statusBadge } from '../config.js';
+import { supabase, getUserProfile, formatDate, escapeHtml, statusBadge } from '../config.js';
+import { performLogout } from '../auth.js';
 
 const STATUS_MAP = {
-  trial: { label: 'Trial', cls: 'bg-[#fef3c7] text-[#92400e]' },
-  active: { label: 'Active', cls: 'bg-[#ecfdf5] text-[#065f46]' },
-  suspended: { label: 'Suspended', cls: 'bg-[#fee2e2] text-[#991b1b]' },
-  cancelled: { label: 'Cancelled', cls: 'bg-surface-container-high text-on-surface-variant' },
+  trial: { label: 'Trial', cls: 'bg-amber-50 text-amber-700 border-amber-200/60' },
+  active: { label: 'Active', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200/60' },
+  suspended: { label: 'Suspended', cls: 'bg-rose-50 text-rose-700 border-rose-200/60' },
+  cancelled: { label: 'Cancelled', cls: 'bg-slate-100 text-slate-600 border-slate-200' },
 };
 
 const tbody = document.getElementById('ba-tbody');
-if (tbody) init();
+if (tbody) initBexDashboard();
 
-async function init() {
+export async function initBexDashboard() {
+  const profile = await getUserProfile();
+  if (!profile) return;
+
+  const fullName = profile.full_name || 'Bex Administrator';
+  const initials = fullName.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'BX';
+
+  const headerName = document.getElementById('header-user-name');
+  const headerAvatar = document.getElementById('header-avatar');
+  const sidebarName = document.getElementById('sidebar-name');
+  const sidebarInitial = document.getElementById('sidebar-initial');
+
+  if (headerName) headerName.textContent = fullName;
+  if (headerAvatar) headerAvatar.textContent = initials;
+  if (sidebarName) sidebarName.textContent = fullName;
+  if (sidebarInitial) sidebarInitial.textContent = initials;
+
+  await loadDashboardStats();
+}
+
+async function loadDashboardStats() {
   const [orgsRes, vehiclesRes, profilesRes, incidentsRes] = await Promise.all([
     supabase.from('organizations').select('*').order('created_at', { ascending: false }),
     supabase.from('vehicles').select('organization_id, status'),
@@ -28,7 +47,7 @@ async function init() {
   const profiles = profilesRes.data || [];
 
   document.getElementById('kpi-total-tenants').textContent = orgs.length;
-  document.getElementById('kpi-tenants-sub').textContent = `${orgs.filter(o => o.account_status === 'active').length} active`;
+  document.getElementById('kpi-tenants-sub').textContent = `${orgs.filter(o => o.account_status === 'active').length} active tenants`;
   document.getElementById('kpi-total-vehicles').textContent = vehicles.filter(v => v.status === 'active').length;
   document.getElementById('kpi-total-users').textContent = profiles.length;
   document.getElementById('kpi-open-incidents').textContent = (incidentsRes.data || []).length;
@@ -41,27 +60,34 @@ async function init() {
   document.getElementById('ba-count').textContent = `Showing ${orgs.length} tenant${orgs.length === 1 ? '' : 's'}`;
 
   if (orgs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="py-lg text-center text-text-muted font-body-sm px-md">No tenants yet. <a class="text-primary underline" href="companies.html">Provision your first company.</a></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 text-xs">No tenants provisioned yet. <a class="text-teal-600 font-bold underline" href="companies.html">Provision your first tenant.</a></td></tr>`;
     return;
   }
 
   tbody.innerHTML = orgs.map(o => {
     const initials = (o.name || '?').split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
-    return `<tr class="hover:bg-surface-container-low transition-colors group cursor-pointer" onclick="window.location.href='tenant-detail.html?id=${o.id}'">
-      <td class="py-sm px-md">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm">${escapeHtml(initials)}</div>
-          <div>
-            <div class="font-label-md text-label-md text-on-surface">${escapeHtml(o.name)}</div>
-            <div class="font-body-sm text-body-sm text-text-muted">${escapeHtml(o.subdomain)}</div>
+    return `
+      <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="window.location.href='tenant-detail.html?id=${o.id}'">
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 text-brand-navy flex items-center justify-center font-bold text-xs">
+              ${escapeHtml(initials)}
+            </div>
+            <div>
+              <div class="font-bold text-slate-900">${escapeHtml(o.name)}</div>
+              <div class="text-[11px] font-mono text-slate-400">${escapeHtml(o.company_code || o.subdomain || '—')}</div>
+            </div>
           </div>
-        </div>
-      </td>
-      <td class="py-sm px-md font-body-sm text-body-sm text-on-surface capitalize">${escapeHtml(o.plan)}</td>
-      <td class="py-sm px-md">${statusBadge(o.account_status, STATUS_MAP)}</td>
-      <td class="py-sm px-md font-mono-data text-mono-data text-on-surface text-right">${vehicleCounts[o.id] || 0}</td>
-      <td class="py-sm px-md font-mono-data text-mono-data text-on-surface text-right">${userCounts[o.id] || 0}</td>
-      <td class="py-sm px-md font-body-sm text-body-sm text-text-muted text-right">${formatDate(o.created_at)}</td>
-    </tr>`;
+        </td>
+        <td class="py-3 px-4 font-semibold text-slate-700 capitalize">${escapeHtml(o.plan || 'Standard')}</td>
+        <td class="py-3 px-4">${statusBadge(o.account_status, STATUS_MAP)}</td>
+        <td class="py-3 px-4 font-mono font-semibold text-slate-800 text-right">${vehicleCounts[o.id] || 0}</td>
+        <td class="py-3 px-4 font-mono font-semibold text-slate-800 text-right">${userCounts[o.id] || 0}</td>
+        <td class="py-3 px-4 text-slate-500 font-mono text-right">${formatDate(o.created_at)}</td>
+      </tr>`;
   }).join('');
 }
+
+document.getElementById('logout-btn')?.addEventListener('click', () => {
+  if (confirm('Sign out from Bex Admin Console?')) performLogout();
+});

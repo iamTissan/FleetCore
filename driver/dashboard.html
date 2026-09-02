@@ -1,194 +1,267 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>Driver Terminal - FleetCore</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo.png">
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Today's Assignment - FleetCore</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "secondary-fixed-dim": "#68dba9",
-                      "tertiary": "#3750a0",
-                      "secondary-fixed": "#85f8c4",
-                      "surface-variant": "#dae2fd",
-                      "on-secondary": "#ffffff",
-                      "on-surface-variant": "#434655",
-                      "text-muted": "#64748B",
-                      "surface-tint": "#0053db",
-                      "on-error-container": "#93000a",
-                      "error-container": "#ffdad6",
-                      "on-tertiary-container": "#eff0ff",
-                      "on-surface": "#131b2e",
-                      "tertiary-fixed": "#dce1ff",
-                      "surface-container-highest": "#dae2fd",
-                      "tertiary-fixed-dim": "#b6c4ff",
-                      "on-secondary-fixed-variant": "#005137",
-                      "inverse-primary": "#b4c5ff",
-                      "outline-variant": "#c3c6d7",
-                      "error": "#ba1a1a",
-                      "inverse-surface": "#283044",
-                      "secondary-container": "#82f5c1",
-                      "background-subtle": "#F8FAFC",
-                      "secondary": "#006c4a",
-                      "on-secondary-fixed": "#002114",
-                      "warning-amber": "#D97706",
-                      "primary-container": "#2563eb",
-                      "danger-red": "#DC2626",
-                      "on-tertiary": "#ffffff",
-                      "on-tertiary-fixed": "#00164e",
-                      "surface-dim": "#d2d9f4",
-                      "surface-bright": "#faf8ff",
-                      "surface": "#faf8ff",
-                      "background": "#faf8ff",
-                      "on-error": "#ffffff",
-                      "outline": "#737686",
-                      "surface-container-low": "#f2f3ff",
-                      "on-tertiary-fixed-variant": "#264191",
-                      "tertiary-container": "#5069bb",
-                      "primary-fixed": "#dbe1ff",
-                      "on-primary-fixed": "#00174b",
-                      "on-background": "#131b2e",
-                      "on-secondary-container": "#00714e",
-                      "surface-container": "#eaedff",
-                      "primary-fixed-dim": "#b4c5ff",
-                      "on-primary-container": "#eeefff",
-                      "surface-container-high": "#e2e7ff",
-                      "primary": "#004ac6",
-                      "border-light": "#E2E8F0",
-                      "on-primary": "#ffffff",
-                      "surface-container-lowest": "#ffffff",
-                      "on-primary-fixed-variant": "#003ea8",
-                      "inverse-on-surface": "#eef0ff"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.25rem",
-                      "lg": "0.5rem",
-                      "xl": "0.75rem",
-                      "full": "9999px"
-              },
-              "spacing": {
-                      "container-margin": "24px",
-                      "base": "4px",
-                      "xl": "32px",
-                      "gutter": "16px",
-                      "md": "16px",
-                      "lg": "24px",
-                      "sm": "8px",
-                      "xs": "4px"
-              },
-              "fontFamily": {
-                      "body-md": ["Inter"],
-                      "display": ["Manrope"],
-                      "headline-md": ["Manrope"],
-                      "mono-data": ["Inter"],
-                      "label-md": ["Inter"],
-                      "body-lg": ["Inter"],
-                      "headline-lg": ["Manrope"],
-                      "body-sm": ["Inter"],
-                      "label-sm": ["Inter"]
-              },
-              "fontSize": {
-                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                      "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                      "mono-data": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                      "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
-                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                      "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}]
-              }
-            }
-          }
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#0B2545', blue: '#134074', teal: '#00A896', mint: '#02C39A', subtle: '#EEF4F8' },
+            primary: "#004ac6", "border-light": "#E2E8F0"
+          },
+          fontFamily: { display: ["Manrope", "sans-serif"], sans: ["Inter", "sans-serif"] }
         }
-    </script>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
+      }
     }
+  </script>
+  <style>
+    body { min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
+    #driver-map { height: 260px; width: 100%; border-radius: 16px; z-index: 10; }
+    @media (min-width: 1024px) { #driver-map { height: 380px; } }
+    .sos-btn { position: relative; overflow: hidden; user-select: none; }
+    .sos-btn.holding { transform: scale(0.97); }
+    .hold-progress { position: absolute; bottom: 0; left: 0; height: 100%; width: 0%; background: rgba(255,255,255,0.25); pointer-events: none; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
   </style>
 </head>
-<body class="bg-background-subtle text-on-surface font-body-md min-h-screen pb-24 md:pb-0" data-fc-guard="driver">
-<!-- TopAppBar (Hidden on Mobile, shown on Desktop for context, but requirement focuses on mobile driver view) -->
-<header class="hidden md:flex justify-between items-center px-container-margin h-16 w-full bg-surface border-b border-border-light docked full-width top-0 z-50">
-<div class="flex items-center gap-4">
-<img alt="FleetCore" class="w-6 h-6 rounded-md object-cover" src="../assets/images/logo.png"/><span class="text-headline-md font-headline-md font-bold text-primary">FleetCore</span>
-</div>
-<div class="flex items-center gap-4">
-<button class="hover:bg-surface-container-low transition-colors duration-200 rounded-full p-2 text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-</button>
-<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-variant border border-border-light flex items-center justify-center">
-<img alt="Driver Profile Photo" class="w-full h-full object-cover" data-alt="Professional headshot of a commercial truck driver in a minimalist, light-mode setting. Crisp lighting, wearing a clean uniform. Engineered and precise aesthetic." src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
-</div>
-</div>
-</header>
-<!-- Mobile Header (Driver context) -->
-<div class="md:hidden flex justify-between items-center px-container-margin h-16 w-full bg-surface border-b border-border-light sticky top-0 z-40">
-<span class="text-headline-md font-headline-md font-bold text-primary">FleetCore</span>
-<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-variant border border-border-light">
-<img alt="Driver Profile Photo" class="w-full h-full object-cover" data-alt="Professional headshot of a commercial truck driver in a minimalist, light-mode setting. Crisp lighting, wearing a clean uniform. Engineered and precise aesthetic." src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
-</div>
-</div>
-<!-- Main Content Canvas -->
-<main class="px-container-margin py-lg max-w-7xl mx-auto space-y-lg">
-<!-- Welcome & Date -->
-<header>
-<h1 class="font-headline-lg text-headline-lg text-on-surface">Today's Assignment</h1>
-<p class="font-body-md text-body-md text-text-muted mt-xs" id="driver-today-date">—</p>
-</header>
-<!-- Current Trip Card -->
-<section class="bg-surface rounded-xl border border-border-light p-md md:p-lg relative overflow-hidden group" id="assignment-card">
-<div class="text-center py-lg text-text-muted">
-<span class="material-symbols-outlined block mx-auto mb-xs" style="font-size:28px;">route</span>
-<span class="font-body-sm text-body-sm">Loading your assignment…</span>
-</div>
-</section>
-<!-- Week Summary Stats -->
-<section>
-<h3 class="font-label-md text-label-md text-on-surface mb-sm">Week Summary</h3>
-<div class="grid grid-cols-2 gap-md">
-<!-- Trips Completed -->
-<div class="bg-surface rounded-lg border border-border-light p-md flex flex-col justify-between hover:shadow-[0px_4px_12px_rgba(15,23,42,0.05)] transition-shadow duration-200">
-<div class="flex items-center gap-2 mb-2">
-<div class="w-8 h-8 rounded bg-surface-container-low flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-[20px]">route</span>
-</div>
-<span class="font-label-sm text-label-sm text-text-muted">Trips Completed</span>
-</div>
-<div class="flex items-end justify-between">
-<span class="font-headline-md text-headline-md text-on-surface" id="week-trips-completed">—</span>
-</div>
-</div>
-<!-- Fuel Logged -->
-<div class="bg-surface rounded-lg border border-border-light p-md flex flex-col justify-between hover:shadow-[0px_4px_12px_rgba(15,23,42,0.05)] transition-shadow duration-200">
-<div class="flex items-center gap-2 mb-2">
-<div class="w-8 h-8 rounded bg-surface-container-low flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-[20px]">local_gas_station</span>
-</div>
-<span class="font-label-sm text-label-sm text-text-muted">Fuel Logged</span>
-</div>
-<div class="flex items-end justify-between">
-<span class="font-headline-md text-headline-md text-on-surface" id="week-fuel-litres">—</span>
-</div>
-</div>
-</div>
-</section>
-</main>
-<!-- BottomNavBar (Mobile Only) -->
-<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface border-t border-border-light shadow-lg rounded-t-xl" data-fc-sidebar="">
-<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 hover:bg-surface-container-high transition-all scale-90 active:duration-200" data-fc-nav="" href="dashboard.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_shipping</span><span class="font-label-sm text-label-sm mt-1">Trips</span></a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-all scale-90 active:duration-200" data-fc-nav="" href="fuel-log.html"><span class="material-symbols-outlined">local_gas_station</span><span class="font-label-sm text-label-sm mt-1">Fuel</span></a>
-<a class="flex flex-col items-center justify-center text-danger-red p-2 hover:bg-error-container transition-all scale-90 active:duration-200 rounded-lg" data-fc-nav="" href="incident-report.html"><span class="material-symbols-outlined">emergency</span><span class="font-label-sm text-label-sm mt-1">SOS</span></a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-all scale-90 active:duration-200" data-fc-nav="" href="profile.html"><span class="material-symbols-outlined">person</span><span class="font-label-sm text-label-sm mt-1">Profile</span></a>
-</nav>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="../js/config.js" type="module"></script><script src="../js/auth.js" type="module"></script><script src="../js/nav.js" type="module"></script><script src="../js/modules/driver-dashboard.js" type="module"></script></body></html>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="driver">
+
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Realtime Broadcast Directives Modal -->
+  <div id="broadcast-modal" class="hidden fixed inset-0 bg-slate-900/80 z-[9000] flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-brand-navy text-white rounded-3xl p-6 max-w-sm w-full text-center border-2 border-amber-400 shadow-2xl">
+      <i class="bi bi-megaphone-fill text-amber-400 text-3xl block mb-2"></i>
+      <div id="broadcast-modal-source" class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-1">System Directive</div>
+      <p id="broadcast-modal-msg" class="text-sm font-bold leading-relaxed mb-4">Route instructions incoming...</p>
+      <div class="w-full bg-white/20 h-1.5 rounded-full overflow-hidden mb-3">
+        <div class="bg-amber-400 h-full w-full transition-all duration-1000" id="broadcast-timer-fill"></div>
+      </div>
+      <p class="text-[11px] text-slate-400 mb-4">Auto-dismissing in <span id="broadcast-countdown">15</span>s</p>
+      <button class="w-full py-2.5 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold text-xs rounded-xl transition" onclick="dismissBroadcastModal()">
+        Acknowledge
+      </button>
+    </div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-white border-b border-border-light h-14 sm:h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-30 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <img alt="FleetCore Logo" class="h-6 sm:h-7 w-auto object-contain" src="../assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+        <span class="font-display font-black text-base sm:text-lg tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-brand-blue" id="header-avatar">
+          TD
+        </div>
+        <div class="hidden sm:flex flex-col text-left">
+          <span class="text-xs font-bold text-slate-800 leading-tight" id="header-driver-name">Tissan Dave</span>
+          <span class="text-[10px] font-semibold text-teal-600 uppercase tracking-wider" id="header-vehicle-badge">STANDBY POOL</span>
+        </div>
+      </div>
+
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-base sm:text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    
+    <!-- Desktop Sidebar -->
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 hidden lg:flex flex-col h-full p-4 gap-1 z-20 shrink-0 overflow-y-auto">
+      
+      <!-- Organization Title Pill -->
+      <div class="mb-4 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Active Organization</span>
+        <span class="text-sm font-extrabold text-brand-navy truncate block" id="fc-org-name">TransCore Logistics</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 flex flex-col gap-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Operations</div>
+        
+        <a class="flex items-center gap-3 px-3.5 py-2.5 bg-blue-50 text-brand-blue font-bold text-xs rounded-xl transition border border-blue-100/60 shadow-sm" href="dashboard.html">
+          <i class="bi bi-geo-alt-fill text-base text-blue-600"></i>
+          <span>Live Drive</span>
+        </a>
+
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="checklist.html">
+          <i class="bi bi-clipboard-check-fill text-base"></i>
+          <span>Pre-Trip Inspection</span>
+        </a>
+
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="schedule.html">
+          <i class="bi bi-calendar-check-fill text-base"></i>
+          <span>Route Manifest</span>
+        </a>
+
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-3 mb-1">System</div>
+
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="stats.html">
+          <i class="bi bi-bar-chart-fill text-base"></i>
+          <span>Performance Stats</span>
+        </a>
+
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="profile.html">
+          <i class="bi bi-person-gear text-base"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Driver Info Footer -->
+      <div class="mt-auto pt-3 border-t border-slate-100 flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-full bg-amber-400 text-brand-navy font-black text-xs flex items-center justify-center border-2 border-white shadow-sm" id="sidebar-initial">TD</div>
+        <div class="flex flex-col min-w-0">
+          <span class="text-xs font-bold text-slate-800 truncate" id="sidebar-name">Tissan Dave</span>
+          <span class="text-[10px] font-semibold text-slate-400 truncate" id="sidebar-bus">Assigned Unit: None</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Canvas -->
+    <main class="flex-1 overflow-y-auto p-3 sm:p-5 lg:p-6 pb-28 lg:pb-8 w-full custom-scroll">
+      <div class="max-w-4xl mx-auto space-y-4">
+        
+        <!-- Shift Greeter & GPS Telemetry Status Strip -->
+        <div class="flex justify-between items-center bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+          <div>
+            <h1 class="font-display text-base sm:text-lg font-black text-slate-900 tracking-tight" id="driver-greeting">Hello, Tissan</h1>
+            <p class="text-[11px] text-slate-500 font-medium mt-0.5" id="driver-today-date">—</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200/60" id="gps-status-pill">
+              <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
+              <span id="gps-status">READY</span>
+            </span>
+            <button type="button" onclick="initDashboard()" class="p-1.5 text-slate-500 bg-slate-100 hover:bg-slate-200 rounded-lg transition" title="Refresh">
+              <i class="bi bi-arrow-clockwise text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Telematics KPI Strip -->
+        <div class="grid grid-cols-3 gap-2 sm:gap-3">
+          <div class="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 shadow-sm text-center">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Velocity</span>
+            <span class="font-display text-base sm:text-lg font-black text-slate-900 leading-tight mt-0.5" id="speed-val">0 <small class="text-[10px] font-normal text-slate-500">km/h</small></span>
+          </div>
+
+          <div class="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 shadow-sm text-center">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Active Time</span>
+            <span class="font-mono text-base sm:text-lg font-bold text-slate-900 leading-tight mt-0.5" id="time-val">00:00</span>
+          </div>
+
+          <div class="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 shadow-sm text-center flex flex-col justify-center">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Assigned Unit</span>
+            <span class="font-mono text-xs sm:text-sm font-black text-teal-700 truncate leading-tight mt-0.5" id="assigned-plate-card">Unassigned</span>
+          </div>
+        </div>
+
+        <!-- Live Telematics Radar Map -->
+        <section class="bg-white rounded-2xl border border-slate-200/80 p-3 shadow-sm space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <div class="flex items-center gap-1.5">
+              <i class="bi bi-geo-alt-fill text-teal-600"></i>
+              <h2 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Live Position Tracking</h2>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400 font-mono" id="coords-badge">Searching GPS...</span>
+          </div>
+          <div id="driver-map"></div>
+        </section>
+
+        <!-- Trip Action Controls (Hold SOS Buttons + Start/End Trip) -->
+        <section class="bg-white border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">In-Cab Safety & Dispatch</h3>
+            <span class="text-[10px] font-bold text-slate-400">TOUCH & HOLD 5s</span>
+          </div>
+
+          <!-- 5-Second Hold SOS Buttons -->
+          <div class="grid grid-cols-2 gap-2 sm:gap-3">
+            <button id="sos-btn" class="sos-btn w-full py-3.5 sm:py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 transition active:scale-95">
+              <div class="hold-progress" id="sos-progress"></div>
+              <i class="bi bi-exclamation-octagon-fill text-base"></i>
+              <span id="sos-label">HOLD · ROAD SOS</span>
+            </button>
+
+            <button id="health-sos-btn" class="sos-btn w-full py-3.5 sm:py-4 bg-purple-700 hover:bg-purple-800 text-white rounded-2xl font-black text-[11px] sm:text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 transition active:scale-95">
+              <div class="hold-progress" id="health-sos-progress"></div>
+              <i class="bi bi-heart-pulse-fill text-base"></i>
+              <span id="health-sos-label">HOLD · HEALTH SOS</span>
+            </button>
+          </div>
+
+          <!-- Trip Start / Deployment Button -->
+          <div class="pt-1">
+            <button id="start-trip-btn" class="w-full py-3.5 sm:py-4 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-wider shadow-md shadow-teal-600/20 flex items-center justify-center gap-2 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+              <i class="bi bi-play-circle-fill text-base"></i>
+              <span id="start-btn-label">Start Trip (Inspection Required)</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Quick Navigation Tiles -->
+        <section class="grid grid-cols-3 gap-2 sm:gap-3">
+          <a href="checklist.html" class="p-3 bg-white hover:bg-slate-50 border border-slate-200/80 rounded-2xl flex flex-col items-center justify-center gap-1 text-center shadow-sm transition">
+            <i class="bi bi-clipboard-check-fill text-teal-600 text-lg sm:text-xl"></i>
+            <span class="text-[11px] font-bold text-slate-800">Pre-Trip</span>
+          </a>
+          <a href="schedule.html" class="p-3 bg-white hover:bg-slate-50 border border-slate-200/80 rounded-2xl flex flex-col items-center justify-center gap-1 text-center shadow-sm transition">
+            <i class="bi bi-pin-map-fill text-blue-600 text-lg sm:text-xl"></i>
+            <span class="text-[11px] font-bold text-slate-800">Manifest</span>
+          </a>
+          <a href="stats.html" class="p-3 bg-white hover:bg-slate-50 border border-slate-200/80 rounded-2xl flex flex-col items-center justify-center gap-1 text-center shadow-sm transition">
+            <i class="bi bi-bar-chart-fill text-purple-600 text-lg sm:text-xl"></i>
+            <span class="text-[11px] font-bold text-slate-800">Stats</span>
+          </a>
+        </section>
+
+        <!-- Fleet Directives Feed -->
+        <section class="bg-white border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 shadow-sm space-y-2">
+          <div class="flex items-center gap-2">
+            <i class="bi bi-megaphone-fill text-amber-500"></i>
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Fleet Directives</h3>
+          </div>
+          <div class="space-y-2 max-h-36 overflow-y-auto text-xs" id="broadcast-history-feed">
+            <div class="text-center py-4 text-slate-400 text-xs">No active directives received.</div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-slate-200/80 shadow-lg px-2 py-2 flex justify-around items-center lg:hidden">
+    <a class="flex flex-col items-center justify-center text-teal-700 font-bold text-[10px] py-1 px-3 rounded-xl bg-teal-50 transition" href="dashboard.html"><i class="bi bi-geo-alt-fill text-lg mb-0.5"></i><span>Drive</span></a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="schedule.html"><i class="bi bi-calendar-check-fill text-lg mb-0.5"></i><span>Schedule</span></a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="stats.html"><i class="bi bi-bar-chart-fill text-lg mb-0.5"></i><span>Stats</span></a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="profile.html"><i class="bi bi-person-fill text-lg mb-0.5"></i><span>Profile</span></a>
+  </nav>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script src="../js/modules/driver-dashboard.js" type="module"></script>
+</body>
+</html>

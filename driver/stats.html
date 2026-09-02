@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>Driver Safety & Performance Stats - FleetCore</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo.png">
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#0B2545', blue: '#134074', teal: '#00A896', mint: '#02C39A', subtle: '#EEF4F8' },
+            primary: "#004ac6", "border-light": "#E2E8F0"
+          },
+          fontFamily: { display: ["Manrope", "sans-serif"], sans: ["Inter", "sans-serif"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="driver">
+
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Standard Top Navigation Bar -->
+  <header class="bg-white border-b border-border-light h-14 sm:h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-40 shrink-0">
+    <div class="flex items-center gap-3">
+      <a href="dashboard.html" class="p-1.5 rounded-xl bg-slate-100 text-slate-600 hover:text-slate-900 transition flex items-center justify-center">
+        <i class="bi bi-chevron-left text-base"></i>
+      </a>
+      <div class="flex items-center gap-2">
+        <img alt="FleetCore Logo" class="h-6 sm:h-7 w-auto object-contain" src="../assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+        <span class="font-display font-black text-base sm:text-lg tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-brand-blue" id="header-avatar">
+          TD
+        </div>
+        <div class="hidden sm:flex flex-col text-left">
+          <span class="text-xs font-bold text-slate-800 leading-tight" id="header-driver-name">Tissan Dave</span>
+          <span class="text-[10px] font-semibold text-teal-600 uppercase tracking-wider">Performance Audit</span>
+        </div>
+      </div>
+
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-base sm:text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    <!-- Desktop Sidebar -->
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 hidden lg:flex flex-col h-full p-4 gap-1 z-20 shrink-0 overflow-y-auto">
+      <div class="mb-4 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Active Organization</span>
+        <span class="text-sm font-extrabold text-brand-navy truncate block" id="fc-org-name">TransCore Logistics</span>
+      </div>
+
+      <nav class="flex-1 flex flex-col gap-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Operations</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dashboard.html"><i class="bi bi-geo-alt-fill text-base"></i><span>Live Drive</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="checklist.html"><i class="bi bi-clipboard-check-fill text-base"></i><span>Pre-Trip Inspection</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="schedule.html"><i class="bi bi-calendar-check-fill text-base"></i><span>Route Manifest</span></a>
+        
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-3 mb-1">System</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 bg-blue-50 text-brand-blue font-bold text-xs rounded-xl transition border border-blue-100/60 shadow-sm" href="stats.html"><i class="bi bi-bar-chart-fill text-base text-blue-600"></i><span>Performance Stats</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="profile.html"><i class="bi bi-person-gear text-base"></i><span>Settings</span></a>
+      </nav>
+
+      <div class="mt-auto pt-3 border-t border-slate-100 flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-full bg-amber-400 text-brand-navy font-black text-xs flex items-center justify-center border-2 border-white shadow-sm" id="sidebar-initial">TD</div>
+        <div class="flex flex-col min-w-0">
+          <span class="text-xs font-bold text-slate-800 truncate" id="sidebar-name">Tissan Dave</span>
+          <span class="text-[10px] font-semibold text-slate-400 truncate" id="sidebar-bus">Assigned Unit: None</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Canvas -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 pb-28 lg:pb-8 w-full custom-scroll">
+      <div class="max-w-4xl mx-auto space-y-4">
+        
+        <!-- Safety Score Tile -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-sm text-center">
+          <div class="w-32 h-32 rounded-full mx-auto flex items-center justify-center relative border-8 border-teal-500 mb-3 shadow-inner">
+            <div class="text-center">
+              <span class="font-display text-3xl font-black text-slate-900" id="safety-score">100%</span>
+              <span class="text-[9px] uppercase font-bold text-slate-400 block tracking-wider">Safety Score</span>
+            </div>
+          </div>
+          <h2 class="text-base font-bold text-slate-900">Excellence in Transit</h2>
+          <p class="text-xs text-slate-500 mt-0.5">High safety standard maintained across recent routes.</p>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4">
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Completed Deployments</span>
+            <span class="font-display text-2xl sm:text-3xl font-black text-slate-900 mt-1 block" id="total-trips-count">0</span>
+          </div>
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">SOS / Incident Alerts</span>
+            <span class="font-display text-2xl sm:text-3xl font-black text-rose-600 mt-1 block" id="incident-count">0</span>
+          </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Recent Completed Routes</h3>
+            <span class="text-[10px] font-bold text-slate-400">AUDIT TRAIL</span>
+          </div>
+          <div class="space-y-2.5" id="recent-activity-list">
+            <div class="text-center py-8 text-slate-400 text-xs">Loading activity logs...</div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-slate-200/80 shadow-lg px-2 py-2 flex justify-around items-center lg:hidden">
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="dashboard.html"><i class="bi bi-geo-alt-fill text-lg mb-0.5"></i><span>Drive</span></a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="schedule.html"><i class="bi bi-calendar-check-fill text-lg mb-0.5"></i><span>Schedule</span></a>
+    <a class="flex flex-col items-center justify-center text-teal-700 font-bold text-[10px] py-1 px-3 rounded-xl bg-teal-50 transition" href="stats.html"><i class="bi bi-bar-chart-fill text-lg mb-0.5"></i><span>Stats</span></a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="profile.html"><i class="bi bi-person-fill text-lg mb-0.5"></i><span>Profile</span></a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script type="module">
+    import { supabase, getUserProfile, formatDate } from '../js/config.js';
+    import { performLogout } from '../js/auth.js';
+
+    async function initStats() {
+      const profile = await getUserProfile();
+      if (!profile) return;
+
+      const name = profile.full_name || 'Tissan Dave';
+      document.getElementById('header-driver-name').textContent = name;
+      document.getElementById('sidebar-name').textContent = name;
+      const initials = name.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'TD';
+      document.getElementById('header-avatar').textContent = initials;
+      document.getElementById('sidebar-initial').textContent = initials;
+
+      // Organization Name
+      let orgName = 'TransCore Logistics';
+      if (profile.organization_id) {
+        const { data: org } = await supabase.from('organizations').select('name').eq('id', profile.organization_id).maybeSingle();
+        if (org?.name) orgName = org.name;
+      }
+      document.querySelectorAll('#fc-org-name').forEach(el => el.textContent = orgName);
+
+      // Assigned Vehicle
+      const { data: vehicle } = await supabase.from('vehicles').select('plate_number').eq('assigned_driver_id', profile.id).maybeSingle();
+      document.getElementById('sidebar-bus').textContent = vehicle?.plate_number ? `BUS ${vehicle.plate_number}` : 'No bus assigned';
+
+      const [tripsRes, incRes] = await Promise.all([
+        supabase.from('trips').select('id, origin, destination, completed_at').eq('driver_id', profile.id).eq('status', 'completed').order('completed_at', { ascending: false }),
+        supabase.from('incidents').select('id, incident_type, created_at').eq('driver_id', profile.id)
+      ]);
+
+      const trips = tripsRes.data || [];
+      const incidents = incRes.data || [];
+
+      document.getElementById('total-trips-count').textContent = trips.length;
+      document.getElementById('incident-count').textContent = incidents.length;
+
+      const score = Math.max(0, 100 - (incidents.length * 15));
+      document.getElementById('safety-score').textContent = `${score}%`;
+
+      const list = document.getElementById('recent-activity-list');
+      if (trips.length === 0 && incidents.length === 0) {
+        list.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs">No recorded logs yet.</div>`;
+        return;
+      }
+
+      list.innerHTML = trips.slice(0, 6).map(t => `
+        <div class="p-3.5 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-slate-800 block">${t.origin} → ${t.destination}</span>
+            <span class="text-[10px] text-slate-400">${t.completed_at ? formatDate(t.completed_at) : 'Completed'}</span>
+          </div>
+          <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-0.5 rounded-md">Delivered</span>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+      if (confirm('Sign out of Driver Terminal?')) performLogout();
+    });
+
+    initStats();
+  </script>
+</body>
+</html>

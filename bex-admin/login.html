@@ -1,76 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta name="robots" content="noindex, nofollow"/>
-<title>FleetCore - Restricted Access</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="../assets/css/auth-theme.css" rel="stylesheet"/>
-<style>
-body{font-family:'Inter',sans-serif;}
-.font-display{font-family:'Manrope',sans-serif;}
-.font-mono{font-family:'JetBrains Mono',monospace;}
-.fc-auth-bg.fc-bex { background: radial-gradient(120% 120% at 50% 0%, #2a0f14 0%, #150a0d 45%, #0a0607 100%); }
-.fc-glow-bex-1 { background:#7f1d1d; }
-.fc-glow-bex-2 { background:#78350f; }
-</style>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <title>FleetCore - Restricted Platform Root</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo.png">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  
+  <!-- Bootstrap Icons Standard -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-display { font-family: 'Manrope', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    .bex-login-bg {
+      background: linear-gradient(rgba(15, 23, 42, 0.92), rgba(11, 37, 69, 0.94)),
+                  url('https://images.unsplash.com/photo-1772440223098-cc23f6f01209?q=80&w=1200&auto=format&fit=crop') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .bex-card {
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .bex-input {
+      background-color: rgba(255, 255, 255, 0.06) !important;
+      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      color: #ffffff !important;
+      transition: all 0.2s ease;
+    }
+    .bex-input:focus {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+      border-color: #f43f5e !important;
+      box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.3) !important;
+      outline: none !important;
+    }
+  </style>
 </head>
-<body class="fc-auth-bg fc-bex">
+<body class="bex-login-bg min-h-screen flex flex-col justify-center items-center p-4 antialiased">
 
-<div class="fc-glow fc-glow-1 fc-glow-bex-1"></div>
-<div class="fc-glow fc-glow-2 fc-glow-bex-2"></div>
-<div class="fc-road" style="background-image:repeating-linear-gradient(115deg, rgba(248,113,113,0.06) 0px, rgba(248,113,113,0.06) 2px, transparent 2px, transparent 90px);"></div>
+  <div class="w-full max-w-sm my-auto relative z-10">
 
-<div class="w-full max-w-sm">
-
-  <div class="flex flex-col items-center mb-6 fc-rise">
-    <div class="w-14 h-14 rounded-2xl bg-white/5 border border-red-500/30 flex items-center justify-center mb-3">
-      <span class="material-symbols-outlined text-red-400" style="font-size:26px;">shield_lock</span>
-    </div>
-    <p class="font-mono text-[11px] tracking-[0.25em] text-red-300/70 uppercase">Bex Admin // Platform Access</p>
-  </div>
-
-  <div class="fc-glass p-8" style="border-color:rgba(248,113,113,0.18);">
-    <div class="text-center mb-6 fc-rise" style="animation-delay:.05s">
-      <h1 class="font-display text-xl font-extrabold text-white mb-1">Restricted Access</h1>
-      <p class="text-[12.5px] text-white/40 font-mono">Cross-tenant credentials required. All access is logged.</p>
+    <div class="flex flex-col items-center mb-5">
+      <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mb-2 shadow-lg">
+        <i class="bi bi-shield-lock-fill text-rose-400 text-xl"></i>
+      </div>
+      <p class="font-mono text-[11px] tracking-[0.25em] text-rose-400 uppercase font-bold">Bex Admin // Platform Root</p>
     </div>
 
-    <form class="flex flex-col gap-4 fc-rise" id="login-form" style="animation-delay:.1s">
-      <div>
-        <label class="block text-[12px] font-semibold text-white/60 mb-1.5 uppercase tracking-wide font-mono">Admin Email</label>
-        <div class="fc-input-glow">
-          <input autocomplete="email" id="email" name="email" placeholder="you@bexlabs.com" required type="email"/>
-        </div>
+    <div class="bex-card rounded-3xl p-6 sm:p-8">
+      <div class="text-center mb-5">
+        <h1 class="font-display text-xl font-extrabold text-white tracking-tight">Restricted Access</h1>
+        <p class="text-xs text-white/50 font-mono mt-0.5">Cross-tenant credentials required.</p>
       </div>
-      <div>
-        <label class="block text-[12px] font-semibold text-white/60 mb-1.5 uppercase tracking-wide font-mono">Password</label>
-        <div class="fc-input-glow">
-          <input autocomplete="current-password" id="password" name="password" placeholder="••••••••" required type="password"/>
-        </div>
+
+      <div class="hidden mb-3.5 p-3 rounded-xl border text-xs flex items-center gap-2.5 transition" id="bex-alert">
+        <i class="bi bi-exclamation-triangle-fill text-rose-400 shrink-0"></i>
+        <span id="bex-alert-msg" class="text-rose-300"></span>
       </div>
-      <div>
-        <label class="block text-[12px] font-semibold text-white/60 mb-1.5 uppercase tracking-wide font-mono">TOTP Code</label>
-        <div class="fc-input-glow">
-          <input autocomplete="one-time-code" id="totp" inputmode="numeric" maxlength="6" name="totp" placeholder="000000" style="letter-spacing:0.4em;text-align:center;" type="text"/>
+
+      <form class="flex flex-col gap-3.5" id="bex-login-form">
+        <div>
+          <label class="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1 font-mono">Root Email</label>
+          <div class="relative flex items-center">
+            <i class="bi bi-envelope text-white/60 absolute left-3.5 z-20 text-sm"></i>
+            <input autocomplete="email" id="email" name="email" placeholder="admin@bexlabs.com" required type="email" class="bex-input w-full pl-10 pr-3.5 py-2.5 rounded-xl text-xs font-semibold"/>
+          </div>
         </div>
-        <p class="text-[11px] text-white/25 mt-1.5 font-mono">From your authenticator app. Contact platform ops if unenrolled.</p>
-      </div>
-      <button class="fc-submit mt-1" id="login-btn" style="background:linear-gradient(135deg,#7f1d1d,#78350f);box-shadow:0 8px 24px rgba(127,29,29,0.35);" type="submit">Authenticate</button>
-    </form>
+
+        <div>
+          <label class="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1 font-mono">Password</label>
+          <div class="relative flex items-center">
+            <i class="bi bi-key text-white/60 absolute left-3.5 z-20 text-sm"></i>
+            <input autocomplete="current-password" id="password" name="password" placeholder="••••••••" required type="password" class="bex-input w-full pl-10 pr-3.5 py-2.5 rounded-xl text-xs font-semibold"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-white/80 uppercase tracking-wider mb-1 font-mono">TOTP Authenticator Token</label>
+          <input autocomplete="one-time-code" id="totp" inputmode="numeric" maxlength="6" name="totp" placeholder="000000" class="bex-input w-full py-2 rounded-xl text-center font-mono font-bold tracking-[0.4em] text-sm"/>
+          <p class="text-[10px] text-white/40 mt-1 font-mono text-center">Leave blank if TOTP is unenrolled.</p>
+        </div>
+
+        <button class="w-full py-3 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white font-bold text-xs rounded-xl shadow-lg shadow-rose-600/30 transition mt-1" id="bex-btn" type="submit">
+          Authenticate Platform Root
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-[11px] text-white/40 mt-5 font-mono">
+      <a class="hover:text-white transition" href="../index.html">← Return to Standard Portal</a>
+    </p>
+
   </div>
 
-  <p class="text-center text-[11px] text-white/25 mt-6 font-mono">
-    <a class="hover:text-white/50" href="../index.html">← Back to standard login</a>
-  </p>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script type="module" src="../js/config.js"></script>
-<script type="module" src="../js/auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script src="../js/modules/bex-login.js" type="module"></script>
 </body>
 </html>

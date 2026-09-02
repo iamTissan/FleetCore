@@ -1,197 +1,431 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>FleetCore - Crisis Center & SOS Telematics</title>
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
 
-<html class="h-full" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>SOS &amp; Incident Management - FleetCore</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "surface-container": "#eaedff",
-                        "inverse-primary": "#b4c5ff",
-                        "on-secondary-fixed": "#002114",
-                        "on-primary": "#ffffff",
-                        "tertiary-fixed-dim": "#b6c4ff",
-                        "on-tertiary-container": "#eff0ff",
-                        "surface-container-lowest": "#ffffff",
-                        "on-tertiary": "#ffffff",
-                        "on-surface": "#131b2e",
-                        "surface-container-high": "#e2e7ff",
-                        "on-surface-variant": "#434655",
-                        "error": "#ba1a1a",
-                        "primary-fixed-dim": "#b4c5ff",
-                        "warning-amber": "#D97706",
-                        "secondary": "#006c4a",
-                        "error-container": "#ffdad6",
-                        "on-secondary-container": "#00714e",
-                        "on-primary-container": "#eeefff",
-                        "on-tertiary-fixed": "#00164e",
-                        "on-error-container": "#93000a",
-                        "on-secondary": "#ffffff",
-                        "surface-container-highest": "#dae2fd",
-                        "danger-red": "#DC2626",
-                        "primary": "#004ac6",
-                        "secondary-fixed-dim": "#68dba9",
-                        "primary-fixed": "#dbe1ff",
-                        "surface-bright": "#faf8ff",
-                        "on-primary-fixed-variant": "#003ea8",
-                        "outline": "#737686",
-                        "surface-container-low": "#f2f3ff",
-                        "surface-dim": "#d2d9f4",
-                        "secondary-fixed": "#85f8c4",
-                        "background-subtle": "#F8FAFC",
-                        "tertiary": "#3750a0",
-                        "outline-variant": "#c3c6d7",
-                        "text-muted": "#64748B",
-                        "border-light": "#E2E8F0",
-                        "background": "#faf8ff",
-                        "surface-variant": "#dae2fd",
-                        "secondary-container": "#82f5c1",
-                        "inverse-on-surface": "#eef0ff",
-                        "tertiary-container": "#5069bb",
-                        "on-secondary-fixed-variant": "#005137",
-                        "on-error": "#ffffff",
-                        "surface": "#faf8ff",
-                        "primary-container": "#2563eb",
-                        "on-primary-fixed": "#00174b",
-                        "surface-tint": "#0053db",
-                        "on-background": "#131b2e",
-                        "tertiary-fixed": "#dce1ff",
-                        "on-tertiary-fixed-variant": "#264191",
-                        "inverse-surface": "#283044"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "sm": "8px",
-                        "md": "16px",
-                        "xs": "4px",
-                        "gutter": "16px",
-                        "container-margin": "24px",
-                        "lg": "24px",
-                        "xl": "32px",
-                        "base": "4px"
-                    },
-                    "fontFamily": {
-                        "body-sm": ["Inter"],
-                        "headline-lg": ["Manrope"],
-                        "label-sm": ["Inter"],
-                        "display": ["Manrope"],
-                        "headline-md": ["Manrope"],
-                        "body-md": ["Inter"],
-                        "mono-data": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "label-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
-                        "display": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "mono-data": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
-                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
-                    }
-                }
-            }
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#0B2545',
+              blue: '#134074',
+              teal: '#00A896',
+              mint: '#02C39A',
+              subtle: '#EEF4F8'
+            },
+            primary: "#004ac6",
+            "border-light": "#E2E8F0"
+          },
+          fontFamily: {
+            display: ["Manrope", "sans-serif"],
+            sans: ["Inter", "sans-serif"]
+          }
         }
-    </script>
+      }
+    }
+  </script>
+  <style>
+    .leaflet-pane { z-index: 10 !important; }
+    .leaflet-top, .leaflet-bottom { z-index: 20 !important; }
+    #crisis-radar-map { width: 100%; height: 100%; min-height: 480px; }
+    
+    .pulse-danger-beacon {
+      width: 22px;
+      height: 22px;
+      background: rgba(220, 38, 38, 0.9);
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+      animation: pulse-red-anim 1.5s infinite;
+    }
+    .pulse-health-beacon {
+      width: 22px;
+      height: 22px;
+      background: rgba(147, 51, 234, 0.95);
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.7);
+      animation: pulse-purple-anim 1.5s infinite;
+    }
+    .pulse-amber-beacon {
+      width: 22px;
+      height: 22px;
+      background: rgba(217, 119, 6, 0.95);
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.7);
+      animation: pulse-amber-anim 1.5s infinite;
+    }
+    @keyframes pulse-red-anim {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.8); }
+      70% { transform: scale(1); box-shadow: 0 0 0 16px rgba(220, 38, 38, 0); }
+      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+    @keyframes pulse-purple-anim {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.8); }
+      70% { transform: scale(1); box-shadow: 0 0 0 16px rgba(147, 51, 234, 0); }
+      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); }
+    }
+    @keyframes pulse-amber-anim {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.8); }
+      70% { transform: scale(1); box-shadow: 0 0 0 16px rgba(217, 119, 6, 0); }
+      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+    }
+  </style>
 </head>
-<body class="h-full bg-background-subtle text-on-surface antialiased flex flex-col md:flex-row overflow-hidden" data-fc-guard="admin"><aside class="bg-surface-container-lowest text-primary font-body-md docked left-0 h-screen w-64 border-r border-border-light flat no-shadows flex flex-col h-full p-md gap-sm z-40 overflow-y-auto hidden md:flex transition-all duration-200 ease-in-out shrink-0" data-fc-sidebar="">
-<div class="mb-lg px-sm">
-<div class="flex items-center gap-sm mb-xs">
-<img alt="Organization Logo" class="w-8 h-8 rounded-md object-cover" src="../assets/images/logo.png"/>
-<span class="font-display text-headline-sm font-black text-primary">FleetCore</span>
-</div>
-<div class="font-label-sm text-label-sm text-text-muted" id="fc-org-name">Your Company</div>
-</div>
-<nav class="flex-1 flex flex-col gap-xs">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="dashboard.html"><span class="material-symbols-outlined">dashboard</span><span class="font-label-md text-label-md">Dashboard</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="vehicles.html"><span class="material-symbols-outlined">local_shipping</span><span class="font-label-md text-label-md">Vehicles</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="drivers.html"><span class="material-symbols-outlined">person</span><span class="font-label-md text-label-md">Drivers</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="dispatch.html"><span class="material-symbols-outlined">route</span><span class="font-label-md text-label-md">Trips</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="maintenance.html"><span class="material-symbols-outlined">build</span><span class="font-label-md text-label-md">Maintenance</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="finance.html"><span class="material-symbols-outlined">payments</span><span class="font-label-md text-label-md">Finance</span></a>
-<a class="flex items-center gap-sm px-md py-sm bg-primary-container text-on-primary-container rounded-lg font-semibold transition-all duration-200 ease-in-out" data-fc-nav="" href="incidents.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">emergency</span><span class="font-label-md text-label-md">Incidents</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="analytics.html"><span class="material-symbols-outlined">insights</span><span class="font-label-md text-label-md">Analytics</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="team.html"><span class="material-symbols-outlined">group</span><span class="font-label-md text-label-md">Team</span></a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" data-fc-nav="" href="settings.html"><span class="material-symbols-outlined">settings</span><span class="font-label-md text-label-md">Settings</span></a>
-</nav>
-<div class="mt-auto flex flex-col gap-sm pt-md border-t border-border-light">
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="mailto:support@fleetcore.app">
-<span class="material-symbols-outlined">contact_support</span>
-<span class="font-label-md text-label-md">Support</span>
-</a>
-<a class="flex items-center gap-sm px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all duration-200 ease-in-out" href="#" id="logout-link">
-<span class="material-symbols-outlined">logout</span>
-<span class="font-label-md text-label-md">Log Out</span>
-</a>
-</div>
-</aside>
-<!-- Mobile TopNav (Hidden on Desktop) -->
-<header class="md:hidden flex justify-between items-center h-16 px-container-margin w-full bg-surface-container-lowest border-b border-border-light sticky z-40 top-0">
-<div class="font-headline-md text-headline-md font-black text-primary">FleetCore</div>
-<div class="flex items-center gap-md">
-<button class="text-on-surface-variant hover:text-on-surface transition-colors duration-150">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-</button>
-<button class="text-on-surface-variant hover:text-on-surface transition-colors duration-150">
-<span class="material-symbols-outlined" data-icon="history">history</span>
-</button>
-<img alt="User Profile" class="w-8 h-8 rounded-full object-cover" data-alt="A small, professional headshot of an African fleet manager in his 40s wearing a crisp white shirt, softly lit in a modern office setting. Light mode aesthetic, minimalist corporate vibe, high resolution." src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
-</div>
-</header>
-<!-- Main Content Canvas -->
-<main class="flex-1 flex flex-col h-full overflow-hidden relative z-0">
-<!-- Top App Bar (Desktop Context Header) -->
-<header class="hidden md:flex justify-between items-center h-16 px-container-margin w-full bg-surface-container-lowest border-b border-border-light sticky top-0 z-20">
-<div class="flex items-center gap-md">
-<span class="font-headline-md text-headline-md text-on-surface">Active Incidents</span>
-<span class="bg-error-container text-on-error-container font-label-sm text-label-sm px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1" id="incidents-critical-badge">
-<span class="material-symbols-outlined text-[14px]" data-icon="emergency">emergency</span> <span id="incidents-critical-count">0</span> Critical
-                </span>
-</div>
-<div class="flex items-center gap-lg">
-<div class="relative">
-<span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-text-muted text-[18px]" data-icon="search">search</span>
-<input class="pl-8 pr-4 py-1.5 bg-background-subtle border border-border-light rounded-md text-body-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all w-64" id="incidents-search" placeholder="Search incidents (plate, driver)..." type="text"/>
-</div>
-</div>
-</header>
-<!-- Dynamic Content Area -->
-<div class="flex-1 overflow-y-auto p-container-margin flex flex-col lg:flex-row gap-lg">
-<!-- Left Column: Incident Feed -->
-<div class="w-full lg:w-5/12 xl:w-1/3 flex flex-col gap-md">
-<div class="flex justify-between items-end mb-xs">
-<h2 class="font-label-md text-label-md text-text-muted uppercase tracking-wider">Triage Queue</h2>
-<span class="font-label-sm text-label-sm text-text-muted" id="incidents-updated-label">Loading…</span>
-</div>
-<div class="flex flex-col gap-md" id="incidents-queue">
-<div class="p-md text-center text-text-muted font-body-sm">Loading incidents…</div>
-</div>
-</div>
-<!-- Right Column: Detail Pane -->
-<div class="flex-1 bg-surface-container-lowest border border-border-light rounded-xl shadow-sm flex flex-col overflow-hidden relative" id="incident-detail-pane">
-<div class="flex-1 flex items-center justify-center p-lg text-center text-text-muted">
-<div>
-<span class="material-symbols-outlined block mx-auto mb-xs" style="font-size:32px;">emergency</span>
-<span class="font-body-sm text-body-sm">Select an incident from the queue to view details.</span>
-</div>
-</div>
-</div>
-</div>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="../js/config.js" type="module"></script><script src="../js/auth.js" type="module"></script><script src="../js/nav.js" type="module"></script><script src="../js/modules/admin-incidents.js" type="module"></script></body></html>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="admin">
+
+  <div id="mobile-overlay" class="fixed inset-0 bg-slate-900/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+
+  <header class="bg-white border-b border-border-light h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-30 shrink-0">
+    <div class="flex items-center gap-3 sm:gap-4">
+      <button type="button" id="sidebar-toggle" class="md:hidden text-slate-600 hover:text-slate-900 focus:outline-none p-1 rounded-lg hover:bg-slate-100">
+        <i class="bi bi-list text-2xl"></i>
+      </button>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <img alt="FleetCore Logo" class="h-7 sm:h-8 w-auto object-contain" src="../assets/images/logo.png"/>
+        <span class="font-display font-black text-lg sm:text-xl tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 sm:gap-4">
+      <button type="button" onclick="openNewIncidentModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition shadow-sm">
+        <i class="bi bi-plus-circle-fill"></i>
+        <span>Log Emergency Report</span>
+      </button>
+
+      <div class="h-5 w-[1px] bg-slate-200"></div>
+
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-brand-blue" id="header-avatar">
+          <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="hidden sm:flex flex-col text-left">
+          <span class="text-xs font-bold text-slate-800 leading-tight" id="header-user-name">Loading...</span>
+          <span class="text-[10px] font-semibold text-teal-600 uppercase tracking-wider">Company Admin</span>
+        </div>
+      </div>
+
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 flex flex-col h-full p-4 gap-1 z-50 md:z-20 shrink-0 overflow-y-auto transition-transform duration-200 ease-in-out -translate-x-full md:translate-x-0 fixed md:relative top-0 bottom-0 left-0">
+      
+      <div class="mb-4 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Active Fleet Organization</span>
+        <span class="text-sm font-extrabold text-brand-navy truncate block" id="fc-org-name">Loading Company...</span>
+      </div>
+
+      <nav class="flex-1 flex flex-col gap-1">
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dashboard.html">
+          <i class="bi bi-grid-1x2 text-base"></i>
+          <span>Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="vehicles.html">
+          <i class="bi bi-truck text-base"></i>
+          <span>Vehicles</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="drivers.html">
+          <i class="bi bi-person-badge text-base"></i>
+          <span>Drivers</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dispatch.html">
+          <i class="bi bi-signpost-split text-base"></i>
+          <span>Trips & Dispatch</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="maintenance.html">
+          <i class="bi bi-tools text-base"></i>
+          <span>Maintenance</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="finance.html">
+          <i class="bi bi-wallet2 text-base"></i>
+          <span>Finance & Fuel</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 bg-rose-50 text-rose-700 font-bold text-xs rounded-xl transition border border-rose-100 shadow-sm" href="incidents.html">
+          <i class="bi bi-shield-exclamation text-base text-rose-600"></i>
+          <span>Crisis Center & SOS</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="analytics.html">
+          <i class="bi bi-bar-chart-line text-base"></i>
+          <span>Analytics</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="team.html">
+          <i class="bi bi-people text-base"></i>
+          <span>Team</span>
+        </a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="settings.html">
+          <i class="bi bi-gear text-base"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="mt-auto pt-3 border-t border-slate-100 flex flex-col gap-1">
+        <a class="flex items-center gap-3 px-3.5 py-2 text-slate-500 hover:text-slate-800 hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="profile.html">
+          <i class="bi bi-person text-base"></i>
+          <span>My Profile</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-50 w-full flex flex-col gap-6">
+      
+      <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-rose-600 animate-pulse"></span>
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Crisis Center & SOS Telematics</h1>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Live emergency dispatch, health emergencies, and vehicle GPS rescue tracking.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="loadIncidents()" class="px-3.5 py-2 border border-slate-200 bg-white rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm flex items-center gap-1.5">
+            <i class="bi bi-arrow-clockwise"></i>
+            <span>Refresh Telematics</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+        
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Panic SOS Alerts</span>
+            <span class="p-1.5 bg-rose-50 text-rose-600 rounded-lg text-sm"><i class="bi bi-exclamation-octagon-fill"></i></span>
+          </div>
+          <div class="font-display text-2xl font-black text-rose-600" id="kpi-sos-count">0</div>
+          <div class="mt-2 text-[11px] font-semibold text-rose-600 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span>
+            <span id="kpi-sos-status">No active panic triggers</span>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Health Emergencies</span>
+            <span class="p-1.5 bg-purple-50 text-purple-600 rounded-lg text-sm"><i class="bi bi-heart-pulse-fill"></i></span>
+          </div>
+          <div class="font-display text-2xl font-black text-purple-700" id="kpi-health-count">0</div>
+          <div class="mt-2 text-[11px] font-medium text-slate-500" id="kpi-health-status">Medical assistance requests</div>
+        </div>
+
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Road Hazards / Repairs</span>
+            <span class="p-1.5 bg-amber-50 text-amber-600 rounded-lg text-sm"><i class="bi bi-wrench-adjustable"></i></span>
+          </div>
+          <div class="font-display text-2xl font-black text-amber-600" id="kpi-road-count">0</div>
+          <div class="mt-2 text-[11px] font-medium text-slate-500" id="kpi-road-status">Breakdowns & hazards</div>
+        </div>
+
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 flex flex-col justify-between hover:shadow-md transition">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Resolved Cases</span>
+            <span class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-sm"><i class="bi bi-check-circle-fill"></i></span>
+          </div>
+          <div class="font-display text-2xl font-black text-emerald-600" id="kpi-resolved-count">0</div>
+          <div class="mt-2 text-[11px] font-medium text-slate-500">Debriefed and cleared</div>
+        </div>
+
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <div class="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm">
+          <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-white">
+            <div class="flex items-center gap-2">
+              <i class="bi bi-geo-alt-fill text-rose-600"></i>
+              <h2 class="font-display text-sm font-bold text-slate-900">Live Incident Location Radar</h2>
+            </div>
+            <span class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full" id="map-target-status">
+              Radar Active (Live Coordinate Tracking)
+            </span>
+          </div>
+          
+          <div class="relative w-full h-[480px] bg-slate-100" id="incident-map-container">
+            <div id="crisis-radar-map"></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 bg-white border border-slate-200/80 rounded-2xl flex flex-col h-[550px] shadow-sm">
+          
+          <div class="p-4 border-b border-slate-100 bg-white flex flex-col gap-3 rounded-t-2xl">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <i class="bi bi-broadcast text-rose-600"></i>
+                <h2 class="font-display text-sm font-bold text-slate-900">Emergency Reports Feed</h2>
+              </div>
+              <span class="text-[11px] font-bold text-slate-400" id="incident-feed-total">0 Reports</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+              <button class="px-3 py-1 rounded-xl font-bold bg-slate-100 text-brand-navy border border-slate-200 transition" data-filter="all">All</button>
+              <button class="px-3 py-1 rounded-xl font-semibold text-rose-600 hover:bg-rose-50 transition" data-filter="sos">SOS</button>
+              <button class="px-3 py-1 rounded-xl font-semibold text-purple-600 hover:bg-purple-50 transition" data-filter="health">Health</button>
+              <button class="px-3 py-1 rounded-xl font-semibold text-amber-600 hover:bg-amber-50 transition" data-filter="road">Road</button>
+              <button class="px-3 py-1 rounded-xl font-semibold text-emerald-600 hover:bg-emerald-50 transition" data-filter="resolved">Resolved</button>
+            </div>
+          </div>
+
+          <div class="overflow-y-auto flex-1 p-3 space-y-3" id="incidents-feed-list">
+            <div class="p-8 text-center text-slate-400 text-xs font-medium">Fetching emergency telematics...</div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" id="new-incident-modal">
+    <div class="relative bg-white rounded-3xl border border-slate-100 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 sm:p-7 animate-in fade-in duration-200">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4 sticky top-0 bg-white z-10">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 bg-rose-50 text-rose-600 rounded-xl">
+            <i class="bi bi-shield-exclamation text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-lg font-bold text-slate-900">Log Emergency Alert</h3>
+            <p class="text-xs text-slate-500">Record a road hazard, medical event, or SOS report.</p>
+          </div>
+        </div>
+        <button onclick="closeNewIncidentModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition" type="button">
+          <i class="bi bi-x-lg text-base"></i>
+        </button>
+      </div>
+
+      <form class="flex flex-col gap-4" id="new-incident-form" onsubmit="handleCreateIncident(event)">
+        <div class="grid grid-cols-2 gap-3.5">
+          
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Emergency Category <span class="text-rose-600">*</span></label>
+            <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20" id="inc-type" required>
+              <option value="sos">🚨 Critical Panic SOS Alert</option>
+              <option value="health">🩺 Medical / Health Emergency</option>
+              <option value="road">⚠️ Road Hazard / Mechanical Breakdown</option>
+              <option value="security">🛡️ Security Incident / Robbery Threat</option>
+              <option value="other">General Incident Report</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Vehicle Unit <span class="text-rose-600">*</span></label>
+            <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20" id="inc-vehicle" required></select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Driver on Duty</label>
+            <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20" id="inc-driver"></select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Latitude Coordinate</label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20" id="inc-lat" placeholder="e.g. 6.5244" step="any" type="number"/>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Longitude Coordinate</label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20" id="inc-lng" placeholder="e.g. 3.3792" step="any" type="number"/>
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Emergency Description & Terminal Message <span class="text-rose-600">*</span></label>
+            <textarea class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20" id="inc-desc" rows="3" placeholder="Describe the incident, driver condition, exact location landmarks..." required></textarea>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition" onclick="closeNewIncidentModal()" type="button">Cancel</button>
+          <button class="px-5 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md shadow-rose-600/20 transition" id="inc-save-btn" type="submit">Broadcast Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" id="resolve-modal">
+    <div class="relative bg-white rounded-3xl border border-slate-100 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 sm:p-7 animate-in fade-in duration-200">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4 sticky top-0 bg-white z-10">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+            <i class="bi bi-check-circle-fill text-lg"></i>
+          </div>
+          <div>
+            <h3 class="font-display text-lg font-bold text-slate-900">Resolve Crisis Case</h3>
+            <p class="text-xs text-slate-500">Record debrief notes, actions taken, and clear alert status.</p>
+          </div>
+        </div>
+        <button onclick="closeResolveModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition" type="button">
+          <i class="bi bi-x-lg text-base"></i>
+        </button>
+      </div>
+
+      <form class="flex flex-col gap-4" id="resolve-form" onsubmit="handleResolveIncident(event)">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Status Update</label>
+          <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20" id="resolve-status">
+            <option value="resolved">Mark Case as Resolved & Clear Alert</option>
+            <option value="investigating">Keep Under Investigation / Dispatch Team</option>
+            <option value="closed">Close Ticket</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Resolution Debrief & Action Notes <span class="text-emerald-600">*</span></label>
+          <textarea class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" id="resolve-notes" placeholder="Describe emergency team dispatch, medical assistance rendered, mechanic repairs, or recovery status..." rows="3" required></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <button class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition" onclick="closeResolveModal()" type="button">Cancel</button>
+          <button class="px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md shadow-emerald-600/20 transition" id="resolve-save-btn" type="submit">Resolve Case</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script src="../js/modules/admin-incidents.js" type="module"></script>
+
+  <script>
+    // Responsive Mobile Drawer Toggle
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+
+    function toggleMobileMenu() {
+      const isOpen = !sidebar.classList.contains('-translate-x-full');
+      if (isOpen) {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      } else {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      }
+    }
+
+    if (sidebarToggle) sidebarToggle.addEventListener('click', toggleMobileMenu);
+    if (overlay) overlay.addEventListener('click', toggleMobileMenu);
+  </script>
+</body>
+</html>

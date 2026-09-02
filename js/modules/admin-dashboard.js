@@ -1,27 +1,101 @@
 /**
- * ADMIN-DASHBOARD.JS — Fully wired overview for Company Admin.
- * No mock KPIs, no fake trend deltas, no fake map markers — everything
- * here is a real query scoped to the admin's organization_id.
+ * ADMIN-DASHBOARD.JS — Real-time telemetry, live queries, persistent Leaflet map,
+ * and fleet broadcast alerts for the FleetCore Company Admin portal.
  */
+
 import { supabase, getUserProfile, formatNaira, timeAgo, escapeHtml } from '../config.js';
 
-const kpiEl = document.getElementById('kpi-active-vehicles');
-if (kpiEl) init();
+let leafletMap = null;
+let leafletMarkers = {};
+let currentOrgId = null;
 
-async function init() {
-  const profile = await getUserProfile();
-  if (!profile) return;
-  const orgId = profile.organization_id;
-
-  await Promise.all([
-    loadKpis(orgId),
-    loadMapState(orgId),
-    loadActivity(orgId),
-  ]);
+// Initialize on page load
+if (document.getElementById('kpi-active-vehicles')) {
+  initDashboard();
 }
 
+async function initDashboard() {
+  // Ensure Map is initialized right away regardless of vehicle count
+  initLeafletMap();
+
+  const profile = await getUserProfile();
+  if (!profile) return;
+  
+  currentOrgId = profile.organization_id;
+
+  // Hydrate header user information
+  const headerName = document.getElementById('header-user-name');
+  const headerAvatar = document.getElementById('header-avatar');
+  if (headerName) headerName.textContent = profile.full_name || 'Fleet Administrator';
+  if (headerAvatar && profile.full_name) {
+    const initials = profile.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    headerAvatar.textContent = initials;
+  }
+
+  // Fetch and display the true Organization / Company Name from the Database
+  if (currentOrgId) {
+    const { data: org, error } = await supabase
+      .from('organizations')
+      .select('name')
+      .eq('id', currentOrgId)
+      .single();
+    
+    if (org && !error && document.getElementById('fc-org-name')) {
+      document.getElementById('fc-org-name').textContent = org.name;
+    }
+  }
+
+  // Run initial dashboard queries & bind realtime subscriptions
+  await Promise.all([
+    loadKpis(currentOrgId),
+    loadVehicleLocations(currentOrgId),
+    loadActivityFeed(currentOrgId),
+  ]);
+
+  setupRealtimeSubscriptions(currentOrgId);
+}
+
+/**
+ * Initialize persistent Leaflet Map Canvas (Default to Nigeria / West Africa Center)
+ */
+function initLeafletMap() {
+  const mapElement = document.getElementById('fleet-leaflet-map');
+  if (!mapElement || leafletMap) return;
+
+  if (typeof L === 'undefined') return;
+
+  leafletMap = L.map('fleet-leaflet-map', { 
+    zoomControl: true, 
+    attributionControl: false 
+  }).setView([9.0820, 8.6753], 6); // Default geographic center
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+    maxZoom: 19 
+  }).addTo(leafletMap);
+
+  // Invalidate size once rendered to ensure smooth tiles on mobile viewports
+  setTimeout(() => {
+    if (leafletMap) leafletMap.invalidateSize();
+  }, 300);
+}
+
+window.refreshDashboard = function() {
+  if (currentOrgId) {
+    loadKpis(currentOrgId);
+    loadVehicleLocations(currentOrgId);
+    loadActivityFeed(currentOrgId);
+  }
+};
+
+/**
+ * Load Top Summary KPI Statistics
+ */
 async function loadKpis(orgId) {
-  const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+  if (!orgId) return;
+
+  const monthStart = new Date(); 
+  monthStart.setDate(1); 
+  monthStart.setHours(0, 0, 0, 0);
 
   const [vehicles, trips, drivers, incidents, fuel] = await Promise.all([
     supabase.from('vehicles').select('id, status', { count: 'exact' }).eq('organization_id', orgId),
@@ -43,15 +117,14 @@ async function loadKpis(orgId) {
   setKpi('kpi-incidents', openIncidents);
   setKpi('kpi-fuel-spend', formatNaira(fuelSpend));
 
-  // Real totals instead of fabricated "vs last week" percentages — those
-  // require historical snapshots we don't collect yet.
+  // Contextual Totals
   document.querySelectorAll('[data-kpi-trend]').forEach(el => {
-    const totalId = el.getAttribute('data-kpi-trend');
-    if (totalId === 'vehicles') el.textContent = `${vehicles.count ?? (vehicles.data || []).length} total in fleet`;
-    if (totalId === 'trips') el.textContent = `${trips.count ?? (trips.data || []).length} total this period`;
-    if (totalId === 'drivers') el.textContent = `${drivers.count ?? (drivers.data || []).length} total on roster`;
-    if (totalId === 'incidents') el.textContent = 'Open or under investigation';
-    if (totalId === 'fuel') el.textContent = 'Month to date';
+    const type = el.getAttribute('data-kpi-trend');
+    if (type === 'vehicles') el.textContent = `${vehicles.count ?? (vehicles.data || []).length} total units`;
+    if (type === 'trips') el.textContent = `${activeTrips} vehicles on route`;
+    if (type === 'drivers') el.textContent = `${drivers.count ?? (drivers.data || []).length} total drivers`;
+    if (type === 'incidents') el.textContent = openIncidents > 0 ? `${openIncidents} unresolved cases` : 'No open issues';
+    if (type === 'fuel') el.textContent = 'Current billing cycle';
   });
 }
 
@@ -60,72 +133,82 @@ function setKpi(id, value) {
   if (el) el.textContent = value;
 }
 
-let leafletMap = null;
-let leafletMarkers = {};
+/**
+ * Load Vehicle Coordinates onto the Active Map
+ */
+async function loadVehicleLocations(orgId) {
+  if (!orgId || !leafletMap) return;
 
-async function loadMapState(orgId) {
-  const mapContainer = document.getElementById('fleet-map-container');
-  if (!mapContainer) return;
-
-  const { data: vehicles } = await supabase.from('vehicles').select('id, plate_number').eq('organization_id', orgId);
+  const { data: vehicles } = await supabase.from('vehicles').select('id, plate_number, model').eq('organization_id', orgId);
   const vehicleIds = (vehicles || []).map(v => v.id);
-  const plateById = {};
-  (vehicles || []).forEach(v => { plateById[v.id] = v.plate_number; });
+  const vehicleInfoById = {};
+  (vehicles || []).forEach(v => { vehicleInfoById[v.id] = v; });
 
   let locations = [];
   if (vehicleIds.length) {
-    const { data } = await supabase.from('vehicle_locations').select('*').in('vehicle_id', vehicleIds).eq('is_active', true);
+    const { data } = await supabase
+      .from('vehicle_locations')
+      .select('*')
+      .in('vehicle_id', vehicleIds)
+      .eq('is_active', true);
     locations = data || [];
   }
 
-  const onlineBadge = document.getElementById('map-online-count');
-  if (onlineBadge) onlineBadge.textContent = `Online (${locations.length})`;
+  updateMapHeaderBadge(locations.length);
 
-  if (locations.length === 0) {
-    mapContainer.innerHTML = `<div class="flex flex-col items-center justify-center h-full gap-xs text-text-muted"><span class="material-symbols-outlined" style="font-size:32px;">location_off</span><span class="font-body-sm text-body-sm">No vehicles are reporting live location yet.</span><span class="font-body-sm text-xs">Locations appear here once a driver starts a trip with location access enabled.</span></div>`;
-    return;
-  }
+  // Clear existing markers
+  Object.keys(leafletMarkers).forEach(vId => {
+    leafletMarkers[vId].remove();
+    delete leafletMarkers[vId];
+  });
 
-  mapContainer.innerHTML = `<div id="fleet-leaflet-map" style="height:100%; width:100%; z-index:0;"></div>`;
-
-  if (typeof L === 'undefined') return;
-  leafletMap = L.map('fleet-leaflet-map', { zoomControl: true, attributionControl: false });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(leafletMap);
+  if (locations.length === 0) return;
 
   const bounds = [];
   locations.forEach(loc => {
+    const vInfo = vehicleInfoById[loc.vehicle_id] || { plate_number: 'Vehicle', model: '' };
+    
     const marker = L.marker([loc.lat, loc.lng]).addTo(leafletMap);
-    marker.bindPopup(`<strong>${plateById[loc.vehicle_id] || 'Vehicle'}</strong><br/>${loc.speed || 0} km/h`);
+    marker.bindPopup(`
+      <div class="font-sans text-xs p-1">
+        <strong class="font-bold text-slate-900">${vInfo.plate_number}</strong>
+        <div class="text-[11px] text-slate-500">${vInfo.model}</div>
+        <div class="mt-1 text-teal-600 font-bold">Speed: ${loc.speed || 0} km/h</div>
+      </div>
+    `);
     leafletMarkers[loc.vehicle_id] = marker;
     bounds.push([loc.lat, loc.lng]);
   });
-  leafletMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
 
-  // Live updates via Supabase Realtime (vehicle_locations is already
-  // published — see the migration) so markers move without a page reload.
-  supabase.channel(`fleet-locations-${orgId}`)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'vehicle_locations' }, (payload) => {
-      const loc = payload.new;
-      if (!loc || !vehicleIds.includes(loc.vehicle_id)) return;
-      if (!loc.is_active) {
-        leafletMarkers[loc.vehicle_id]?.remove();
-        delete leafletMarkers[loc.vehicle_id];
-        return;
-      }
-      if (leafletMarkers[loc.vehicle_id]) {
-        leafletMarkers[loc.vehicle_id].setLatLng([loc.lat, loc.lng]);
-      } else if (leafletMap) {
-        leafletMarkers[loc.vehicle_id] = L.marker([loc.lat, loc.lng]).addTo(leafletMap)
-          .bindPopup(`<strong>${plateById[loc.vehicle_id] || 'Vehicle'}</strong><br/>${loc.speed || 0} km/h`);
-      }
-    })
-    .subscribe();
+  if (bounds.length > 0) {
+    leafletMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+  }
 }
 
-async function loadActivity(orgId) {
+function updateMapHeaderBadge(count) {
+  const badge = document.getElementById('map-online-count');
+  const text = document.getElementById('map-online-text');
+  const pulse = document.getElementById('map-radar-pulse');
+  
+  if (!badge || !text) return;
+
+  if (count > 0) {
+    badge.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[11px] border border-emerald-200/60";
+    if (pulse) pulse.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+    text.textContent = `Active Tracking (${count} Units)`;
+  } else {
+    badge.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold text-[11px] border border-slate-200";
+    if (pulse) pulse.className = "w-2 h-2 rounded-full bg-slate-400";
+    text.textContent = `Radar Standby (0 Active Units)`;
+  }
+}
+
+/**
+ * Live Activity & Incident Feed Loader
+ */
+async function loadActivityFeed(orgId) {
   const list = document.getElementById('activity-feed-list');
-  if (!list) return;
-  list.innerHTML = `<li class="p-sm text-center text-text-muted font-body-sm">Loading activity…</li>`;
+  if (!list || !orgId) return;
 
   const [trips, incidents, workOrders, fuel] = await Promise.all([
     supabase.from('trips').select('id, origin, destination, status, created_at, vehicle:vehicles(plate_number)').eq('organization_id', orgId).order('created_at', { ascending: false }).limit(5),
@@ -135,24 +218,36 @@ async function loadActivity(orgId) {
   ]);
 
   const items = [];
+
   (trips.data || []).forEach(t => items.push({
-    time: t.created_at, icon: 'route', iconCls: 'bg-secondary-container text-on-secondary-container',
-    title: t.status === 'completed' ? 'Trip Completed' : t.status === 'in_progress' ? 'Trip Started' : 'Trip Created',
-    detail: `${escapeHtml(t.origin || '—')} → ${escapeHtml(t.destination || '—')}${t.vehicle ? ` · ${escapeHtml(t.vehicle.plate_number)}` : ''}`,
+    time: t.created_at, 
+    icon: 'bi-signpost-2', 
+    iconCls: 'bg-teal-50 text-teal-600',
+    title: t.status === 'completed' ? 'Trip Completed' : t.status === 'in_progress' ? 'Trip In-Transit' : 'Trip Scheduled',
+    detail: `${escapeHtml(t.origin || 'Base')} → ${escapeHtml(t.destination || 'Destination')}${t.vehicle ? ` · ${escapeHtml(t.vehicle.plate_number)}` : ''}`,
   }));
+
   (incidents.data || []).forEach(i => items.push({
-    time: i.created_at, icon: 'warning', iconCls: 'bg-error-container text-on-error-container',
+    time: i.created_at, 
+    icon: 'bi-exclamation-triangle', 
+    iconCls: 'bg-rose-50 text-rose-600',
     title: `${(i.incident_type || 'Incident').replace(/^\w/, c => c.toUpperCase())} Reported`,
-    detail: `Severity: ${escapeHtml(i.severity || 'unknown')}${i.vehicle ? ` · ${escapeHtml(i.vehicle.plate_number)}` : ''}`,
+    detail: `Severity: ${escapeHtml(i.severity || 'Normal')}${i.vehicle ? ` · ${escapeHtml(i.vehicle.plate_number)}` : ''}`,
   }));
+
   (workOrders.data || []).forEach(w => items.push({
-    time: w.created_at, icon: 'build', iconCls: 'bg-surface-container-high text-on-surface-variant',
-    title: w.status === 'completed' ? 'Maintenance Completed' : 'Maintenance Logged',
-    detail: `${escapeHtml(w.service_type || 'Service')}${w.vehicle ? ` · ${escapeHtml(w.vehicle.plate_number)}` : ''}`,
+    time: w.created_at, 
+    icon: 'bi-tools', 
+    iconCls: 'bg-blue-50 text-blue-600',
+    title: w.status === 'completed' ? 'Service Completed' : 'Maintenance Scheduled',
+    detail: `${escapeHtml(w.service_type || 'General Inspection')}${w.vehicle ? ` · ${escapeHtml(w.vehicle.plate_number)}` : ''}`,
   }));
+
   (fuel.data || []).forEach(f => items.push({
-    time: f.logged_at, icon: 'local_gas_station', iconCls: 'bg-warning-amber/20 text-warning-amber',
-    title: 'Fuel Logged',
+    time: f.logged_at, 
+    icon: 'bi-fuel-pump', 
+    iconCls: 'bg-amber-50 text-amber-600',
+    title: 'Fuel Receipt Logged',
     detail: `${formatNaira(f.amount_naira)}${f.vehicle ? ` · ${escapeHtml(f.vehicle.plate_number)}` : ''}`,
   }));
 
@@ -160,23 +255,114 @@ async function loadActivity(orgId) {
   const top = items.slice(0, 8);
 
   if (top.length === 0) {
-    list.innerHTML = `<li class="p-lg text-center text-text-muted"><span class="material-symbols-outlined block mx-auto mb-xs" style="font-size:28px;">inbox</span><span class="font-body-sm text-body-sm">No activity yet. As trips, fuel logs, and maintenance happen, they'll show up here.</span></li>`;
+    list.innerHTML = `
+      <li class="p-6 text-center text-slate-400">
+        <i class="bi bi-inbox text-2xl block mb-1"></i>
+        <span class="text-xs font-medium">No recent activity recorded.</span>
+      </li>`;
     return;
   }
 
   list.innerHTML = top.map(item => `
-    <li class="p-sm hover:bg-surface-container-low rounded-lg transition-colors group cursor-pointer border border-transparent hover:border-border-light">
-      <div class="flex gap-sm items-start">
-        <div class="p-xs ${item.iconCls} rounded-full mt-1">
-          <span class="material-symbols-outlined" style="font-size:16px;">${item.icon}</span>
+    <li class="p-2.5 hover:bg-slate-50 rounded-xl transition border border-transparent hover:border-slate-100 flex items-start gap-3">
+      <div class="p-2 ${item.iconCls} rounded-lg text-xs mt-0.5 shrink-0">
+        <i class="bi ${item.icon}"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex justify-between items-start gap-1">
+          <span class="text-xs font-bold text-slate-800 truncate">${item.title}</span>
+          <span class="text-[10px] font-semibold text-slate-400 shrink-0">${timeAgo(item.time)}</span>
         </div>
-        <div class="flex-1">
-          <div class="flex justify-between items-start">
-            <span class="font-label-md text-label-md text-on-surface">${item.title}</span>
-            <span class="font-label-sm text-label-sm text-text-muted">${timeAgo(item.time)}</span>
-          </div>
-          <p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">${item.detail}</p>
-        </div>
+        <p class="text-[11px] text-slate-500 truncate mt-0.5">${item.detail}</p>
       </div>
     </li>`).join('');
 }
+
+/**
+ * Setup Realtime Subscriptions for GPS Location, Trips, and Incidents
+ */
+function setupRealtimeSubscriptions(orgId) {
+  if (!orgId) return;
+
+  supabase.channel(`fleet-dashboard-realtime-${orgId}`)
+    // Listen for GPS Telematics Coordinate Updates
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'vehicle_locations' }, (payload) => {
+      const loc = payload.new;
+      if (!loc) return;
+
+      if (!loc.is_active) {
+        if (leafletMarkers[loc.vehicle_id]) {
+          leafletMarkers[loc.vehicle_id].remove();
+          delete leafletMarkers[loc.vehicle_id];
+        }
+      } else if (leafletMap) {
+        if (leafletMarkers[loc.vehicle_id]) {
+          leafletMarkers[loc.vehicle_id].setLatLng([loc.lat, loc.lng]);
+        } else {
+          const marker = L.marker([loc.lat, loc.lng]).addTo(leafletMap);
+          marker.bindPopup(`<strong>Vehicle Unit</strong><br/>Speed: ${loc.speed || 0} km/h`);
+          leafletMarkers[loc.vehicle_id] = marker;
+        }
+      }
+      updateMapHeaderBadge(Object.keys(leafletMarkers).length);
+    })
+    // Listen for Trips Started / Finished
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'trips', filter: `organization_id=eq.${orgId}` }, (payload) => {
+      const trip = payload.new;
+      if (trip && payload.eventType === 'INSERT') {
+        if (window.showToast) window.showToast(`New trip initiated: ${trip.origin || 'Base'} → ${trip.destination || 'Destination'}`, 'info');
+      }
+      loadKpis(orgId);
+      loadActivityFeed(orgId);
+    })
+    // Listen for Incidents
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'incidents', filter: `organization_id=eq.${orgId}` }, (payload) => {
+      const inc = payload.new;
+      if (inc && window.showToast) {
+        window.showToast(`New Incident Alert: ${inc.incident_type || 'Issue'} reported!`, 'warning');
+      }
+      loadKpis(orgId);
+      loadActivityFeed(orgId);
+    })
+    .subscribe();
+}
+
+/**
+ * Handle Fleet Broadcast Submission
+ */
+window.handleSendBroadcast = async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('broadcast-submit-btn');
+  const message = document.getElementById('broadcast-message').value.trim();
+  const priority = document.getElementById('broadcast-priority').value;
+
+  if (!message || !currentOrgId) return;
+
+  btn.disabled = true;
+  btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i><span>Broadcasting...</span>`;
+
+  try {
+    const { error } = await supabase.from('fleet_alerts').insert({
+      organization_id: currentOrgId,
+      message: message,
+      priority: priority,
+      created_at: new Date().toISOString()
+    });
+
+    if (error) throw error;
+
+    if (window.showToast) {
+      window.showToast('Broadcast alert successfully transmitted to fleet.', 'success');
+    }
+    
+    document.getElementById('broadcast-message').value = '';
+    window.closeBroadcastModal();
+  } catch (err) {
+    if (window.showToast) {
+      window.showToast(err.message || 'Failed to send broadcast.', 'error');
+    }
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="bi bi-send-fill"></i><span>Send Broadcast</span>`;
+  }
+};

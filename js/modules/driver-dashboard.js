@@ -1,87 +1,307 @@
 /**
- * DRIVER-DASHBOARD.JS — Today's assignment + week summary for Driver.
- * No mock trip, no fake cargo/duration fields that don't exist in schema.
+ * DRIVER-DASHBOARD.JS — Real-time telemetry, organization name resolution,
+ * avatar initials, and unit synchronization.
  */
-import { supabase, getUserProfile, escapeHtml } from '../config.js';
-import { showToast } from '../auth.js';
 
-const card = document.getElementById('assignment-card');
-if (card) init();
+import { supabase, getUserProfile, formatDate, escapeHtml } from '../config.js';
+import { showToast, performLogout } from '../auth.js';
 
-async function init() {
-  const profile = await getUserProfile();
+let profile = null;
+let activeTrip = null;
+let assignedVehicle = null;
+let map = null;
+let marker = null;
+let watchId = null;
+let broadcastInterval = null;
+
+const mapEl = document.getElementById('driver-map');
+if (mapEl) initDashboard();
+
+export async function initDashboard() {
+  profile = await getUserProfile();
   if (!profile) return;
 
-  const dateEl = document.getElementById('driver-today-date');
-  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-NG', { weekday: 'long', day: '2-digit', month: 'short' });
+  const headerName = document.getElementById('header-driver-name');
+  const greetingEl = document.getElementById('driver-greeting');
+  const headerAvatar = document.getElementById('header-avatar');
+  const sidebarInitial = document.getElementById('sidebar-initial');
+  const sidebarName = document.getElementById('sidebar-name');
+  const effectiveName = profile.full_name || 'Tissan Dave';
 
-  await loadAssignment(profile.id);
-  await loadWeekSummary(profile.id);
+  if (headerName) headerName.textContent = effectiveName;
+  if (sidebarName) sidebarName.textContent = effectiveName;
+  if (greetingEl) greetingEl.textContent = `Hello, ${effectiveName.split(' ')[0]}`;
+
+  const initials = effectiveName.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'TD';
+  if (headerAvatar) headerAvatar.textContent = initials;
+  if (sidebarInitial) sidebarInitial.textContent = initials;
+
+  // Resolve Organization Name
+  let orgName = 'TransCore Logistics';
+  if (profile.organization_id) {
+    const { data: org } = await supabase
+      .from('organizations')
+      .select('name')
+      .eq('id', profile.organization_id)
+      .maybeSingle();
+    if (org?.name) orgName = org.name;
+  }
+  document.querySelectorAll('#fc-org-name').forEach(el => el.textContent = orgName);
+
+  const dateEl = document.getElementById('driver-today-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('en-NG', { 
+      weekday: 'long', 
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric' 
+    });
+  }
+
+  initMap();
+  setupSosButton('sos-btn', 'sos-progress', 'sos-label', 'sos', 'Road Emergency SOS');
+  setupSosButton('health-sos-btn', 'health-sos-progress', 'health-sos-label', 'health', 'Medical Distress');
+  
+  await loadAssignedTrip();
+  await loadBroadcastFeed();
+  setupBroadcastListener();
+  startGpsTracking();
+}
+window.initDashboard = initDashboard;
+
+function initMap() {
+  if (map || typeof L === 'undefined') return;
+
+  map = L.map('driver-map', { zoomControl: false, attributionControl: false }).setView([9.0820, 8.6753], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+  const icon = L.divIcon({
+    className: 'custom-driver-pin',
+    html: `<div class="w-5 h-5 rounded-full bg-teal-600 border-2 border-white shadow-xl"></div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
+
+  marker = L.marker([9.0820, 8.6753], { icon }).addTo(map);
 }
 
-async function loadAssignment(driverId) {
-  const { data, error } = await supabase
+function startGpsTracking() {
+  if (!navigator.geolocation) return;
+
+  watchId = navigator.geolocation.watchPosition(
+    async (pos) => {
+      const { latitude, longitude, speed } = pos.coords;
+      const kmh = Math.round((speed || 0) * 3.6);
+
+      document.getElementById('speed-val').innerHTML = `${kmh} <small class="text-[10px] font-normal text-slate-500">km/h</small>`;
+      document.getElementById('gps-status').textContent = 'READY';
+      document.getElementById('gps-status-pill').className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-teal-50 text-teal-700 border border-teal-200/60";
+      document.getElementById('coords-badge').textContent = `${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`;
+
+      if (marker && map) {
+        marker.setLatLng([latitude, longitude]);
+        map.panTo([latitude, longitude], { animate: true });
+      }
+
+      if (assignedVehicle?.id) {
+        await supabase.from('vehicle_locations').upsert({
+          vehicle_id: assignedVehicle.id,
+          driver_id: profile.id,
+          organization_id: profile.organization_id,
+          lat: latitude,
+          lng: longitude,
+          speed: kmh,
+          is_active: true,
+          last_updated: new Date().toISOString()
+        }, { onConflict: 'vehicle_id' });
+      }
+    },
+    (err) => {
+      console.warn('GPS Error:', err.message);
+      document.getElementById('gps-status').textContent = 'OFFLINE';
+      document.getElementById('gps-status-pill').className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200/60";
+    },
+    { enableHighAccuracy: true, maximumAge: 4000, timeout: 10000 }
+  );
+}
+
+async function loadAssignedTrip() {
+  const { data: trips } = await supabase
     .from('trips')
-    .select('*, vehicle:vehicles(plate_number, make, model)')
-    .eq('driver_id', driverId)
+    .select('*, vehicle:vehicles(id, plate_number, make, model)')
+    .eq('driver_id', profile.id)
     .in('status', ['in_progress', 'pending'])
-    .order('status', { ascending: true }) // in_progress before pending alphabetically? fix below
-    .order('scheduled_at', { ascending: true, nullsFirst: false })
+    .order('created_at', { ascending: false })
+    .limit(1);
+
+  activeTrip = trips?.[0] || null;
+
+  const headerBadge = document.getElementById('header-vehicle-badge');
+  const plateCard = document.getElementById('assigned-plate-card');
+  const sidebarBus = document.getElementById('sidebar-bus');
+
+  if (activeTrip?.vehicle) {
+    assignedVehicle = activeTrip.vehicle;
+    const plateText = assignedVehicle.plate_number;
+    if (headerBadge) headerBadge.textContent = plateText;
+    if (plateCard) plateCard.textContent = plateText;
+    if (sidebarBus) sidebarBus.textContent = `BUS ${plateText} · ACTIVE`;
+  } else {
+    // Attempt fallback to directly assigned vehicle
+    const { data: fallbackVehicle } = await supabase
+      .from('vehicles')
+      .select('id, plate_number')
+      .eq('assigned_driver_id', profile.id)
+      .maybeSingle();
+
+    if (fallbackVehicle) {
+      assignedVehicle = fallbackVehicle;
+      if (headerBadge) headerBadge.textContent = fallbackVehicle.plate_number;
+      if (plateCard) plateCard.textContent = fallbackVehicle.plate_number;
+      if (sidebarBus) sidebarBus.textContent = `BUS ${fallbackVehicle.plate_number}`;
+    } else {
+      if (headerBadge) headerBadge.textContent = 'STANDBY POOL';
+      if (plateCard) plateCard.textContent = 'Unassigned';
+      if (sidebarBus) sidebarBus.textContent = 'No bus assigned';
+    }
+  }
+
+  const startBtn = document.getElementById('start-trip-btn');
+  const startLabel = document.getElementById('start-btn-label');
+  const checklistDone = localStorage.getItem('fc_pretrip_cleared') === new Date().toDateString();
+
+  if (activeTrip) {
+    if (activeTrip.status === 'in_progress') {
+      startBtn.disabled = false;
+      startBtn.className = startBtn.className.replace('bg-teal-600', 'bg-emerald-600');
+      startLabel.textContent = 'Continue Active Route';
+      startBtn.onclick = () => window.location.href = 'active-trip.html';
+    } else if (checklistDone) {
+      startBtn.disabled = false;
+      startLabel.textContent = 'Start Scheduled Trip';
+      startBtn.onclick = async () => {
+        await supabase.from('trips').update({ status: 'in_progress', started_at: new Date().toISOString() }).eq('id', activeTrip.id);
+        window.location.href = 'active-trip.html';
+      };
+    } else {
+      startBtn.disabled = true;
+      startLabel.textContent = 'Start Trip (Pre-Trip Inspection Required)';
+    }
+  } else {
+    startBtn.disabled = true;
+    startLabel.textContent = 'No Assigned Trip On Standby';
+  }
+}
+
+function setupSosButton(btnId, progressId, labelId, type, title) {
+  const btn = document.getElementById(btnId);
+  const progress = document.getElementById(progressId);
+  const label = document.getElementById(labelId);
+  if (!btn) return;
+
+  let timer = null;
+  let startTime = 0;
+
+  const startHold = (e) => {
+    e.preventDefault();
+    startTime = Date.now();
+    btn.classList.add('holding');
+    timer = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      progress.style.width = `${Math.min((elapsed / 5000) * 100, 100)}%`;
+      if (elapsed >= 5000) {
+        clearInterval(timer);
+        fireSOS(type, title, btn, label);
+        progress.style.width = '0%';
+        btn.classList.remove('holding');
+      }
+    }, 100);
+  };
+
+  const clearHold = () => {
+    clearInterval(timer);
+    btn.classList.remove('holding');
+    progress.style.width = '0%';
+  };
+
+  btn.addEventListener('mousedown', startHold);
+  btn.addEventListener('touchstart', startHold, { passive: false });
+  btn.addEventListener('mouseup', clearHold);
+  btn.addEventListener('mouseleave', clearHold);
+  btn.addEventListener('touchend', clearHold);
+}
+
+async function fireSOS(type, title, btn, label) {
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const { latitude, longitude } = pos.coords;
+
+    await supabase.from('incidents').insert({
+      organization_id: profile.organization_id,
+      driver_id: profile.id,
+      vehicle_id: assignedVehicle?.id || null,
+      trip_id: activeTrip?.id || null,
+      incident_type: type,
+      severity: type === 'sos' ? 'critical' : 'high',
+      latitude,
+      longitude,
+      status: 'open',
+      description: `In-cab trigger: Driver dispatched ${title}.`
+    });
+
+    label.textContent = 'ALERT SENT';
+    showToast(`${title} transmitted to Fleet Control.`, 'success', 5000);
+    setTimeout(() => {
+      label.textContent = type === 'sos' ? 'HOLD · ROAD SOS' : 'HOLD · HEALTH SOS';
+    }, 4000);
+  }, () => showToast('GPS access required for SOS alert.', 'error'), { enableHighAccuracy: true });
+}
+
+async function loadBroadcastFeed() {
+  const { data: logs } = await supabase
+    .from('notifications')
+    .select('*')
+    .eq('organization_id', profile.organization_id)
+    .order('created_at', { ascending: false })
     .limit(5);
 
-  if (error) {
-    card.innerHTML = `<div class="text-center py-lg text-error font-body-sm">Failed to load assignment: ${escapeHtml(error.message)}</div>`;
-    return;
-  }
+  const feed = document.getElementById('broadcast-history-feed');
+  if (!logs?.length) return;
 
-  const trips = data || [];
-  const active = trips.find(t => t.status === 'in_progress') || trips.find(t => t.status === 'pending');
-
-  if (!active) {
-    card.innerHTML = `<div class="text-center py-lg text-text-muted"><span class="material-symbols-outlined block mx-auto mb-xs" style="font-size:28px;">event_available</span><span class="font-body-sm text-body-sm">No trip assigned right now. Check back soon.</span></div>`;
-    return;
-  }
-
-  const isActive = active.status === 'in_progress';
-  card.innerHTML = `
-    <div class="flex justify-between items-start mb-md">
-      <div>
-        <div class="inline-flex items-center px-2 py-1 rounded ${isActive ? 'bg-warning-amber/10 text-warning-amber' : 'bg-secondary-container text-on-secondary-container'} font-label-sm text-label-sm uppercase mb-2">${isActive ? 'In Progress' : 'Assigned'}</div>
-        <h2 class="font-headline-md text-headline-md text-on-surface">${escapeHtml(active.origin || '—')} <span class="material-symbols-outlined text-text-muted align-middle mx-1 text-[20px]">arrow_right_alt</span> ${escapeHtml(active.destination || '—')}</h2>
+  feed.innerHTML = logs.map(item => `
+    <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
+      <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-1">
+        <span>${escapeHtml(item.title || 'SYSTEM DIRECTIVE')}</span>
+        <span>${formatDate(item.created_at)}</span>
       </div>
-      <div class="text-right">
-        <span class="font-mono-data text-mono-data bg-background-subtle border border-border-light px-2 py-1 rounded text-on-surface-variant">${active.vehicle ? escapeHtml(active.vehicle.plate_number) : 'No vehicle'}</span>
-        <p class="font-label-sm text-label-sm text-text-muted mt-1">${active.vehicle ? escapeHtml([active.vehicle.make, active.vehicle.model].filter(Boolean).join(' ')) : ''}</p>
-      </div>
-    </div>
-    ${active.notes ? `<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">${escapeHtml(active.notes)}</p>` : ''}
-    <button class="w-full bg-secondary text-on-secondary font-label-md text-label-md py-4 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-colors duration-200 active:scale-95" id="btn-start-trip">
-      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">${isActive ? 'navigation' : 'play_arrow'}</span>
-      ${isActive ? 'Continue Trip' : 'Start Trip'}
-    </button>`;
-
-  document.getElementById('btn-start-trip')?.addEventListener('click', async () => {
-    if (!isActive) {
-      const { error: updErr } = await supabase.from('trips').update({ status: 'in_progress', started_at: new Date().toISOString() }).eq('id', active.id);
-      if (updErr) { showToast(updErr.message, 'error'); return; }
-    }
-    window.location.href = 'active-trip.html';
-  });
+      <p class="text-slate-800 font-medium">${escapeHtml(item.message)}</p>
+    </div>`).join('');
 }
 
-async function loadWeekSummary(driverId) {
-  const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
-
-  const [tripsRes, fuelRes] = await Promise.all([
-    supabase.from('trips').select('id').eq('driver_id', driverId).eq('status', 'completed').gte('completed_at', weekAgo),
-    supabase.from('fuel_logs').select('litres').eq('driver_id', driverId).gte('logged_at', weekAgo),
-  ]);
-
-  const tripsEl = document.getElementById('week-trips-completed');
-  const fuelEl = document.getElementById('week-fuel-litres');
-  if (tripsEl) tripsEl.textContent = (tripsRes.data || []).length;
-  if (fuelEl) {
-    const totalLitres = (fuelRes.data || []).reduce((sum, f) => sum + Number(f.litres || 0), 0);
-    fuelEl.textContent = `${totalLitres.toLocaleString('en-NG')}L`;
-  }
+function setupBroadcastListener() {
+  supabase.channel('global-fleet-broadcast')
+    .on('broadcast', { event: 'urgent-alert' }, ({ payload }) => triggerDirectiveModal(payload.message, 'Emergency Directive'))
+    .subscribe();
 }
+
+function triggerDirectiveModal(msg, source) {
+  document.getElementById('broadcast-modal-msg').textContent = msg;
+  document.getElementById('broadcast-modal-source').textContent = source;
+  document.getElementById('broadcast-modal').classList.remove('hidden');
+  let seconds = 15;
+  clearInterval(broadcastInterval);
+  broadcastInterval = setInterval(() => {
+    seconds--;
+    document.getElementById('broadcast-countdown').textContent = seconds;
+    document.getElementById('broadcast-timer-fill').style.width = `${(seconds / 15) * 100}%`;
+    if (seconds <= 0) dismissBroadcastModal();
+  }, 1000);
+}
+
+window.dismissBroadcastModal = function() {
+  document.getElementById('broadcast-modal').classList.add('hidden');
+  clearInterval(broadcastInterval);
+};
+
+document.getElementById('logout-btn')?.addEventListener('click', () => {
+  if (confirm('Sign out from Driver Console?')) performLogout();
+});

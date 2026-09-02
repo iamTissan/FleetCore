@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>Pre-Trip Safety Inspection - FleetCore</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo.png">
+  
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#0B2545', blue: '#134074', teal: '#00A896', mint: '#02C39A', subtle: '#EEF4F8' },
+            primary: "#004ac6", "border-light": "#E2E8F0"
+          },
+          fontFamily: { display: ["Manrope", "sans-serif"], sans: ["Inter", "sans-serif"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen overflow-hidden flex flex-col antialiased" data-fc-guard="driver">
+
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Standard Top Navigation Bar -->
+  <header class="bg-white border-b border-border-light h-14 sm:h-16 w-full flex justify-between items-center px-4 sm:px-6 sticky top-0 z-40 shrink-0">
+    <div class="flex items-center gap-3">
+      <a href="dashboard.html" class="p-1.5 rounded-xl bg-slate-100 text-slate-600 hover:text-slate-900 transition flex items-center justify-center">
+        <i class="bi bi-chevron-left text-base"></i>
+      </a>
+      <div class="flex items-center gap-2">
+        <img alt="FleetCore Logo" class="h-6 sm:h-7 w-auto object-contain" src="../assets/images/logo.png" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 40 40\'%3E%3Crect width=\'40\' height=\'40\' rx=\'8\' fill=\'%230B2545\'/%3E%3Ctext x=\'20\' y=\'25\' font-size=\'14\' font-weight=\'bold\' fill=\'%2300A896\' text-anchor=\'middle\'%3EFC%3C/text%3E%3C/svg%3E'"/>
+        <span class="font-display font-black text-base sm:text-lg tracking-tight text-brand-navy">FLEET<span class="text-teal-600">CORE</span></span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div id="progress-badge" class="font-mono text-xs font-bold px-3 py-1 bg-slate-100 text-slate-700 rounded-full border border-slate-200">
+        0 of 7 Verified
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-xs text-brand-blue" id="header-avatar">
+          TD
+        </div>
+        <div class="hidden sm:flex flex-col text-left">
+          <span class="text-xs font-bold text-slate-800 leading-tight" id="header-driver-name">Tissan Dave</span>
+          <span class="text-[10px] font-semibold text-teal-600 uppercase tracking-wider" id="header-vehicle-badge">Inspection Mode</span>
+        </div>
+      </div>
+
+      <button type="button" id="logout-btn" class="text-slate-400 hover:text-rose-600 p-1.5 rounded-lg hover:bg-slate-100 transition" title="Log Out">
+        <i class="bi bi-box-arrow-right text-base sm:text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    <!-- Desktop Sidebar (Matches Dashboard Blueprint Exactly) -->
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 hidden lg:flex flex-col h-full p-4 gap-1 z-20 shrink-0 overflow-y-auto">
+      
+      <!-- Organization Title Pill -->
+      <div class="mb-4 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Active Organization</span>
+        <span class="text-sm font-extrabold text-brand-navy truncate block" id="fc-org-name">TransCore Logistics</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 flex flex-col gap-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Operations</div>
+        
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dashboard.html">
+          <i class="bi bi-geo-alt-fill text-base"></i>
+          <span>Live Drive</span>
+        </a>
+
+        <a class="flex items-center gap-3 px-3.5 py-2.5 bg-blue-50 text-brand-blue font-bold text-xs rounded-xl transition border border-blue-100/60 shadow-sm" href="checklist.html">
+          <i class="bi bi-clipboard-check-fill text-base text-blue-600"></i>
+          <span>Pre-Trip Inspection</span>
+        </a>
+
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="schedule.html">
+          <i class="bi bi-calendar-check-fill text-base"></i>
+          <span>Route Manifest</span>
+        </a>
+
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-3 mb-1">System</div>
+
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="stats.html">
+          <i class="bi bi-bar-chart-fill text-base"></i>
+          <span>Performance Stats</span>
+        </a>
+
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="profile.html">
+          <i class="bi bi-person-gear text-base"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <!-- Sidebar Driver Info Footer -->
+      <div class="mt-auto pt-3 border-t border-slate-100 flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-full bg-amber-400 text-brand-navy font-black text-xs flex items-center justify-center border-2 border-white shadow-sm" id="sidebar-initial">TD</div>
+        <div class="flex flex-col min-w-0">
+          <span class="text-xs font-bold text-slate-800 truncate" id="sidebar-name">Tissan Dave</span>
+          <span class="text-[10px] font-semibold text-slate-400 truncate" id="sidebar-bus">Assigned Unit: None</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Canvas (Side-by-Side 2-Column Grid on Desktop) -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 pb-28 lg:pb-8 w-full custom-scroll">
+      <div class="max-w-5xl mx-auto space-y-4">
+        
+        <!-- Instruction Banner -->
+        <div class="p-3.5 sm:p-4 bg-brand-navy text-white rounded-2xl flex items-center gap-3 shadow-md">
+          <i class="bi bi-shield-check text-amber-400 text-2xl shrink-0"></i>
+          <p class="text-xs font-medium leading-relaxed">
+            <strong>Mandatory Legal Verification:</strong> Complete all 7 vehicle checks and snap a clear fuel dashboard photo to unlock drive mode.
+          </p>
+        </div>
+
+        <form id="checklist-form" class="space-y-4">
+          <!-- 2-Column Desktop Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+            
+            <!-- Column 1: 7-Point Safety Verification -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 space-y-2.5 shadow-sm">
+              <div class="flex items-center justify-between mb-1">
+                <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Exterior & Mechanical Checks[cite: 2]</h2>
+                <span class="text-[10px] font-bold text-slate-400">7 ITEMS REQUIRED</span>
+              </div>
+
+              <label class="check-item flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-2.5">
+                  <i class="bi bi-circle text-slate-400 check-icon"></i> Tires, Pressure & Wheel Lug Nuts[cite: 2]
+                </span>
+                <input type="checkbox" class="check-box rounded border-slate-300 text-teal-600 focus:ring-teal-500 w-4 h-4"/>
+              </label>
+
+              <label class="check-item flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-2.5">
+                  <i class="bi bi-circle text-slate-400 check-icon"></i> Headlights, Blinkers & Hazard Indicators[cite: 2]
+                </span>
+                <input type="checkbox" class="check-box rounded border-slate-300 text-teal-600 focus:ring-teal-500 w-4 h-4"/>
+              </label>
+
+              <label class="check-item flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-2.5">
+                  <i class="bi bi-circle text-slate-400 check-icon"></i> Service Foot Brake & Parking Brake[cite: 2]
+                </span>
+                <input type="checkbox" class="check-box rounded border-slate-300 text-teal-600 focus:ring-teal-500 w-4 h-4"/>
+              </label>
+
+              <label class="check-item flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-2.5">
+                  <i class="bi bi-circle text-slate-400 check-icon"></i> Engine Oil, Coolant & Fluid Levels[cite: 2]
+                </span>
+                <input type="checkbox" class="check-box rounded border-slate-300 text-teal-600 focus:ring-teal-500 w-4 h-4"/>
+              </label>
+
+              <label class="check-item flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-2.5">
+                  <i class="bi bi-circle text-slate-400 check-icon"></i> Safety Triangles & Fire Extinguisher[cite: 2]
+                </span>
+                <input type="checkbox" class="check-box rounded border-slate-300 text-teal-600 focus:ring-teal-500 w-4 h-4"/>
+              </label>
+
+              <label class="check-item flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-2.5">
+                  <i class="bi bi-circle text-slate-400 check-icon"></i> Horn, Windshield Wipers & Side Mirrors
+                </span>
+                <input type="checkbox" class="check-box rounded border-slate-300 text-teal-600 focus:ring-teal-500 w-4 h-4"/>
+              </label>
+
+              <label class="check-item flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 cursor-pointer transition">
+                <span class="text-xs font-semibold text-slate-800 flex items-center gap-2.5">
+                  <i class="bi bi-circle text-slate-400 check-icon"></i> GPS Telematics & Terminal Online[cite: 2]
+                </span>
+                <input type="checkbox" class="check-box rounded border-slate-300 text-teal-600 focus:ring-teal-500 w-4 h-4"/>
+              </label>
+            </div>
+
+            <!-- Column 2: Modern Fuel Photo Dropzone & Odometer -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 space-y-4 shadow-sm">
+              <div class="flex items-center justify-between mb-1">
+                <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Start-Of-Shift Telemetry[cite: 2]</h2>
+                <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">AUDIT RECORD</span>
+              </div>
+
+              <!-- Modernized Fuel Photo Dropzone -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  <i class="bi bi-camera-fill text-teal-600"></i> Fuel Dashboard Photo (Compulsory) *[cite: 2]
+                </label>
+                
+                <div id="fuel-photo-dropzone" onclick="document.getElementById('pretrip-photo-input').click()" class="w-full h-36 bg-slate-50 border-2 border-dashed border-slate-300 hover:border-teal-500 rounded-2xl flex flex-col items-center justify-center cursor-pointer overflow-hidden relative transition group">
+                  <div id="fuel-photo-placeholder" class="text-center p-4">
+                    <div class="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition">
+                      <i class="bi bi-camera text-xl"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-700 block">Tap to snap fuel gauge</span>[cite: 2]
+                    <span class="text-[10px] text-slate-400 block mt-0.5">JPG, PNG or Camera capture up to 5MB</span>
+                  </div>
+                  <img id="fuel-photo-preview" class="hidden w-full h-full object-cover" alt="Dashboard Preview"/>
+                  <div id="fuel-photo-badge" class="hidden absolute top-2 right-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow flex items-center gap-1">
+                    <i class="bi bi-check-lg"></i> Captured
+                  </div>
+                </div>
+                <input type="file" accept="image/*" capture="environment" id="pretrip-photo-input" class="hidden"/>
+              </div>
+
+              <!-- Fuel Level Percentage Slider -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <label class="text-xs font-bold text-slate-700">Estimated Tank Level (%) *[cite: 2]</label>
+                  <span id="fuel-val-label" class="font-mono text-sm font-black text-teal-700">60%</span>
+                </div>
+                <input type="range" id="fuel-pct-slider" min="0" max="100" value="60" class="w-full accent-teal-600 cursor-pointer" oninput="document.getElementById('fuel-val-label').textContent=this.value+'%'"/>
+                <div class="flex justify-between text-[10px] text-slate-400 font-bold mt-1">
+                  <span>Empty</span><span>Half</span><span>Full</span>[cite: 2]
+                </div>
+              </div>
+
+              <!-- Start Odometer -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Starting Odometer Reading (KM) *[cite: 2]</label>
+                <div class="relative">
+                  <i class="bi bi-speedometer2 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                  <input type="number" id="start-odometer" placeholder="e.g. 48300" required class="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-800 focus:border-teal-500 focus:outline-none"/>
+                </div>
+              </div>
+
+              <!-- Defect Observations -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Defect Notes / Observations[cite: 2]</label>
+                <textarea id="pretrip-notes" rows="2" placeholder="Describe any scratches, warning lights, or mechanical concerns..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:border-teal-500 focus:outline-none"></textarea>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Submit Action Button -->
+          <div class="pt-2">
+            <button type="submit" id="submit-inspection-btn" disabled class="w-full py-4 bg-slate-300 text-slate-500 font-bold text-xs rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-not-allowed disabled:opacity-60">
+              <i class="bi bi-lock-fill text-sm"></i>
+              <span id="submit-btn-text">Complete All 7 Checks & Photo to Unlock</span>[cite: 2]
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-slate-200/80 shadow-lg px-2 py-2 flex justify-around items-center lg:hidden">
+    <a class="flex flex-col items-center justify-center text-teal-700 font-bold text-[10px] py-1 px-3 rounded-xl bg-teal-50 transition" href="dashboard.html">
+      <i class="bi bi-geo-alt-fill text-lg mb-0.5"></i>
+      <span>Drive</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="schedule.html">
+      <i class="bi bi-calendar-check-fill text-lg mb-0.5"></i>
+      <span>Schedule</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="stats.html">
+      <i class="bi bi-bar-chart-fill text-lg mb-0.5"></i>
+      <span>Stats</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="profile.html">
+      <i class="bi bi-person-fill text-lg mb-0.5"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script type="module">
+    import { supabase, getUserProfile, uploadFile } from '../js/config.js';
+    import { showToast, performLogout } from '../js/auth.js';
+
+    let currentDriverProfile = null;
+    let photoUploaded = false;
+    let photoFile = null;
+
+    const checkboxes = document.querySelectorAll('.check-box');
+    const submitBtn = document.getElementById('submit-inspection-btn');
+    const submitBtnText = document.getElementById('submit-btn-text');
+    const progressBadge = document.getElementById('progress-badge');
+
+    async function initInspection() {
+      currentDriverProfile = await getUserProfile();
+      if (!currentDriverProfile) return;
+
+      const name = currentDriverProfile.full_name || 'Tissan Dave';
+      document.getElementById('header-driver-name').textContent = name;
+      document.getElementById('sidebar-name').textContent = name;
+
+      const initials = name.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'TD';
+      document.getElementById('header-avatar').textContent = initials;
+      document.getElementById('sidebar-initial').textContent = initials;
+
+      // Organization Name Resolution
+      let orgName = 'TransCore Logistics';
+      if (currentDriverProfile.organization_id) {
+        const { data: org } = await supabase
+          .from('organizations')
+          .select('name')
+          .eq('id', currentDriverProfile.organization_id)
+          .maybeSingle();
+        if (org?.name) orgName = org.name;
+      }
+      document.querySelectorAll('#fc-org-name').forEach(el => el.textContent = orgName);
+
+      // Fetch Assigned Vehicle
+      const { data: vehicle } = await supabase
+        .from('vehicles')
+        .select('plate_number')
+        .eq('assigned_driver_id', currentDriverProfile.id)
+        .maybeSingle();
+
+      document.getElementById('sidebar-bus').textContent = vehicle?.plate_number ? `BUS ${vehicle.plate_number}` : 'No bus assigned';
+    }
+
+    // Modern Photo Picker Handler
+    document.getElementById('pretrip-photo-input')?.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      photoFile = file;
+      photoUploaded = true;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const previewImg = document.getElementById('fuel-photo-preview');
+        const placeholder = document.getElementById('fuel-photo-placeholder');
+        const badge = document.getElementById('fuel-photo-badge');
+        const dropzone = document.getElementById('fuel-photo-dropzone');
+
+        previewImg.src = event.target.result;
+        previewImg.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        badge.classList.remove('hidden');
+        dropzone.classList.remove('border-dashed', 'border-slate-300');
+        dropzone.classList.add('border-solid', 'border-emerald-500');
+
+        checkProgress();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Checkbox toggling and visual feedback
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const label = e.target.closest('.check-item');
+        const icon = label.querySelector('.check-icon');
+        if (e.target.checked) {
+          label.classList.add('border-emerald-500', 'bg-emerald-50/30');
+          icon.className = 'bi bi-check-circle-fill text-emerald-600 check-icon';
+        } else {
+          label.classList.remove('border-emerald-500', 'bg-emerald-50/30');
+          icon.className = 'bi bi-circle text-slate-400 check-icon';
+        }
+        checkProgress();
+      });
+    });
+
+    function checkProgress() {
+      const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
+      progressBadge.textContent = `${checkedCount} of 7 Verified`;
+
+      const allChecksPass = checkedCount === 7 && photoUploaded;
+
+      if (allChecksPass) {
+        submitBtn.disabled = false;
+        submitBtn.className = "w-full py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95";
+        submitBtn.innerHTML = `<i class="bi bi-check-all text-base"></i><span>Submit Inspection & Unlock Drive Mode</span>`;
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.className = "w-full py-4 bg-slate-300 text-slate-500 font-bold text-xs rounded-2xl shadow-md transition flex items-center justify-center gap-2 cursor-not-allowed disabled:opacity-60";
+        if (checkedCount < 7) {
+          submitBtn.innerHTML = `<i class="bi bi-lock-fill text-sm"></i><span>Complete ${7 - checkedCount} More Checks to Unlock</span>`;
+        } else {
+          submitBtn.innerHTML = `<i class="bi bi-camera-fill text-sm"></i><span>Snap Fuel Dashboard Photo to Unlock</span>`;
+        }
+      }
+    }
+
+    // Submit and Unlock Trip
+    document.getElementById('checklist-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const odom = document.getElementById('start-odometer').value;
+      const fuelPct = document.getElementById('fuel-pct-slider').value;
+      const notes = document.getElementById('pretrip-notes').value.trim();
+
+      if (!odom) {
+        showToast('Starting odometer reading is required.', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i><span>Securing & Registering Inspection...</span>`;
+
+      let uploadedPhotoUrl = null;
+      if (photoFile) {
+        try {
+          uploadedPhotoUrl = await uploadFile(photoFile, 'fuel-photos');
+        } catch (err) {
+          console.warn('Storage upload fallback:', err);
+        }
+      }
+
+      // Persist unlock state locally and in Supabase
+      localStorage.setItem('fc_pretrip_cleared', new Date().toDateString());
+      localStorage.setItem('fc_fuel_before', fuelPct);
+      localStorage.setItem('fc_odom_before', odom);
+
+      try {
+        if (currentDriverProfile?.id) {
+          await supabase.from('notifications').insert({
+            user_id: currentDriverProfile.id,
+            organization_id: currentDriverProfile.organization_id,
+            title: 'PRE-TRIP INSPECTION CLEARED',
+            message: `Vehicle inspection verified. Start Odometer: ${odom} km · Fuel: ${fuelPct}%.`,
+            type: 'info',
+            created_at: new Date().toISOString()
+          });
+        }
+      } catch (err) {}
+
+      showToast('Safety inspection verified. Drive terminal unlocked.', 'success', 3000);
+      setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    });
+
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+      if (confirm('Sign out of Driver Terminal?')) performLogout();
+    });
+
+    initInspection();
+  </script>
+</body>
+</html>

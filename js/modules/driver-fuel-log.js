@@ -1,26 +1,34 @@
 /**
- * DRIVER-FUEL-LOG.JS — Fuel purchase logging for Driver.
- * Uploads the receipt photo to Storage, then inserts a real fuel_logs row.
+ * DRIVER-FUEL-LOG.JS — Handles fuel refueling receipts, odometer logs, and audits.
  */
 import { supabase, getUserProfile, formatDate, formatNaira, escapeHtml, uploadFile } from '../config.js';
 import { showToast } from '../auth.js';
 
 const form = document.getElementById('fuel-log-form');
-if (form) init();
+if (form) initFuelLog();
 
 let orgId = null;
 let assignedVehicleId = null;
 
-async function init() {
+export async function initFuelLog() {
   const profile = await getUserProfile();
   if (!profile) return;
   orgId = profile.organization_id;
 
-  const { data: vehicle } = await supabase.from('vehicles').select('id, plate_number').eq('assigned_driver_id', profile.id).maybeSingle();
+  const { data: vehicle } = await supabase
+    .from('vehicles')
+    .select('id, plate_number')
+    .eq('assigned_driver_id', profile.id)
+    .maybeSingle();
+
   assignedVehicleId = vehicle?.id || null;
 
   const label = document.getElementById('fuel-log-vehicle-label');
-  if (label) label.textContent = vehicle ? `Record your recent refuelling for vehicle ${vehicle.plate_number}.` : 'You have no vehicle assigned yet — logs will be saved without a vehicle link.';
+  if (label) {
+    label.textContent = vehicle 
+      ? `Logging refueling entries for assigned vehicle ${vehicle.plate_number}.` 
+      : 'No permanent vehicle attached — log will be queued for vehicle matching.';
+  }
 
   await loadHistory(profile.id);
   form.addEventListener('submit', (e) => onSubmit(e, profile.id));
@@ -28,26 +36,33 @@ async function init() {
 
 async function loadHistory(driverId) {
   const list = document.getElementById('fuel-log-history');
-  const { data, error } = await supabase.from('fuel_logs').select('*').eq('driver_id', driverId).order('logged_at', { ascending: false }).limit(10);
+  const { data, error } = await supabase
+    .from('fuel_logs')
+    .select('*')
+    .eq('driver_id', driverId)
+    .order('created_at', { ascending: false })
+    .limit(8);
 
   if (error) {
-    list.innerHTML = `<div class="p-md text-center text-error font-body-sm">Failed to load history: ${escapeHtml(error.message)}</div>`;
+    list.innerHTML = `<div class="p-4 text-center text-rose-500 text-xs">Failed to load history: ${escapeHtml(error.message)}</div>`;
     return;
   }
+
   const logs = data || [];
   if (logs.length === 0) {
-    list.innerHTML = `<div class="p-md text-center text-text-muted font-body-sm border border-dashed border-border-light rounded-lg">No fuel logs yet.</div>`;
+    list.innerHTML = `<div class="p-6 text-center text-slate-400 text-xs border border-dashed border-slate-200 rounded-xl">No refueling logs recorded yet.</div>`;
     return;
   }
+
   list.innerHTML = logs.map(l => `
-    <div class="bg-surface border border-border-light rounded-lg p-md flex justify-between items-center">
+    <div class="bg-white border border-slate-200/80 rounded-xl p-3 flex justify-between items-center shadow-sm text-xs">
       <div>
-        <div class="font-body-md text-body-md text-on-surface font-medium">${escapeHtml(l.station_name || 'Unknown station')}</div>
-        <div class="font-body-sm text-xs text-text-muted">${l.litres}L · ${formatDate(l.logged_at)}</div>
+        <div class="font-bold text-slate-800">${escapeHtml(l.station_name || 'Station Log')}</div>
+        <div class="text-[11px] text-slate-400">${l.litres || 0}L · ${formatDate(l.created_at)}</div>
       </div>
       <div class="text-right">
-        <div class="font-mono-data text-mono-data text-on-surface">${formatNaira(l.amount_naira)}</div>
-        <div class="font-label-sm text-xs ${l.status === 'flagged' ? 'text-error' : l.status === 'approved' ? 'text-secondary' : 'text-text-muted'} capitalize">${l.status}</div>
+        <div class="font-mono font-bold text-slate-800">${formatNaira(l.amount_naira || 0)}</div>
+        <div class="text-[10px] font-bold capitalize ${l.status === 'flagged' ? 'text-rose-600' : l.status === 'approved' ? 'text-emerald-600' : 'text-slate-400'}">${l.status || 'pending'}</div>
       </div>
     </div>`).join('');
 }
@@ -55,23 +70,28 @@ async function loadHistory(driverId) {
 async function onSubmit(e, driverId) {
   e.preventDefault();
   const btn = document.getElementById('fuel-log-submit');
-  const original = btn.textContent;
+  const original = btn.innerHTML;
   const file = document.getElementById('fuel-receipt').files[0];
 
-  if (!file) { showToast('A receipt photo is required.', 'error'); return; }
+  if (!file) {
+    showToast('A pump receipt photo is required.', 'error');
+    return;
+  }
 
-  btn.disabled = true; btn.textContent = 'Uploading receipt…';
+  btn.disabled = true;
+  btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i> Uploading receipt...`;
 
-  let receiptUrl;
+  let receiptUrl = null;
   try {
     receiptUrl = await uploadFile(file, 'fuel-receipts');
   } catch (err) {
     showToast(`Receipt upload failed: ${err.message}`, 'error');
-    btn.disabled = false; btn.textContent = original;
+    btn.disabled = false;
+    btn.innerHTML = original;
     return;
   }
 
-  btn.textContent = 'Saving…';
+  btn.innerHTML = `<i class="bi bi-arrow-repeat animate-spin"></i> Saving...`;
 
   const payload = {
     organization_id: orgId,
@@ -86,11 +106,15 @@ async function onSubmit(e, driverId) {
   };
 
   const { error } = await supabase.from('fuel_logs').insert(payload);
-  btn.disabled = false; btn.textContent = original;
+  btn.disabled = false;
+  btn.innerHTML = original;
 
-  if (error) { showToast(error.message, 'error'); return; }
+  if (error) {
+    showToast(error.message, 'error');
+    return;
+  }
 
-  showToast('Fuel log saved.', 'success');
+  showToast('Fuel purchase successfully logged.', 'success');
   form.reset();
   await loadHistory(driverId);
 }

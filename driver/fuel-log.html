@@ -1,263 +1,114 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en">
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>FleetCore - Log Fuel Purchase</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "secondary-fixed-dim": "#68dba9",
-                      "tertiary": "#3750a0",
-                      "secondary-fixed": "#85f8c4",
-                      "surface-variant": "#dae2fd",
-                      "on-secondary": "#ffffff",
-                      "on-surface-variant": "#434655",
-                      "text-muted": "#64748B",
-                      "surface-tint": "#0053db",
-                      "on-error-container": "#93000a",
-                      "error-container": "#ffdad6",
-                      "on-tertiary-container": "#eff0ff",
-                      "on-surface": "#131b2e",
-                      "tertiary-fixed": "#dce1ff",
-                      "surface-container-highest": "#dae2fd",
-                      "tertiary-fixed-dim": "#b6c4ff",
-                      "on-secondary-fixed-variant": "#005137",
-                      "inverse-primary": "#b4c5ff",
-                      "outline-variant": "#c3c6d7",
-                      "error": "#ba1a1a",
-                      "inverse-surface": "#283044",
-                      "secondary-container": "#82f5c1",
-                      "background-subtle": "#F8FAFC",
-                      "secondary": "#006c4a",
-                      "on-secondary-fixed": "#002114",
-                      "warning-amber": "#D97706",
-                      "primary-container": "#2563eb",
-                      "danger-red": "#DC2626",
-                      "on-tertiary": "#ffffff",
-                      "on-tertiary-fixed": "#00164e",
-                      "surface-dim": "#d2d9f4",
-                      "surface-bright": "#faf8ff",
-                      "surface": "#faf8ff",
-                      "background": "#faf8ff",
-                      "on-error": "#ffffff",
-                      "outline": "#737686",
-                      "surface-container-low": "#f2f3ff",
-                      "on-tertiary-fixed-variant": "#264191",
-                      "tertiary-container": "#5069bb",
-                      "primary-fixed": "#dbe1ff",
-                      "on-primary-fixed": "#00174b",
-                      "on-background": "#131b2e",
-                      "on-secondary-container": "#00714e",
-                      "surface-container": "#eaedff",
-                      "primary-fixed-dim": "#b4c5ff",
-                      "on-primary-container": "#eeefff",
-                      "surface-container-high": "#e2e7ff",
-                      "primary": "#004ac6",
-                      "border-light": "#E2E8F0",
-                      "on-primary": "#ffffff",
-                      "surface-container-lowest": "#ffffff",
-                      "on-primary-fixed-variant": "#003ea8",
-                      "inverse-on-surface": "#eef0ff"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.25rem",
-                      "lg": "0.5rem",
-                      "xl": "0.75rem",
-                      "full": "9999px"
-              },
-              "spacing": {
-                      "container-margin": "24px",
-                      "base": "4px",
-                      "xl": "32px",
-                      "gutter": "16px",
-                      "md": "16px",
-                      "lg": "24px",
-                      "sm": "8px",
-                      "xs": "4px"
-              },
-              "fontFamily": {
-                      "body-md": [
-                              "Inter"
-                      ],
-                      "display": [
-                              "Manrope"
-                      ],
-                      "headline-md": [
-                              "Manrope"
-                      ],
-                      "mono-data": [
-                              "Inter"
-                      ],
-                      "label-md": [
-                              "Inter"
-                      ],
-                      "body-lg": [
-                              "Inter"
-                      ],
-                      "headline-lg": [
-                              "Manrope"
-                      ],
-                      "body-sm": [
-                              "Inter"
-                      ],
-                      "label-sm": [
-                              "Inter"
-                      ]
-              },
-              "fontSize": {
-                      "body-md": [
-                              "16px",
-                              {
-                                      "lineHeight": "24px",
-                                      "fontWeight": "400"
-                              }
-                      ],
-                      "display": [
-                              "48px",
-                              {
-                                      "lineHeight": "56px",
-                                      "letterSpacing": "-0.02em",
-                                      "fontWeight": "700"
-                              }
-                      ],
-                      "headline-md": [
-                              "24px",
-                              {
-                                      "lineHeight": "32px",
-                                      "fontWeight": "600"
-                              }
-                      ],
-                      "mono-data": [
-                              "14px",
-                              {
-                                      "lineHeight": "20px",
-                                      "letterSpacing": "0.05em",
-                                      "fontWeight": "500"
-                              }
-                      ],
-                      "label-md": [
-                              "14px",
-                              {
-                                      "lineHeight": "16px",
-                                      "letterSpacing": "0.01em",
-                                      "fontWeight": "600"
-                              }
-                      ],
-                      "body-lg": [
-                              "18px",
-                              {
-                                      "lineHeight": "28px",
-                                      "fontWeight": "400"
-                              }
-                      ],
-                      "headline-lg": [
-                              "32px",
-                              {
-                                      "lineHeight": "40px",
-                                      "letterSpacing": "-0.01em",
-                                      "fontWeight": "600"
-                              }
-                      ],
-                      "body-sm": [
-                              "14px",
-                              {
-                                      "lineHeight": "20px",
-                                      "fontWeight": "400"
-                              }
-                      ],
-                      "label-sm": [
-                              "12px",
-                              {
-                                      "lineHeight": "14px",
-                                      "letterSpacing": "0.02em",
-                                      "fontWeight": "500"
-                              }
-                      ]
-              }
-      },
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>Log Fuel Refueling - FleetCore</title>
+  <link rel="icon" type="image/png" href="../assets/images/logo.png">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Inter:wght@400..700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            brand: { navy: '#0B2545', blue: '#134074', teal: '#00A896', mint: '#02C39A', subtle: '#EEF4F8' },
+            primary: "#004ac6", "border-light": "#E2E8F0"
           },
+          fontFamily: { display: ["Manrope", "sans-serif"], sans: ["Inter", "sans-serif"] }
         }
-    </script>
-<style>
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+      }
+    }
+  </script>
 </head>
-<body class="bg-background-subtle text-on-surface font-body-md min-h-screen pb-24 md:pb-0" data-fc-guard="driver">
-<!-- TopAppBar (Desktop) -->
-<header class="hidden md:flex justify-between items-center px-container-margin h-16 w-full bg-surface border-b border-border-light docked full-width top-0 z-50">
-<div class="flex items-center gap-4">
-<img alt="FleetCore" class="w-6 h-6 rounded-md object-cover" src="../assets/images/logo.png"/><span class="text-headline-md font-headline-md font-bold text-primary">FleetCore</span>
-</div>
-<div class="flex items-center gap-4">
-<img alt="User profile" class="w-8 h-8 rounded-full object-cover border border-border-light" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
-</div>
-</header>
-<!-- Mobile TopAppBar -->
-<div class="md:hidden flex justify-between items-center px-container-margin h-16 w-full bg-surface border-b border-border-light sticky top-0 z-40">
-<span class="text-headline-md font-headline-md font-bold text-primary">FleetCore</span>
-<img alt="User profile" class="w-8 h-8 rounded-full object-cover border border-border-light" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23E2E8F0'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%2394A3B8'/%3E%3Cpath d='M6 36c0-8 6.5-13 14-13s14 5 14 13' fill='%2394A3B8'/%3E%3C/svg%3E"/>
-</div>
-<!-- Main Content Canvas -->
-<main class="px-container-margin py-lg max-w-2xl mx-auto space-y-lg">
-<div>
-<h1 class="font-headline-lg text-headline-lg text-on-surface">Log Fuel Purchase</h1>
-<p class="font-body-sm text-text-muted mt-1" id="fuel-log-vehicle-label">Loading your assigned vehicle…</p>
-</div>
-<!-- Form Card -->
-<form class="bg-surface rounded-lg border border-border-light p-container-margin space-y-md" id="fuel-log-form">
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
-<div class="flex flex-col gap-xs">
-<label class="font-label-sm text-text-muted">Station Name *</label>
-<input class="bg-surface border border-border-light rounded focus:ring-2 focus:ring-primary-container focus:ring-opacity-10 focus:border-primary-container p-2 font-body-md text-on-surface outline-none transition-all" id="fuel-station" placeholder="e.g., NNPC, TotalEnergies, Ardova" required="" type="text"/>
-</div>
-<div class="flex flex-col gap-xs">
-<label class="font-label-sm text-text-muted">Litres (L) *</label>
-<input class="bg-surface border border-border-light rounded focus:ring-2 focus:ring-primary-container focus:ring-opacity-10 focus:border-primary-container p-2 font-mono-data text-on-surface outline-none transition-all" id="fuel-litres" min="0" placeholder="0.00" required="" step="0.01" type="number"/>
-</div>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
-<div class="flex flex-col gap-xs">
-<label class="font-label-sm text-text-muted">Amount (₦) *</label>
-<input class="bg-surface border border-border-light rounded focus:ring-2 focus:ring-primary-container focus:ring-opacity-10 focus:border-primary-container p-2 font-mono-data text-on-surface outline-none transition-all" id="fuel-amount" min="0" placeholder="0.00" required="" step="0.01" type="number"/>
-</div>
-<div class="flex flex-col gap-xs">
-<label class="font-label-sm text-text-muted">Odometer (km)</label>
-<input class="bg-surface border border-border-light rounded focus:ring-2 focus:ring-primary-container focus:ring-opacity-10 focus:border-primary-container p-2 font-mono-data text-on-surface outline-none transition-all" id="fuel-odometer" min="0" type="number"/>
-</div>
-</div>
-<div class="flex flex-col gap-xs">
-<label class="font-label-sm text-text-muted">Receipt Photo *</label>
-<input accept="image/*" class="w-full text-body-sm" id="fuel-receipt" required="" type="file"/>
-<p class="font-body-sm text-xs text-text-muted">A receipt photo is required for every fuel log.</p>
-</div>
-<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg hover:opacity-90 transition-opacity active:scale-95" id="fuel-log-submit" type="submit">Save Fuel Log</button>
-</form>
-<!-- Recent Logs -->
-<div>
-<h2 class="font-label-md text-label-md text-on-surface mb-sm">Recent Logs</h2>
-<div class="flex flex-col gap-sm" id="fuel-log-history">
-<div class="p-md text-center text-text-muted font-body-sm border border-dashed border-border-light rounded-lg">Loading…</div>
-</div>
-</div>
-</main>
-<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface border-t border-border-light shadow-lg rounded-t-xl" data-fc-sidebar="">
-<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-all scale-90 active:duration-200" data-fc-nav="" href="dashboard.html"><span class="material-symbols-outlined">local_shipping</span><span class="font-label-sm text-label-sm mt-1">Trips</span></a>
-<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 hover:bg-surface-container-high transition-all scale-90 active:duration-200" data-fc-nav="" href="fuel-log.html"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_gas_station</span><span class="font-label-sm text-label-sm mt-1">Fuel</span></a>
-<a class="flex flex-col items-center justify-center text-danger-red p-2 hover:bg-error-container transition-all scale-90 active:duration-200 rounded-lg" data-fc-nav="" href="incident-report.html"><span class="material-symbols-outlined">emergency</span><span class="font-label-sm text-label-sm mt-1">SOS</span></a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-high transition-all scale-90 active:duration-200" data-fc-nav="" href="profile.html"><span class="material-symbols-outlined">person</span><span class="font-label-sm text-label-sm mt-1">Profile</span></a>
-</nav>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="../js/config.js" type="module"></script><script src="../js/auth.js" type="module"></script><script src="../js/nav.js" type="module"></script><script src="../js/modules/driver-fuel-log.js" type="module"></script></body></html>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen pb-28 lg:pb-8 antialiased flex flex-col" data-fc-guard="driver">
+  <div id="fc-toast-host" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+  <header class="bg-white border-b border-border-light h-14 sm:h-16 w-full flex justify-between items-center px-4 sticky top-0 z-40 shrink-0">
+    <div class="flex items-center gap-2">
+      <a href="dashboard.html" class="p-1.5 rounded-xl bg-slate-100 text-slate-600 hover:text-slate-900"><i class="bi bi-chevron-left text-base"></i></a>
+      <span class="font-display font-black text-base sm:text-lg tracking-tight text-brand-navy">Record Fuel Expense</span>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden relative">
+    <aside id="sidebar" class="bg-white border-r border-border-light w-64 hidden lg:flex flex-col h-full p-4 gap-1 z-20 shrink-0 overflow-y-auto">
+      <div class="mb-4 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Active Organization</span>
+        <span class="text-sm font-extrabold text-brand-navy truncate block">TransCore Logistics</span>
+      </div>
+      <nav class="flex-1 flex flex-col gap-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Operations</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="dashboard.html"><i class="bi bi-geo-alt-fill text-base"></i><span>Live Drive</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="checklist.html"><i class="bi bi-clipboard-check-fill text-base"></i><span>Pre-Trip Inspection</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="schedule.html"><i class="bi bi-calendar-check-fill text-base"></i><span>Route Manifest</span></a>
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-3 mb-1">System</div>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="stats.html"><i class="bi bi-bar-chart-fill text-base"></i><span>Performance Stats</span></a>
+        <a class="flex items-center gap-3 px-3.5 py-2.5 text-slate-600 hover:text-brand-navy hover:bg-slate-50 text-xs font-semibold rounded-xl transition" href="profile.html"><i class="bi bi-person-gear text-base"></i><span>Settings</span></a>
+      </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-4 max-w-xl mx-auto w-full space-y-4">
+      <div>
+        <p class="text-xs text-slate-500 font-medium" id="fuel-log-vehicle-label">Loading vehicle assignment...</p>
+      </div>
+
+      <form class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-sm space-y-4" id="fuel-log-form">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Filling Station *</label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-teal-500" id="fuel-station" placeholder="e.g. NNPC Mega, TotalEnergies" required type="text"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Volume in Litres (L) *</label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:outline-none focus:border-teal-500" id="fuel-litres" min="0" placeholder="0.00" required step="0.01" type="number"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Total Cost (₦) *</label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:outline-none focus:border-teal-500" id="fuel-amount" min="0" placeholder="0.00" required step="0.01" type="number"/>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Odometer Reading (KM)</label>
+            <input class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono focus:outline-none focus:border-teal-500" id="fuel-odometer" min="0" placeholder="e.g. 48420" type="number"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Pump Receipt Photo *</label>
+          <input accept="image/*" class="w-full text-xs" id="fuel-receipt" required type="file"/>
+          <p class="text-[11px] text-slate-400 mt-1">Legible camera snapshot of the fueling receipt is required for auditing.</p>
+        </div>
+
+        <button class="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2" id="fuel-log-submit" type="submit">
+          <i class="bi bi-fuel-pump-fill"></i> Save Fuel Log
+        </button>
+      </form>
+
+      <div class="space-y-2">
+        <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Recent Refueling Logs</h2>
+        <div class="space-y-2" id="fuel-log-history">
+          <div class="p-6 text-center text-slate-400 text-xs">Loading records...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="fixed bottom-0 left-0 w-full z-40 bg-white border-t border-slate-200/80 shadow-lg px-2 py-2 flex justify-around items-center lg:hidden">
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="dashboard.html"><i class="bi bi-geo-alt-fill text-lg mb-0.5"></i><span>Drive</span></a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="schedule.html"><i class="bi bi-calendar-check-fill text-lg mb-0.5"></i><span>Schedule</span></a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="stats.html"><i class="bi bi-bar-chart-fill text-lg mb-0.5"></i><span>Stats</span></a>
+    <a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-900 font-semibold text-[10px] py-1 px-3 rounded-xl transition" href="profile.html"><i class="bi bi-person-fill text-lg mb-0.5"></i><span>Profile</span></a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="../js/config.js" type="module"></script>
+  <script src="../js/auth.js" type="module"></script>
+  <script src="../js/modules/driver-fuel-log.js" type="module"></script>
+</body>
+</html>
