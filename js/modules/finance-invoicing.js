@@ -1,32 +1,27 @@
 /**
- * FINANCE-INVOICING.JS — Client invoicing, payments status, and overdue transitions.
+ * FINANCE-INVOICES.JS — Invoice Ledger Controller matching FleetCore Standard Design.
  */
-import { supabase, getUserProfile, formatDate, formatNaira, escapeHtml, statusBadge } from '../config.js';
+import { supabase, getUserProfile, formatDate, escapeHtml, statusBadge } from '../config.js';
 import { showToast, performLogout } from '../auth.js';
 
-const STATUS_MAP = {
-  pending: { label: 'Pending', cls: 'bg-amber-50 text-amber-700 border-amber-200/60' },
-  paid: { label: 'Settled', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200/60' },
-  overdue: { label: 'Overdue', cls: 'bg-rose-50 text-rose-700 border-rose-200/60' },
-  cancelled: { label: 'Cancelled', cls: 'bg-slate-100 text-slate-600 border-slate-200' },
-};
-
-let orgId = null;
 let invoices = [];
-const tbody = document.getElementById('inv-tbody');
-if (tbody) initInvoicing();
+let currentOrg = null;
+let searchTerm = '';
+let statusFilter = 'all';
 
-export async function initInvoicing() {
+const tbody = document.getElementById('invoices-tbody');
+if (tbody) initFinanceInvoices();
+
+export async function initFinanceInvoices() {
   const profile = await getUserProfile();
   if (!profile) return;
-  orgId = profile.organization_id;
 
   const fullName = profile.full_name || 'Account Manager';
   const initials = fullName.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'AM';
-  
+
   const headerName = document.getElementById('header-user-name');
   const headerAvatar = document.getElementById('header-avatar');
-  const sidebarName = document.getElementById('sidebar-name');
+  const sidebarName = document.getElementById('sidebar-user-name');
   const sidebarInitial = document.getElementById('sidebar-initial');
 
   if (headerName) headerName.textContent = fullName;
@@ -34,143 +29,121 @@ export async function initInvoicing() {
   if (sidebarName) sidebarName.textContent = fullName;
   if (sidebarInitial) sidebarInitial.textContent = initials;
 
-  let orgName = 'TransCore Logistics';
-  if (orgId) {
-    const { data: org } = await supabase.from('organizations').select('name').eq('id', orgId).maybeSingle();
-    if (org?.name) orgName = org.name;
+  if (profile.organization_id) {
+    const { data: org } = await supabase.from('organizations').select('name, company_code').eq('id', profile.organization_id).single();
+    if (org) {
+      currentOrg = org;
+      const sidebarOrg = document.getElementById('sidebar-org-name');
+      if (sidebarOrg) sidebarOrg.textContent = org.name;
+    }
   }
-  document.querySelectorAll('#fc-org-name').forEach(el => el.textContent = orgName);
 
-  await loadTripsForModal();
   await loadInvoices();
 
-  document.getElementById('btn-new-invoice')?.addEventListener('click', () => document.getElementById('inv-modal')?.classList.remove('hidden'));
-  document.getElementById('inv-modal-close')?.addEventListener('click', closeModal);
-  document.getElementById('inv-cancel-btn')?.addEventListener('click', closeModal);
-  document.getElementById('inv-form')?.addEventListener('submit', onCreate);
-  tbody.addEventListener('click', onTableClick);
-}
+  document.getElementById('inv-search')?.addEventListener('input', (e) => {
+    searchTerm = e.target.value.trim().toLowerCase();
+    renderTable();
+  });
 
-function closeModal() {
-  document.getElementById('inv-modal')?.classList.add('hidden');
-  document.getElementById('inv-form')?.reset();
-}
+  document.getElementById('inv-status-filter')?.addEventListener('change', (e) => {
+    statusFilter = e.target.value;
+    renderTable();
+  });
 
-async function loadTripsForModal() {
-  const { data } = await supabase
-    .from('trips')
-    .select('id, origin, destination')
-    .eq('organization_id', orgId)
-    .eq('status', 'completed')
-    .order('created_at', { ascending: false })
-    .limit(50);
-
-  const select = document.getElementById('inv-trip');
-  if (select && data) {
-    select.innerHTML = '<option value="">Standard Contract (No specific trip linked)</option>' + 
-      data.map(t => `<option value="${t.id}">${escapeHtml(t.origin || 'Base')} → ${escapeHtml(t.destination || 'Target')}</option>`).join('');
-  }
+  document.getElementById('btn-export-csv')?.addEventListener('click', exportInvoicesCSV);
+  document.getElementById('btn-export-pdf')?.addEventListener('click', () => window.print());
+  document.getElementById('logout-btn')?.addEventListener('click', () => {
+    if (confirm('Sign out from Finance Console?')) performLogout();
+  });
 }
 
 async function loadInvoices() {
-  const { data, error } = await supabase
-    .from('invoices')
-    .select('*, trip:trips(origin, destination)')
-    .eq('organization_id', orgId)
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('invoices')
+      .select('*, trip:trips(destination)')
+      .order('created_at', { ascending: false });
 
-  const tableWrap = tbody.closest('.bg-white');
-  const empty = document.getElementById('inv-empty');
-
-  if (error) {
-    tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 text-xs font-bold">Failed to load: ${escapeHtml(error.message)}</td></tr>`;
-    return;
+    if (error) throw error;
+    invoices = data || [];
+    renderTable();
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500 font-bold">Failed to load invoices: ${escapeHtml(err.message)}</td></tr>`;
   }
-
-  invoices = data || [];
-
-  const today = new Date().toISOString().slice(0, 10);
-  const toFlag = invoices.filter(i => i.status === 'pending' && i.due_date && i.due_date < today);
-  if (toFlag.length) {
-    await supabase.from('invoices').update({ status: 'overdue' }).in('id', toFlag.map(i => i.id));
-    toFlag.forEach(i => { i.status = 'overdue'; });
-  }
-
-  if (invoices.length === 0) {
-    tableWrap.classList.add('hidden');
-    empty?.classList.remove('hidden');
-    return;
-  }
-  empty?.classList.add('hidden');
-  tableWrap.classList.remove('hidden');
-  render();
 }
 
-function render() {
-  tbody.innerHTML = invoices.map(i => `
-    <tr class="hover:bg-slate-50 transition-colors" data-id="${i.id}">
-      <td class="py-3 px-4 font-bold text-slate-900">${escapeHtml(i.client_name)}</td>
-      <td class="py-3 px-4 text-slate-500">${i.trip ? escapeHtml(i.trip.origin || 'Base') + ' → ' + escapeHtml(i.trip.destination || 'Target') : '<span class="italic text-slate-400">Direct Contract</span>'}</td>
-      <td class="py-3 px-4 font-mono font-bold text-slate-900">${formatNaira(i.amount_naira || 0)}</td>
-      <td class="py-3 px-4">${statusBadge(i.status, STATUS_MAP)}</td>
-      <td class="py-3 px-4 font-mono text-slate-500">${i.due_date ? formatDate(i.due_date) : '—'}</td>
-      <td class="py-3 px-4 text-right">
-        ${i.status !== 'paid' && i.status !== 'cancelled' ? `
-          <button class="px-2.5 py-1 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200 transition" data-action="mark-paid">
+function renderTable() {
+  let list = invoices;
+  if (statusFilter !== 'all') {
+    list = list.filter(i => i.status === statusFilter);
+  }
+  if (searchTerm) {
+    list = list.filter(i => 
+      (i.invoice_number || '').toLowerCase().includes(searchTerm) ||
+      (i.trip?.destination || '').toLowerCase().includes(searchTerm)
+    );
+  }
+
+  const countEl = document.getElementById('inv-count');
+  if (countEl) countEl.textContent = `Showing ${list.length} of ${invoices.length} invoices`;
+
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="py-12 text-center text-slate-400">No invoices match selected criteria.</td></tr>`;
+    return;
+  }
+
+  const INVOICE_STATUS = {
+    paid: { label: 'Settled', cls: 'bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-semibold' },
+    unpaid: { label: 'Overdue', cls: 'bg-rose-50 text-rose-700 border border-rose-200/60 font-semibold' },
+    pending: { label: 'Pending', cls: 'bg-amber-50 text-amber-700 border border-amber-200/60 font-semibold' }
+  };
+
+  tbody.innerHTML = list.map(inv => `
+    <tr class="hover:bg-slate-50/70 transition-colors">
+      <td class="py-3.5 px-5 font-mono font-bold text-slate-900">${escapeHtml(inv.invoice_number || inv.id.substring(0, 8))}</td>
+      <td class="py-3.5 px-5 text-slate-700 font-medium">${escapeHtml(inv.trip?.destination || 'Dedicated Freight')}</td>
+      <td class="py-3.5 px-5 text-right font-mono font-bold text-slate-900">₦${parseFloat(inv.amount || 0).toLocaleString()}</td>
+      <td class="py-3.5 px-5">${statusBadge(inv.status, INVOICE_STATUS)}</td>
+      <td class="py-3.5 px-5 text-slate-500 font-medium">${inv.due_date ? formatDate(inv.due_date) : 'Immediate'}</td>
+      <td class="py-3.5 px-5 text-right no-print">
+        ${inv.status !== 'paid' ? `
+          <button type="button" onclick="settleInvoice('${inv.id}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition shadow-sm">
             Mark Paid
-          </button>` : `<span class="text-xs text-slate-400 font-medium">Archived</span>`}
+          </button>
+        ` : `<span class="text-xs font-semibold text-slate-400">Reconciled</span>`}
       </td>
     </tr>`).join('');
 }
 
-async function onTableClick(e) {
-  const btn = e.target.closest('[data-action="mark-paid"]');
-  if (!btn) return;
-  const id = btn.closest('tr[data-id]')?.getAttribute('data-id');
-  const invoice = invoices.find(i => i.id === id);
-  if (!invoice) return;
-
+window.settleInvoice = async function(id) {
+  if (!confirm('Mark invoice as settled/paid?')) return;
   const { error } = await supabase.from('invoices').update({ status: 'paid', paid_at: new Date().toISOString() }).eq('id', id);
-  if (error) { 
-    showToast(error.message, 'error'); 
-    return; 
-  }
-  
-  invoice.status = 'paid';
-  render();
-  showToast(`Invoice for ${invoice.client_name} marked settled.`, 'success');
-}
-
-async function onCreate(e) {
-  e.preventDefault();
-  const btn = document.getElementById('inv-save-btn');
-  const original = btn.textContent;
-  btn.disabled = true; 
-  btn.textContent = 'Issuing...';
-
-  const payload = {
-    organization_id: orgId,
-    client_name: document.getElementById('inv-client').value.trim(),
-    trip_id: document.getElementById('inv-trip').value || null,
-    amount_naira: Number(document.getElementById('inv-amount').value),
-    due_date: document.getElementById('inv-due-date').value || null,
-    status: 'pending',
-  };
-
-  const { error } = await supabase.from('invoices').insert(payload);
-  btn.disabled = false; 
-  btn.textContent = original;
-
-  if (error) { 
-    showToast(error.message, 'error'); 
-    return; 
-  }
-
-  showToast('Client invoice created.', 'success');
-  closeModal();
+  if (error) { showToast(error.message, 'error'); return; }
+  showToast('Invoice marked as settled.', 'success');
   await loadInvoices();
-}
+};
 
-document.getElementById('logout-btn')?.addEventListener('click', () => {
-  if (confirm('Sign out from Finance Console?')) performLogout();
-});
+function exportInvoicesCSV() {
+  if (invoices.length === 0) {
+    showToast('No invoice records to export.', 'error');
+    return;
+  }
+  const headers = ['Invoice_Number', 'Destination', 'Amount_NGN', 'Status', 'Due_Date', 'Created_At'];
+  const rows = invoices.map(i => [
+    `"${i.invoice_number || i.id.substring(0, 8)}"`,
+    `"${i.trip?.destination || 'General Freight'}"`,
+    parseFloat(i.amount || 0),
+    i.status,
+    i.due_date || '',
+    i.created_at
+  ]);
+
+  const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const link = document.createElement('a');
+  link.setAttribute('href', encodeURI(csvContent));
+  link.setAttribute('download', `Invoices_${currentOrg?.company_code || 'FC'}_${new Date().toISOString().substring(0, 10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast('Invoice CSV exported successfully.', 'success');
+}
